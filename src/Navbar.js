@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
 import { withStyles } from '@material-ui/core/styles';
 import { AppBar, Tabs, Tab, Toolbar, Typography } from '@material-ui/core';
