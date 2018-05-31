@@ -1,5 +1,6 @@
 import React from 'react';
 import Post from './Post';
+import {connect} from 'react-redux'
 
 class ListOfPost extends React.Component {
   render() {
@@ -16,4 +17,9 @@ class ListOfPost extends React.Component {
   }
 }
 
-export default ListOfPost;
+function mapStateToProps(state) {
+  return {
+    posts : state.posts
+  };
+}
+export default connect(mapStateToProps)(ListOfPost);

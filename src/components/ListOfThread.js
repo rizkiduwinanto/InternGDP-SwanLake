@@ -1,6 +1,6 @@
 import React from 'react';
 import { List } from '@material-ui/core';
-import Thread from './Thread';
+import Thread from '../containers/Thread';
 
 class ListOfThread extends React.Component {
   render() {
