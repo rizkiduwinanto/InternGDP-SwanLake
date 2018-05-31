@@ -1,7 +1,5 @@
 import React from 'react';
-import './index.css';
-import { withStyles } from '@material-ui/core/styles';
-import { AppBar, Tabs, Tab, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Toolbar, Typography } from '@material-ui/core';
 
 class Navbar extends React.Component {
     render() {
