@@ -1,5 +1,6 @@
 import React from 'react';
 import { List } from '@material-ui/core';
+import {connect} from 'react-redux'
 import Thread from './Thread';
 
 class ListOfThread extends React.Component {
@@ -16,4 +17,10 @@ class ListOfThread extends React.Component {
   }
 }
 
-export default ListOfThread;
+function mapStateToProps(state) {
+  return {
+    threads: state.threads
+  };
+}
+
+export default connect(mapStateToProps)(ListOfThread);

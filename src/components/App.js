@@ -5,10 +5,10 @@ import Dashboard from './Dashboard'
 class App extends React.Component {
   render () {
     return(
-      <body>
+      <div>
         <Navbar />
         <Dashboard />
-      </body>
+      </div>
     );
   }
 }
