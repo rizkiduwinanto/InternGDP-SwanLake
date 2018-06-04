@@ -67,6 +67,35 @@ router.get('/frequent-poster/global/:date', (req,res) => {
   
 })
 
+router.get('/words/:date', (req,res) => {
+  
+  const date_key = req.url;
+  console.log(`date_key = ${req.url}`);
+  const TTL = 10*60; // 10 minutes
+  
+  
+  client.get(date_key, function(err, data){
+    if (data){
+      console.log("Cached");
+      return res.json(JSON.parse(data));
+    }
+    else {
+      console.log("Not Cached");
+      const date = req.params.date.split('-').join("");
+      const table = `[kaskus-166400:intern_dataset.post_${date}]`;
+      
+      getWords(table, date_key).then((result) => {
+        client.setex(date_key, TTL, JSON.stringify(result));
+        return res.json(result);
+      }, (err) => {
+        return res.json({success:false, error: err});
+      });
+    }
+
+  })
+
+  
+})
 router.get('/frequent-poster/forum/:date', (req,res) => {
   
   const date_key = req.url;
@@ -105,7 +134,38 @@ router.get('/frequent-poster/forum/:date', (req,res) => {
   
 
 // === Query Function ===
-async function getPerForumFrequentPoster(tables, date_key){
+async function getWords(table) {
+  // [kaskus-166400:intern_dataset.post_20180527]
+  const sqlQuery = `SELECT page_text FROM ${table} LIMIT 100`;
+
+  // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
+  const options = {
+    query: sqlQuery,
+    useLegacySql: true, // Use Legacy SQL syntax for queries.
+  };
+
+  // Runs the query
+  var to_return = await bigquery
+  .query(options)
+  .then(results => {
+    const freq_posters = results[0];
+    return ({
+      success: true,
+      data: freq_posters
+    });
+  })
+  .catch(err => {
+    return ({
+      success: false,
+      error: err.errors
+    });
+  });
+  return to_return;
+
+}
+
+
+async function getPerForumFrequentPoster(tables){
   
   // The SQL query to run
   const sqlQuery = `
@@ -170,7 +230,7 @@ LIMIT
   return to_return;
 }
 
-async function getGlobalFrequentPoster(table, date_key){
+async function getGlobalFrequentPoster(table){
   // The SQL query to run
   const sqlQuery = `
   SELECT
