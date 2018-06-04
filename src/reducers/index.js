@@ -1,12 +1,10 @@
 import { combineReducers } from 'redux';
-import DataPost from './DataPost';
-import DataThread from './DataThread';
-import SelectPostOfThread from './selectPostOfThread';
-import selectPostOfThread from './selectPostOfThread';
+import ReducerDataPost from './reducerPost';
+import ReducerDataPostOfThread from './reducerPostOfThread';
+import ReducerDataThread from './reducerThread';
 
-const reducer = combineReducers({
-  threads: DataThread,
-  postOfThread: selectPostOfThread
+export default combineReducers({
+  posts: ReducerDataPost,
+  postsOfThread : ReducerDataPostOfThread,
+  threads: ReducerDataThread
 });
-
-export default reducer;

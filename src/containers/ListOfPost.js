@@ -19,7 +19,8 @@ class ListOfPost extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    posts : state.posts
+    posts: state.postsOfThread
   };
 }
+
 export default connect(mapStateToProps)(ListOfPost);
