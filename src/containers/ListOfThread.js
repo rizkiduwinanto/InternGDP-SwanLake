@@ -10,7 +10,7 @@ class ListOfThread extends React.Component {
     );
 
     return (
-      <List>
+      <List style={{maxHeight: 500, overflow: 'auto'}} >
         {rows}
       </List>
     );
