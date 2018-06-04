@@ -18,7 +18,16 @@ example:  /api/frequent-poster/forum/2018-05-27
 ```
 METHOD /GET
 URL : /api/frequent-poster/global/:date
-return : json
+RETURN : json
 
 example:  /api/frequent-poster/global/2018-05-27
+```
+
+3. Words
+```
+METHOD /GET
+URL: /api/words/:date
+RETURN: json
+
+example: /api/words/2018-05-27
 ```
