@@ -288,11 +288,11 @@ async function getTrendWords(start_date, end_date, word) {
   const end_table_date = end_date.split("-").join("");
   
   const sqlQuery =`
-    CREATE TEMP FUNCTION countWordInSentence(sentence string, key string )
+  CREATE TEMP FUNCTION countWordInSentence(sentence string, key string )
   RETURNS INT64
   AS(
     (SELECT COUNT(*)
-    FROM UNNEST(SPLIT(REGEXP_REPLACE(REGEXP_REPLACE(sentence,"\[.*?\]"," "),"[ ]+[ ]"," ")," ")) as word
+    FROM UNNEST(SPLIT(REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(sentence,"\\[.*?\\]"," "),"[ ]+[ ]"," "),"^ | $","")," ")) as word
     GROUP BY word
     HAVING word = key)
   );
