@@ -1,5 +1,5 @@
 import React from 'react';
-import { List } from '@material-ui/core';
+import { List, Paper } from '@material-ui/core';
 import {connect} from 'react-redux'
 import Thread from './Thread';
 
@@ -10,9 +10,11 @@ class ListOfThread extends React.Component {
     );
 
     return (
-      <List style={{maxHeight: 500, overflow: 'auto'}} >
-        {rows}
-      </List>
+      <Paper style={{maxHeight: 570, overflow: 'auto'}} >
+        <List>
+          {rows}
+        </List>
+      </Paper>
     );
   }
 }

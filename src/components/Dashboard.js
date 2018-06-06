@@ -1,6 +1,6 @@
 import React from 'react';
-import ListOfPost from './ListOfPost';
-import ListOfThread from './ListOfThread';
+import ListOfPost from '../containers/ListOfPost';
+import ListOfThread from '../containers/ListOfThread';
 import { Grid } from '@material-ui/core';
 
 class Dashboard extends React.Component {
