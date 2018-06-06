@@ -178,7 +178,6 @@ router.get('/forum_list', (req, res)=> {
 
 // === Query Function ===
 async function getForumList() {
-  console.log('bbbbb  ');
   const sqlQuery = `
     SELECT forum_id, name as forum_name, description FROM \`learngcp-205504.my_new_dataset.forum\` ORDER BY forum_id;
     `;
