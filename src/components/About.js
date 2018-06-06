@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Timeseries extends React.Component {
+class About extends React.Component {
   render(){
     return(
       <div>
@@ -9,4 +9,4 @@ class Timeseries extends React.Component {
   }
 }
 
-export default Timeseries;
+export default About;

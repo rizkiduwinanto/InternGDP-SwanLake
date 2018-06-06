@@ -1,18 +1,18 @@
 import React from 'react';
 import Post from './Post';
 import {connect} from 'react-redux'
+import { Paper } from '@material-ui/core';
 
 class ListOfPost extends React.Component {
   render() {
-    const rows  = [];
-    this.props.posts.forEach((post) => {
-      rows.push(<Post post = {post} key = {post.id}/>);
-    });
+    const rows  = this.props.posts.map((post) => 
+      <Post post = {post} key = {post.id}/>
+    );
 
     return (
-      <div>
+      <Paper style={{maxHeight: 570, overflow: 'auto'}}>
         {rows}
-      </div>
+      </Paper>
     );
   }
 }

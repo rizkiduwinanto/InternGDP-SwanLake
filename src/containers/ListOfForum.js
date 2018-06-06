@@ -1,12 +1,12 @@
 import React from 'react';
 import { List, Paper } from '@material-ui/core';
 import {connect} from 'react-redux'
-import Thread from './Thread';
+import Forum from './Forum';
 
-class ListOfThread extends React.Component {
+class ListOfForum extends React.Component {
   render() {
     const rows = this.props.threads.map((thread) =>
-      <Thread thread = {thread} key = {thread.id}/>
+      <Forum thread = {thread} key = {thread.id}/>
     );
 
     return (
@@ -25,4 +25,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(ListOfThread);
+export default connect(mapStateToProps)(ListOfForum);
