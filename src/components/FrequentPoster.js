@@ -1,26 +1,13 @@
 import React from 'react';
-import { Table, Paper, Typography} from '@material-ui/core';
-import FrequentGlobal from '../containers/FrequentGlobal';
-import FrequentPerForum from '../containers/FrequentPerForum';
-import FrequentGlobalHead from './FrequentGlobalHead';
-import FrequentPerForumHead from './FrequentPerForumHead';
+import FrequentPerForum from './FrequentPerForum';
+import FrequentGlobal from './FrequentGlobal';
 
 class FrequentPoster extends React.Component {
   render() {
     return (
       <div>
-        <Paper>
-          <Typography variant="title" >Frequent Global</Typography>
-          <Table style={{ tableLayout: 'auto' }} fixedHeader={false}>
-            <FrequentGlobalHead />
-            <FrequentGlobal />
-          </Table>
-          <Typography variant="title" >Frequent Forum</Typography>
-          <Table style={{ tableLayout: 'auto' }} fixedHeader={false}>
-            <FrequentPerForumHead />
-            <FrequentPerForum/>
-          </Table>
-        </Paper>
+        <FrequentGlobal/>
+        <FrequentPerForum/>
       </div>
     );
   }

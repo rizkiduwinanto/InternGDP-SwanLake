@@ -2,7 +2,7 @@ import React from 'react';
 import { TableCell, TableRow, TableBody } from '@material-ui/core';
 import axios from 'axios';
 
-class FrequentPerForum extends React.Component {
+class ListFrequentGlobal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -12,7 +12,7 @@ class FrequentPerForum extends React.Component {
   }
 
   componentDidMount() {
-    let url = 'http://localhost:3001/api/frequent-poster/forum/2018-05-27';
+    let url = 'http://localhost:3001/api/frequent-poster/global/2018-05-27';
     axios
       .get(url)
       .then(res => {
@@ -25,11 +25,10 @@ class FrequentPerForum extends React.Component {
   }
 
   render() {
-    const rows = this.state.data.map(freqForum => 
-      <TableRow key={freqForum.forum_id}>
-        <TableCell>{freqForum.forum_name}</TableCell>
-        <TableCell>{freqForum.post_username}</TableCell>
-        <TableCell>{freqForum.thread_count}</TableCell>
+    const rows = this.state.data.map(freqGlobal => 
+      <TableRow key={freqGlobal.post_username}>
+        <TableCell>{freqGlobal.post_username}</TableCell>
+        <TableCell>{freqGlobal.thread_count}</TableCell>
       </TableRow>
     );
 
@@ -41,4 +40,4 @@ class FrequentPerForum extends React.Component {
   }
 }
 
-export default FrequentPerForum;
+export default ListFrequentGlobal;
