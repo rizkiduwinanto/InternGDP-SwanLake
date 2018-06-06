@@ -18,7 +18,25 @@ example:  /api/frequent-poster/forum/2018-05-27
 ```
 METHOD /GET
 URL : /api/frequent-poster/global/:date
-return : json
+RETURN : json
 
 example:  /api/frequent-poster/global/2018-05-27
+```
+
+3. Trending Word
+```
+METHOD /GET
+URL: /api/trend/:since/:until/:word
+RETURN: json
+
+example: /api/trend/2018-05-27/2018-06-02/kaskus
+```
+
+4. Words Count
+```
+METHOD /GET
+URL: /api/words/:since/:until
+RETURN: json
+
+example: /api/words/2018-05-27/2018-06-02
 ```

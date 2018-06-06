@@ -67,6 +67,100 @@ router.get('/frequent-poster/global/:date', (req,res) => {
   
 })
 
+router.get('/words/:date', (req,res) => {
+  
+  const date_key = req.url;
+  console.log(`date_key = ${req.url}`);
+  const TTL = 10*60; // 10 minutes
+  
+  
+  client.get(date_key, function(err, data){
+    if (data){
+      console.log("Cached");
+      return res.json(JSON.parse(data));
+    }
+    else {
+      console.log("Not Cached");
+      const date = req.params.date.split('-').join("");
+      const table = `[kaskus-166400:intern_dataset.post_${date}]`;
+      
+      getWords(table, date_key).then((result) => {
+        client.setex(date_key, TTL, JSON.stringify(result));
+        return res.json(result);
+      }, (err) => {
+        return res.json({success:false, error: err});
+      });
+    }
+
+  })
+
+  
+})
+
+router.get('/words/:since/:until', (req,res) => {
+  
+  const cache_key = req.url;
+  console.log(`cache_key = ${req.url}`);
+  const TTL = 10*60; // 10 minutes
+  
+  
+  client.get(cache_key, function(err, data){
+    if (data){
+      console.log("Cached");
+      return res.json(JSON.parse(data));
+    }
+    else {
+      console.log("Not Cached");
+      const start_date = req.params.since;
+      const end_date = req.params.until;
+      
+      getWords(start_date, end_date).then((result) => {
+        client.setex(cache_key, TTL, JSON.stringify(result));
+        return res.json(result);
+      }, (err) => {
+        return res.json({success:false, error: err});
+      });
+      
+    }
+
+  })
+
+  
+})
+
+
+router.get('/trend/:since/:until/:word', (req,res) => {
+  
+  const cache_key = req.url;
+  console.log(`cache_key = ${req.url}`);
+  const TTL = 10*60; // 10 minutes
+  
+  
+  client.get(cache_key, function(err, data){
+    if (data){
+      console.log("Cached");
+      return res.json(JSON.parse(data));
+    }
+    else {
+      console.log("Not Cached");
+      const start_date = req.params.since;
+      const end_date = req.params.until;
+      const word = req.params.word;
+      
+      getTrendWords(start_date, end_date, word).then((result) => {
+        client.setex(cache_key, TTL, JSON.stringify(result));
+        return res.json(result);
+      }, (err) => {
+        return res.json({success:false, error: err});
+      });
+      
+    }
+
+  })
+
+  
+})
+
 router.get('/frequent-poster/forum/:date', (req,res) => {
   
   const date_key = req.url;
@@ -85,7 +179,7 @@ router.get('/frequent-poster/forum/:date', (req,res) => {
       const tables = {
         'thread':`[kaskus-166400:intern_dataset.thread_${date}]`,
         'forum':`[kaskus-166400:intern_dataset.forum]`,
-        'post':`[[kaskus-166400:intern_dataset.post_${date}]`
+        'post':`[kaskus-166400:intern_dataset.post_${date}]`
       };
       
       getPerForumFrequentPoster(tables, date_key).then((result) => {
@@ -105,7 +199,58 @@ router.get('/frequent-poster/forum/:date', (req,res) => {
   
 
 // === Query Function ===
-async function getPerForumFrequentPoster(tables, date_key){
+async function getWords(start_date, end_date) {
+  // TODO
+  const table_name = 'kaskus-166400.intern_dataset.post_';
+  const start_table_date = start_date.split("-").join("");
+  const end_table_date = end_date.split("-").join("");
+  const sqlQuery=`
+  
+  CREATE TEMP FUNCTION splitSentence(sentence string)
+  RETURNS ARRAY<string>
+  AS(
+  SPLIT(REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(sentence,"\[.*?\]"," "),"[ ]+[ ]"," "),"^ +| +$",'')," ")
+  );
+
+
+  SELECT LOWER(word) as word, count(*) as count
+    FROM (
+
+        (SELECT splitSentence(page_text) as words
+        FROM \`learngcp-205504.my_new_dataset.post_*\`
+        WHERE _TABLE_SUFFIX BETWEEN '${start_table_date}' and '${end_table_date}') as new_sentences
+    CROSS JOIN UNNEST(new_sentences.words) as word)
+  GROUP BY word
+  ORDER BY count DESC
+  LIMIT 100;`
+
+// Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
+const options = {
+  query: sqlQuery,
+  useLegacySql: false, // Use Standard SQL syntax for queries.
+};
+
+// Runs the query
+var to_return = await bigquery
+.query(options)
+.then(results => {
+  const rows = results[0];
+  console.log("query success");
+  console.log(rows);
+  return ({
+    success: true,
+    data: rows
+  });
+})
+.catch(err => {
+  console.log("query fail");
+  throw err.errors;
+});
+return to_return;
+}
+
+
+async function getPerForumFrequentPoster(tables){
   
   // The SQL query to run
   const sqlQuery = `
@@ -114,36 +259,36 @@ async function getPerForumFrequentPoster(tables, date_key){
   name as forum_name,
   post_username,
   thread_count
-FROM (
-  SELECT
-    thread.forum_id,
-    name,
-    post.post_username,
-    COUNT(*) AS thread_count,
-    ROW_NUMBER() OVER(PARTITION BY thread.forum_id ORDER BY thread_count DESC) AS rownum
-  FROM
-    ${tables['thread']} thread
-  INNER JOIN
-    ${tables['forum']} forum
-  ON
-    thread.forum_id = forum.forum_id
-  INNER JOIN
-    ${tables['post']} post
-  ON
-    thread.id = post.thread_id
-  GROUP BY
-    thread.forum_id,
-    name,
-    post.post_username
-  ORDER BY
-    thread.forum_id,
-    thread_count DESC,
-    post.post_username ASC,
-    ) TEMP
-WHERE
-  rownum = 1
-LIMIT
-  1000;`;
+  FROM (
+    SELECT
+      thread.forum_id,
+      name,
+      post.post_username,
+      COUNT(*) AS thread_count,
+      ROW_NUMBER() OVER(PARTITION BY thread.forum_id ORDER BY thread_count DESC) AS rownum
+    FROM
+      ${tables['thread']} thread
+    INNER JOIN
+      ${tables['forum']} forum
+    ON
+      thread.forum_id = forum.forum_id
+    INNER JOIN
+      ${tables['post']} post
+    ON
+      thread.id = post.thread_id
+    GROUP BY
+      thread.forum_id,
+      name,
+      post.post_username
+    ORDER BY
+      thread.forum_id,
+      thread_count DESC,
+      post.post_username ASC,
+      ) TEMP
+  WHERE
+    rownum = 1
+  LIMIT
+    1000;`;
   
   // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
   const options = {
@@ -170,20 +315,20 @@ LIMIT
   return to_return;
 }
 
-async function getGlobalFrequentPoster(table, date_key){
+async function getGlobalFrequentPoster(table){
   // The SQL query to run
   const sqlQuery = `
   SELECT
   post_username,
   COUNT(*) AS thread_count
-FROM
-  ${table}
-GROUP BY
-  post_username
-ORDER BY
-  thread_count DESC
-LIMIT
-  1;`;
+  FROM
+    ${table}
+  GROUP BY
+    post_username
+  ORDER BY
+    thread_count DESC
+  LIMIT
+    1;`;
 
   // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
   const options = {
@@ -210,6 +355,63 @@ LIMIT
   });
   return to_return;
   
+}
+
+
+async function getTrendWords(start_date, end_date, word) {
+  
+  const table_name = 'kaskus-166400.intern_dataset.post_';
+  const start_table_date = start_date.split("-").join("");
+  const end_table_date = end_date.split("-").join("");
+  
+  const sqlQuery =`
+  CREATE TEMP FUNCTION countWordInSentence(sentence string, key string )
+  RETURNS INT64
+  AS(
+    (SELECT COUNT(*)
+    FROM UNNEST(SPLIT(REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(sentence,"\[.*?\]"," "),"[ ]+[ ]"," "),"^ | $","")," ")) as word
+    GROUP BY word
+    HAVING word = key)
+  );
+
+  SELECT
+    date,
+    SUM(countWordInSentence(sentence,'${word}')) as counted_word  
+  FROM (
+    SELECT
+    CAST(EXTRACT(DATE FROM TIMESTAMP_SECONDS(dateline))AS STRING) as date,
+    page_text as sentence
+    FROM \`kaskus-166400.intern_dataset.post_*\`
+    WHERE _TABLE_SUFFIX BETWEEN '${start_table_date}' and '${end_table_date}')
+  WHERE date >= '${start_date}'
+  GROUP BY date
+  ORDER BY date ASC;
+  `;
+  // console.log('Executed....');
+    
+  // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
+  const options = {
+    query: sqlQuery,
+    useLegacySql: false, // Use Standard SQL syntax for queries.
+  };
+
+  // Runs the query
+  var to_return = await bigquery
+  .query(options)
+  .then(results => {
+    const rows = results[0];
+    console.log("query success");
+    console.log(rows);
+    return ({
+      success: true,
+      data: rows
+    });
+  })
+  .catch(err => {
+    console.log("query fail");
+    throw err.errors;
+  });
+  return to_return;
 }
 
 // =====
