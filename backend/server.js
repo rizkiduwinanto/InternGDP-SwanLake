@@ -39,70 +39,13 @@ router.get('/', (req, res) => {
   res.json({ message: 'Hello, World!'});
 });
 
-router.get('/frequent-poster/global/:date', (req,res) => {
-  const date_key = req.url;
-  console.log(`date_key = ${req.url}`);
-  const TTL = 10*60; // 10 minutes
-
-  client.get(date_key, function(err, data){
-    if (data){
-      console.log("Cached");
-      return res.json(JSON.parse(data));
-    }
-    else {
-      console.log("Not Cached");
-      const date = req.params.date.split('-').join("");
-      const table = `[kaskus-166400:intern_dataset.post_${date}]`;
-
-      getGlobalFrequentPoster(table, date_key).then((result) => {
-        client.setex(date_key, TTL, JSON.stringify(result));
-        return res.json(result);
-      }, (err) => {
-        return res.json({success:false, error: err});
-      });
-    }
-    
-  });
-  
-  
-})
-
-router.get('/words/:date', (req,res) => {
-  
-  const date_key = req.url;
-  console.log(`date_key = ${req.url}`);
-  const TTL = 10*60; // 10 minutes
-  
-  
-  client.get(date_key, function(err, data){
-    if (data){
-      console.log("Cached");
-      return res.json(JSON.parse(data));
-    }
-    else {
-      console.log("Not Cached");
-      const date = req.params.date.split('-').join("");
-      const table = `[kaskus-166400:intern_dataset.post_${date}]`;
-      
-      getWords(table, date_key).then((result) => {
-        client.setex(date_key, TTL, JSON.stringify(result));
-        return res.json(result);
-      }, (err) => {
-        return res.json({success:false, error: err});
-      });
-    }
-
-  })
-
-  
-})
 
 router.get('/words/:since/:until', (req,res) => {
   
   const cache_key = req.url;
   console.log(`cache_key = ${req.url}`);
   const TTL = 10*60; // 10 minutes
-  
+  const limit = (req.query.limit) ? req.query.limit : 15;
   
   client.get(cache_key, function(err, data){
     if (data){
@@ -114,7 +57,7 @@ router.get('/words/:since/:until', (req,res) => {
       const start_date = req.params.since;
       const end_date = req.params.until;
       
-      getWords(start_date, end_date).then((result) => {
+      getWords(start_date, end_date, limit).then((result) => {
         client.setex(cache_key, TTL, JSON.stringify(result));
         return res.json(result);
       }, (err) => {
@@ -161,12 +104,13 @@ router.get('/trend/:since/:until/:word', (req,res) => {
   
 })
 
-router.get('/frequent-poster/forum/:date', (req,res) => {
+router.get('/frequent-poster/:since/:until', (req,res) => {
   
   const date_key = req.url;
   console.log(`date_key = ${req.url}`);
   const TTL = 10*60; // 10 minutes
   
+  const limit = (req.query.limit) ? req.query.limit : 15; // Set default limit to 15
   
   client.get(date_key, function(err, data){
     if (data){
@@ -175,33 +119,42 @@ router.get('/frequent-poster/forum/:date', (req,res) => {
     }
     else {
       console.log("Not Cached");
-      const date = req.params.date.split('-').join("");
-      const tables = {
-        'thread':`[kaskus-166400:intern_dataset.thread_${date}]`,
-        'forum':`[kaskus-166400:intern_dataset.forum]`,
-        'post':`[kaskus-166400:intern_dataset.post_${date}]`
-      };
-      
-      getPerForumFrequentPoster(tables, date_key).then((result) => {
-        client.setex(date_key, TTL, JSON.stringify(result));
-        return res.json(result);
-      }, (err) => {
-        return res.json({success:false, error: err});
-      });
+      const start_date = req.params.since.split('-').join("");
+      const end_date = req.params.until.split('-').join("");
+      if (req.query.forum) {
+        getPerForumFrequentPoster(start_date,end_date,req.query.forum,limit).then((result) => {
+          client.setex(date_key, TTL, JSON.stringify(result));
+          return res.json(result);
+        }, (err) => {
+          return res.json({success:false, error: err});
+        });
+
+      } else {
+        getGlobalFrequentPoster(start_date,end_date,limit).then((result) => {
+          client.setex(date_key, TTL, JSON.stringify(result));
+          return res.json(result);
+        }, (err) => {
+          return res.json({success:false, error: err});
+        });
+      }
     }
 
   })
 
   
 })
-  
+
+router.get('/test_query_string', (req, res) => {
+  res.json(req.query);
+  console.log(`Forum : ${req.query.forum}`);
+  console.log(`Limit : ${req.query.limit}`);
+});
 // =======
   
 
 // === Query Function ===
-async function getWords(start_date, end_date) {
+async function getWords(start_date, end_date, limit) {
   // TODO
-  const table_name = 'kaskus-166400.intern_dataset.post_';
   const start_table_date = start_date.split("-").join("");
   const end_table_date = end_date.split("-").join("");
   const sqlQuery=`
@@ -209,7 +162,7 @@ async function getWords(start_date, end_date) {
   CREATE TEMP FUNCTION splitSentence(sentence string)
   RETURNS ARRAY<string>
   AS(
-  SPLIT(REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(sentence,"\[.*?\]"," "),"[ ]+[ ]"," "),"^ +| +$",'')," ")
+  SPLIT(REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(sentence,"\\\\[.*?\\\\]|\\\\n+"," "),"[ ]+[ ]"," "),"^ +| +$",'')," ")
   );
 
 
@@ -222,78 +175,74 @@ async function getWords(start_date, end_date) {
     CROSS JOIN UNNEST(new_sentences.words) as word)
   GROUP BY word
   ORDER BY count DESC
-  LIMIT 100;`
+  LIMIT ${limit};`;
 
-// Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
-const options = {
-  query: sqlQuery,
-  useLegacySql: false, // Use Standard SQL syntax for queries.
-};
+  // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
+  const options = {
+    query: sqlQuery,
+    useLegacySql: false, // Use Standard SQL syntax for queries.
+  };
 
-// Runs the query
-var to_return = await bigquery
-.query(options)
-.then(results => {
-  const rows = results[0];
-  console.log("query success");
-  console.log(rows);
-  return ({
-    success: true,
-    data: rows
+  // Runs the query
+  var to_return = await bigquery
+  .query(options)
+  .then(results => {
+    const rows = results[0];
+    console.log("query success");
+    // console.log(rows);
+    return ({
+      success: true,
+      data: rows
+    });
+  })
+  .catch(err => {
+    console.log("query fail");
+    throw err.errors;
   });
-})
-.catch(err => {
-  console.log("query fail");
-  throw err.errors;
-});
-return to_return;
+  return to_return;
 }
 
 
-async function getPerForumFrequentPoster(tables){
-  
+async function getPerForumFrequentPoster(start_date, end_date, forum_id, limit){
+  const start_table_date = start_date.split("-").join("");
+  const end_table_date = end_date.split("-").join("");
+
   // The SQL query to run
   const sqlQuery = `
   SELECT
-  forum_id,
-  name as forum_name,
-  post_username,
-  thread_count
-  FROM (
-    SELECT
-      thread.forum_id,
-      name,
-      post.post_username,
-      COUNT(*) AS thread_count,
-      ROW_NUMBER() OVER(PARTITION BY thread.forum_id ORDER BY thread_count DESC) AS rownum
-    FROM
-      ${tables['thread']} thread
-    INNER JOIN
-      ${tables['forum']} forum
-    ON
-      thread.forum_id = forum.forum_id
-    INNER JOIN
-      ${tables['post']} post
-    ON
-      thread.id = post.thread_id
-    GROUP BY
-      thread.forum_id,
-      name,
-      post.post_username
-    ORDER BY
-      thread.forum_id,
-      thread_count DESC,
-      post.post_username ASC,
-      ) TEMP
+  thread.forum_id,
+  name AS forum_name,
+  post.post_username,
+  COUNT(*) AS post_count
+  FROM
+    \`learngcp-205504.my_new_dataset.thread_*\` AS thread
+  INNER JOIN
+    \`learngcp-205504.my_new_dataset.forum\` AS forum
+  ON
+    thread.forum_id = forum.forum_id
+  INNER JOIN
+    \`learngcp-205504.my_new_dataset.post_*\` AS post
+  ON
+    thread.id = post.thread_id
   WHERE
-    rownum = 1
+    (thread._TABLE_SUFFIX BETWEEN '${start_table_date}'
+      AND '${end_table_date}')
+    AND (post._TABLE_SUFFIX BETWEEN '${start_table_date}'
+      AND '${end_table_date}')
+    AND thread.forum_id = ${forum_id}
+  GROUP BY
+    forum_id,
+    name,
+    post_username
+  ORDER BY
+    post_count DESC
   LIMIT
-    1000;`;
+    ${limit};`;
   
   // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
   const options = {
     query: sqlQuery,
-    useLegacySql: true, // Use Legacy SQL syntax for queries.
+    useLegacySql: false, // Use Standard SQL syntax for queries.
   };
 
   // Runs the query
@@ -307,33 +256,28 @@ async function getPerForumFrequentPoster(tables){
     });
   })
   .catch(err => {
-    return ({
-      success: false,
-      error: err.errors
-    });
+    throw err.errors
   });
   return to_return;
 }
 
-async function getGlobalFrequentPoster(table){
+async function getGlobalFrequentPoster(start_date, end_date, limit){
   // The SQL query to run
+  const start_table_date = start_date.split("-").join("");
+  const end_table_date = end_date.split("-").join("");
+
   const sqlQuery = `
-  SELECT
-  post_username,
-  COUNT(*) AS thread_count
-  FROM
-    ${table}
-  GROUP BY
-    post_username
-  ORDER BY
-    thread_count DESC
-  LIMIT
-    1;`;
+  SELECT post_username, COUNT(*) as post_count
+  FROM \`learngcp-205504.my_new_dataset.post_*\`
+  WHERE _TABLE_SUFFIX BETWEEN '${start_table_date}' AND '${end_table_date}'
+  GROUP BY post_username
+  ORDER BY post_count DESC
+  LIMIT ${limit}`;
 
   // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
   const options = {
     query: sqlQuery,
-    useLegacySql: true, // Use standard SQL syntax for queries.
+    useLegacySql: false, // Use standard SQL syntax for queries.
   };
 
   // Runs the query
@@ -348,19 +292,14 @@ async function getGlobalFrequentPoster(table){
     });
   })
   .catch(err => {
-    return ({
-      success: false,
-      error: err.errors
-    });
+    throw err.errors
   });
   return to_return;
-  
 }
 
 
 async function getTrendWords(start_date, end_date, word) {
   
-  const table_name = 'kaskus-166400.intern_dataset.post_';
   const start_table_date = start_date.split("-").join("");
   const end_table_date = end_date.split("-").join("");
   
@@ -369,7 +308,7 @@ async function getTrendWords(start_date, end_date, word) {
   RETURNS INT64
   AS(
     (SELECT COUNT(*)
-    FROM UNNEST(SPLIT(REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(sentence,"\[.*?\]"," "),"[ ]+[ ]"," "),"^ | $","")," ")) as word
+    FROM UNNEST(SPLIT(REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(sentence,"\\\\[.*?\\\\]"," "),"[ ]+[ ]"," "),"^ | $","")," ")) as word
     GROUP BY word
     HAVING word = key)
   );
