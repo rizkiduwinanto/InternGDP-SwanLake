@@ -1,4 +1,5 @@
 import PubSub from '@google-cloud/pubsub';
+import axios from 'axios';
 
 const pubsub = new PubSub();
 
@@ -35,7 +36,13 @@ function checkAlertForKeyword(data, key){
 
 
 function callEmailAPI() {
-  console.log('Email API called..');
+  console.log('Sending email ...');
+  const API_URL = 'http://localhost:3001/api/send_email';
+  axios.get(API_URL).then(response => {
+    console.log(`Resp  = ${response}`);
+  }).catch(error => {
+    console.log(error.response.data);
+  });
 }
 
 function isContainKey(sentence, key) {
