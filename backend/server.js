@@ -97,6 +97,38 @@ router.get('/words/:date', (req,res) => {
   
 })
 
+router.get('/words/:since/:until', (req,res) => {
+  
+  const cache_key = req.url;
+  console.log(`cache_key = ${req.url}`);
+  const TTL = 10*60; // 10 minutes
+  
+  
+  client.get(cache_key, function(err, data){
+    if (data){
+      console.log("Cached");
+      return res.json(JSON.parse(data));
+    }
+    else {
+      console.log("Not Cached");
+      const start_date = req.params.since;
+      const end_date = req.params.until;
+      
+      getWords(start_date, end_date).then((result) => {
+        client.setex(cache_key, TTL, JSON.stringify(result));
+        return res.json(result);
+      }, (err) => {
+        return res.json({success:false, error: err});
+      });
+      
+    }
+
+  })
+
+  
+})
+
+
 router.get('/trend/:since/:until/:word', (req,res) => {
   
   const cache_key = req.url;
@@ -167,9 +199,54 @@ router.get('/frequent-poster/forum/:date', (req,res) => {
   
 
 // === Query Function ===
-async function getWords(table) {
+async function getWords(start_date, end_date) {
   // TODO
+  const table_name = 'kaskus-166400.intern_dataset.post_';
+  const start_table_date = start_date.split("-").join("");
+  const end_table_date = end_date.split("-").join("");
+  const sqlQuery=`
+  
+  CREATE TEMP FUNCTION splitSentence(sentence string)
+  RETURNS ARRAY<string>
+  AS(
+  SPLIT(REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(sentence,"\[.*?\]"," "),"[ ]+[ ]"," "),"^ +| +$",'')," ")
+  );
 
+
+  SELECT LOWER(word) as word, count(*) as count
+    FROM (
+
+        (SELECT splitSentence(page_text) as words
+        FROM \`learngcp-205504.my_new_dataset.post_*\`
+        WHERE _TABLE_SUFFIX BETWEEN '${start_table_date}' and '${end_table_date}') as new_sentences
+    CROSS JOIN UNNEST(new_sentences.words) as word)
+  GROUP BY word
+  ORDER BY count DESC
+  LIMIT 100;`
+
+// Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
+const options = {
+  query: sqlQuery,
+  useLegacySql: false, // Use Standard SQL syntax for queries.
+};
+
+// Runs the query
+var to_return = await bigquery
+.query(options)
+.then(results => {
+  const rows = results[0];
+  console.log("query success");
+  console.log(rows);
+  return ({
+    success: true,
+    data: rows
+  });
+})
+.catch(err => {
+  console.log("query fail");
+  throw err.errors;
+});
+return to_return;
 }
 
 
@@ -292,7 +369,7 @@ async function getTrendWords(start_date, end_date, word) {
   RETURNS INT64
   AS(
     (SELECT COUNT(*)
-    FROM UNNEST(SPLIT(REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(sentence,"\\[.*?\\]"," "),"[ ]+[ ]"," "),"^ | $","")," ")) as word
+    FROM UNNEST(SPLIT(REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(sentence,"\[.*?\]"," "),"[ ]+[ ]"," "),"^ | $","")," ")) as word
     GROUP BY word
     HAVING word = key)
   );
@@ -310,7 +387,7 @@ async function getTrendWords(start_date, end_date, word) {
   GROUP BY date
   ORDER BY date ASC;
   `;
-  console.log('Executed....');
+  // console.log('Executed....');
     
   // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
   const options = {
