@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@google-cloud/bigquery": "^1.3.0",
+    "@google-cloud/pubsub": "^0.18.0",
     "@material-ui/core": "^1.0.0",
     "axios": "^0.18.0",
     "babel-cli": "^6.26.0",
@@ -29,9 +30,12 @@
   },
   "scripts": {
     "start:redis": "redis-server",
+    "start:consumer": "cd consumer && nodemon consumer.js --exec babel-node --presets es2015,stage-0",
     "start:server": "cd backend && nodemon server.js --exec babel-node --presets es2015,stage-0",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "test:post": "node consumer/test_publish/post_publish.js",
+    "test:thread": "node consumer/test_publish/thread_publish.js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
