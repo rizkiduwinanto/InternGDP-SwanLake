@@ -149,15 +149,68 @@ router.get('/test_query_string', (req, res) => {
   console.log(`Forum : ${req.query.forum}`);
   console.log(`Limit : ${req.query.limit}`);
 });
+
+
+router.get('/forum_list', (req, res)=> {
+  const cache_key = req.url;
+  console.log(`cache_key = ${req.url}`);
+  const TTL = 10*60; // 10 minutes
+  
+  client.get(cache_key, function(err, data){
+    if (data) {
+      console.log("Cached");
+      return res.json(JSON.parse(data));
+    }
+    else {
+      console.log("Not Cached");
+      getForumList().then((result) => {
+        client.setex(cache_key, TTL, JSON.stringify(result));
+        return res.json(result);
+      }, (err) => {
+        return res.json({success:false, error: err});
+      });
+    }
+  })
+
+})
 // =======
   
 
 // === Query Function ===
+async function getForumList() {
+  console.log('bbbbb  ');
+  const sqlQuery = `
+    SELECT forum_id, name as forum_name, description FROM \`learngcp-205504.my_new_dataset.forum\` ORDER BY forum_id;
+    `;
+  // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
+  const options = {
+    query: sqlQuery,
+    useLegacySql: false, // Use Standard SQL syntax for queries.
+  };
+
+  // Runs the query
+  var to_return = await bigquery
+  .query(options)
+  .then(results => {
+    const rows = results[0];
+    console.log("query success");
+    // console.log(rows);
+    return ({
+      success: true,
+      data: rows
+    });
+  })
+  .catch(err => {
+    console.log("query fail");
+    throw err.errors;
+  });
+  return to_return;
+}
+
 async function getWords(start_date, end_date, limit) {
-  // TODO
   const start_table_date = start_date.split("-").join("");
   const end_table_date = end_date.split("-").join("");
-  const sqlQuery=`
+  const sqlQuery = `
   
   CREATE TEMP FUNCTION splitSentence(sentence string)
   RETURNS ARRAY<string>

@@ -5,7 +5,19 @@
 ## Backends
 
 ### API
-1. Frequent Poster per Forum
+
+1. Get Forum List
+```
+METHOD /GET
+URL : /api/forum_list
+RETURN : json [ {forum_id, forum_name, description}, ...]
+
+example:  
+  /api/forum_list
+
+```
+
+2. Frequent Poster per Forum
 ```
 METHOD /GET
 URL : /api/frequent-poster/:since/:until?forum=:forum_id&?limit=:number
@@ -16,7 +28,7 @@ example:
   /api/frequent-poster/2018-05-27/2018-06-02?forum=10
 ```
 
-2. Frequent Poster Global
+3. Frequent Poster Global
 ```
 METHOD /GET
 URL : /api/frequent-poster/:since/:until?limit=:number
@@ -27,7 +39,7 @@ example:
   /api/frequent-poster/2018-05-27/2018-06-02
 ```
 
-3. Trending Word
+4. Trending Word
 ```
 METHOD /GET
 URL: /api/trend/:since/:until/:word?limit=:number
@@ -37,7 +49,7 @@ example:
   /api/trend/2018-05-27/2018-06-02/kaskus
 ```
 
-4. Words Count
+5. Words Count
 ```
 METHOD /GET
 URL: /api/words/:since/:until
