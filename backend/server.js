@@ -150,6 +150,13 @@ router.get('/test_query_string', (req, res) => {
   console.log(`Limit : ${req.query.limit}`);
 });
 
+router.get('/send_email', (req,res)=> {
+  sendMail().then(()=>{
+    res.json({success: true});
+  }).catch((err)=>{
+    res.json({success: false, error: err});
+  })
+});
 
 router.get('/forum_list', (req, res)=> {
   const cache_key = req.url;
@@ -175,6 +182,43 @@ router.get('/forum_list', (req, res)=> {
 })
 // =======
   
+
+// === Send email function
+async function sendMail(){
+  const nodemailer = require('nodemailer');
+
+  const my_email = process.env.EMAIL;
+  const my_pass = process.env.PASSWORD;
+  const email_to = 'azisadikuncoro@gmail.com';
+  console.log(`User(${my_email})  Pass(${my_pass})`);
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth:{
+      user: `${my_email}`,
+      pass: `${my_pass}`
+    }
+  });
+
+  var mailOptions = {
+    from: `${my_email}`,
+    to: `${email_to}`,
+    subject: '[Notification] New keyword found !',
+    text: 'Check it out !!'
+  }
+
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error){
+      throw error;
+    } else {
+      console.log('Email sent: '+ info.response);
+    }
+  });
+}
+
+
+// =====
+
+
 
 // === Query Function ===
 async function getForumList() {
@@ -213,7 +257,7 @@ async function getWords(start_date, end_date, limit) {
   
   CREATE TEMP FUNCTION splitSentence(sentence string)
   RETURNS ARRAY<string>
-  AS(
+  AS( 
   SPLIT(REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(sentence,"\\\\[.*?\\\\]|\\\\n+"," "),"[ ]+[ ]"," "),"^ +| +$",'')," ")
   );
 
@@ -411,6 +455,6 @@ async function getTrendWords(start_date, end_date, word) {
 // Using router config when we call '/api'
 app.use('/api', router)
 
-// Listening to spesific port
+// // Listening to spesific port
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));
   
