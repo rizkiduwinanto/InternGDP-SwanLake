@@ -29,5 +29,14 @@ METHOD /GET
 URL: /api/trend/:since/:until/:word
 RETURN: json
 
-example: /api/words/2018-05-27/2018-06-02/kaskus
+example: /api/trend/2018-05-27/2018-06-02/kaskus
+```
+
+4. Words Count
+```
+METHOD /GET
+URL: /api/words/:since/:until
+RETURN: json
+
+example: /api/words/2018-05-27/2018-06-02
 ```
