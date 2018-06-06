@@ -2,9 +2,42 @@
 
 
 
-## Backends
+## Commands to run
+0. Open 4 terminal
+1. Terminal#2 for redis server
+```
+  npm run start:redis
+```
+2. Terminal#3 for backend server API
+```
+  npm run start:server
+```
+3. Terminal#2 for consumer pub/sub
+```
+  npm run start:consumer
+```
+4. Terminal#1 for frontend
+```
+  npm run start
+```
 
-### API
+
+
+
+## Consumer pubsub
+
+### Testing simple publish thread / post 
+1. Publish thread
+```
+  npm run test:thread
+```
+
+2. Publish post
+```
+  npm run test:post
+```
+
+## Backends - API
 
 1. Get Forum List
 ```
