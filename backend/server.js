@@ -3,9 +3,17 @@ import bodyParser from 'body-parser';
 import logger from 'morgan';
 import redis from 'redis';
 import BigQuery from '@google-cloud/bigquery';
-      
+import http from 'http';
+import { disconnect } from 'cluster';
+
 const app = express();
 const router = express.Router();
+
+// SOCKET IO
+const io_server = http.createServer(app);
+const io = require('socket.io').listen(io_server);
+io_server.listen(3002);
+
 
 const bigquery = new BigQuery();
 
@@ -180,8 +188,39 @@ router.get('/forum_list', (req, res)=> {
   })
 
 })
+
 // =======
   
+// ==== SOCKET IO 
+io.on('connection', (socket) => {
+  console.log('A client connected');
+  
+  socket.on('thread', (data)=> {
+    var forum_id = data.forum_id;
+    console.log(forum_id);
+    if (isUpdated(data.dateline)){
+      io.emit(`thread:${forum_id}:update`,data);
+    }
+    else
+      io.emit(`thread:${forum_id}:new`,data);
+  })
+
+  socket.on('post', (data)=> {
+    var forum_id = data.forum_id;
+    console.log(forum_id);
+    if (isUpdated(data.dateline)){
+      io.emit(`post:${forum_id}:update`,data);
+    }
+    else
+      io.emit(`post:${forum_id}:new`,data);
+  })
+  
+  socket.on('disconnect',()=>{
+    console.log('A client disconnected');
+  });
+});
+// ===
+
 
 // === Send email function
 async function sendMail(){
@@ -214,9 +253,19 @@ async function sendMail(){
     }
   });
 }
-
-
 // =====
+
+// == Emitter helper function
+
+function isUpdated(dateline){ 
+  const TEN_MINUTES = 10*60;
+  const now = Date.now() / 1000;
+  console.log(`Now =  ${now} .. ContentDate = ${dateline}`);
+  console.log(`Delta = ${now-dateline}`);
+  return ((now - dateline) > TEN_MINUTES);
+}
+
+// ==
 
 
 
