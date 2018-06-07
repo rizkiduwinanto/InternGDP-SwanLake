@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Typography, Paper, TablePagination } from '@material-ui/core';
+import { Table, Typography, Paper } from '@material-ui/core';
 import ListFrequentPerForum from '../containers/ListFrequentPerForum';
 import FrequentPerForumHead from './FrequentPerForumHead';
 import DatePicker from 'react-date-picker'
@@ -9,9 +9,7 @@ class FrequentPerForum extends React.Component {
     super(props);
     this.state = {
       since: new Date(),
-      until: new Date(),
-      rowsPerPage: 5,
-      page: 0
+      until: new Date()
     };
     this.handleSince = this.handleSince.bind(this);
     this.handleUntil = this.handleUntil.bind(this);
@@ -35,7 +33,6 @@ class FrequentPerForum extends React.Component {
           <FrequentPerForumHead />
           <ListFrequentPerForum />
         </Table>
-        <TablePagination />
       </Paper>
     );
   }
