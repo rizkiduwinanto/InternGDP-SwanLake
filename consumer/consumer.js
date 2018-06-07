@@ -1,9 +1,31 @@
 import PubSub from '@google-cloud/pubsub';
 import axios from 'axios';
 
+var socket = require('socket.io-client')('http://localhost:3002');
+
+// == SOCKET IO TEST AS FRONTEND
+const subscribed_forum_id = '767';
+socket.on(`thread:${subscribed_forum_id}:new`,(data)=>{
+  console.log(`New thread :`);
+  console.log(data);
+})
+socket.on(`thread:${subscribed_forum_id}:update`,(data)=>{
+  console.log(`Updated thread :`);
+  console.log(data);
+})
+socket.on(`post:${subscribed_forum_id}:new`,(data)=>{
+  console.log(`New post :`);
+  console.log(data);
+})
+socket.on(`post:${subscribed_forum_id}:update`,(data)=>{
+  console.log(`Updated post :`);
+  console.log(data);
+})
+// ==
+
 const pubsub = new PubSub();
 
-const keyword = 'kain';
+const keyword = 'jakarta';
 
 const thread_subscription = 'sub_thread'
 const post_subscription = 'sub_post'
@@ -11,24 +33,28 @@ const post_subscription = 'sub_post'
 const threadMessageHandler = message => {
   console.log(`[THREAD] Received message ${message.id}:`);
 
+  var msg = JSON.parse(message.data);
 
-  checkAlertForKeyword(message.data, keyword);
-
+  checkAlertForKeyword(msg, keyword);
+  socket.emit('thread',msg);
 
   message.ack();
+  
 };
 const postMessageHandler = message => {
   console.log(`[POST] Received message ${message.id}:`);
 
-
+  var msg = JSON.parse(message.data);
+  
+  
   checkAlertForKeyword(message.data, keyword);
-
+  socket.emit('post',msg);
+  
 
   message.ack();
 };
 
-function checkAlertForKeyword(data, key){
-  var msg = JSON.parse(data);
+function checkAlertForKeyword(msg, key){
   if (msg.title && isContainKey(msg.title, key) || msg.page_text && isContainKey(msg.page_text, key)){ // make sure it has page_text
      callEmailAPI();
   }
