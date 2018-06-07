@@ -1,7 +1,7 @@
 import PubSub from '@google-cloud/pubsub';
 import axios from 'axios';
 
-var socket = require('socket.io-client')('http://localhost:3002');
+var socket = require('socket.io-client')('http://localhost:3001');
 
 // == SOCKET IO TEST AS FRONTEND
 const subscribed_forum_id = '767';
