@@ -1,4 +1,4 @@
-export default function (state = {since: Date.now(), action: Date.now()}, action) {
+export default function (state = {since: new Date(), until: new Date()}, action) {
   switch (action.type) {
     case 'SINCE_FREQUENT_GLOBAL':
       return {...state, since: action.since}
