@@ -6,8 +6,9 @@ class FrequentPerForumHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          <TableCell><Typography>Post Username</Typography></TableCell>
-          <TableCell><Typography>Post Count</Typography></TableCell>
+          <TableCell><Typography>Forum Name</Typography></TableCell>
+          <TableCell><Typography>Description</Typography></TableCell>
+          <TableCell><Typography>Show Frequent Poster</Typography></TableCell>
         </TableRow>
       </TableHead>
     );

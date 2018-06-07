@@ -1,4 +1,5 @@
 import React from 'react';
+import FrequentForum from './FrequentForum';
 import FrequentPerForum from './FrequentPerForum';
 import FrequentGlobal from './FrequentGlobal';
 
@@ -7,6 +8,7 @@ class FrequentPoster extends React.Component {
     return (
       <div>
         <FrequentGlobal/>
+        <FrequentForum/>
         <FrequentPerForum/>
       </div>
     );
