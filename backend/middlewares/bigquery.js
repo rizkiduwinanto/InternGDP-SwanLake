@@ -186,7 +186,7 @@ async function getTrendWords(start_date, end_date, word) {
 
   SELECT
     date,
-    SUM(countWordInSentence(sentence,'${word}')) as counted_word  
+    IFNULL(SUM(countWordInSentence(sentence,'${word}')),0) as counted_word  
   FROM (
     SELECT
     CAST(EXTRACT(DATE FROM TIMESTAMP_SECONDS(dateline))AS STRING) as date,
