@@ -4,10 +4,6 @@ import { connect } from 'react-redux';
 import { fetchFrequentPerForum } from '../actions/frequentPerForumAction';
 
 class ListFrequentPerForum extends React.Component {
-  componentDidMount(){
-    this.props.fetchFrequentPerForum(this.props.since, this.props.until, this.props.forum_id);
-  }
-
   componentDidUpdate(prevProps){
     if ((prevProps.since !== this.props.since) || (prevProps.until !== this.props.until) || (prevProps.forum_id !== this.props.forum_id)) {
       this.props.fetchFrequentPerForum(this.props.since, this.props.until, this.props.forum_id);
@@ -16,9 +12,6 @@ class ListFrequentPerForum extends React.Component {
 
   render() {
     const rows = [];
-    console.log(this.props.forum_name);
-    console.log(this.props.forum_id);
-    console.log(this.props.frequent_perforum.data);
     if (this.props.frequent_perforum.data != null) {
       this.props.frequent_perforum.data.forEach((poster, i) => {
         rows.push(
