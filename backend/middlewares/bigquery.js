@@ -40,15 +40,15 @@ async function getWords(start_date, end_date, limit) {
   );
 
 
-  SELECT LOWER(word) as word, count(*) as count
+  SELECT LOWER(word) as text, count(*) as value
     FROM (
 
         (SELECT splitSentence(page_text) as words
         FROM \`learngcp-205504.my_new_dataset.post_*\`
         WHERE _TABLE_SUFFIX BETWEEN '${start_table_date}' and '${end_table_date}') as new_sentences
     CROSS JOIN UNNEST(new_sentences.words) as word)
-  GROUP BY word
-  ORDER BY count DESC
+  GROUP BY text
+  ORDER BY value DESC
   LIMIT ${limit};`;
 
   // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query

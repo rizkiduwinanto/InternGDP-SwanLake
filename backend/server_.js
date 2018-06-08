@@ -191,79 +191,79 @@ import { disconnect } from 'cluster';
 
 // // =======
   
-// ==== SOCKET IO 
-io.on('connection', (socket) => {
-  console.log('A client connected');
+// // ==== SOCKET IO 
+// io.on('connection', (socket) => {
+//   console.log('A client connected');
   
-  socket.on('thread', (data)=> {
-    var forum_id = data.forum_id;
-    console.log(forum_id);
-    if (isUpdated(data.dateline)){
-      io.emit(`thread:${forum_id}:update`,data);
-    }
-    else
-      io.emit(`thread:${forum_id}:new`,data);
-  })
+//   socket.on('thread', (data)=> {
+//     var forum_id = data.forum_id;
+//     console.log(forum_id);
+//     if (isUpdated(data.dateline)){
+//       io.emit(`thread:${forum_id}:update`,data);
+//     }
+//     else
+//       io.emit(`thread:${forum_id}:new`,data);
+//   })
 
-  socket.on('post', (data)=> {
-    var forum_id = data.forum_id;
-    console.log(forum_id);
-    if (isUpdated(data.dateline)){
-      io.emit(`post:${forum_id}:update`,data);
-    }
-    else
-      io.emit(`post:${forum_id}:new`,data);
-  })
+//   socket.on('post', (data)=> {
+//     var forum_id = data.forum_id;
+//     console.log(forum_id);
+//     if (isUpdated(data.dateline)){
+//       io.emit(`post:${forum_id}:update`,data);
+//     }
+//     else
+//       io.emit(`post:${forum_id}:new`,data);
+//   })
   
-  socket.on('disconnect',()=>{
-    console.log('A client disconnected');
-  });
-});
-// ===
+//   socket.on('disconnect',()=>{
+//     console.log('A client disconnected');
+//   });
+// });
+// // ===
 
 
-// === Send email function
-async function sendMail(){
-  const nodemailer = require('nodemailer');
+// // === Send email function
+// async function sendMail(){
+//   const nodemailer = require('nodemailer');
 
-  const my_email = process.env.EMAIL;
-  const my_pass = process.env.PASSWORD;
-  const email_to = 'azisadikuncoro@gmail.com';
-  console.log(`User(${my_email})  Pass(${my_pass})`);
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth:{
-      user: `${my_email}`,
-      pass: `${my_pass}`
-    }
-  });
+//   const my_email = process.env.EMAIL;
+//   const my_pass = process.env.PASSWORD;
+//   const email_to = 'azisadikuncoro@gmail.com';
+//   console.log(`User(${my_email})  Pass(${my_pass})`);
+//   const transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth:{
+//       user: `${my_email}`,
+//       pass: `${my_pass}`
+//     }
+//   });
 
-  var mailOptions = {
-    from: `${my_email}`,
-    to: `${email_to}`,
-    subject: '[Notification] New keyword found !',
-    text: 'Check it out !!'
-  }
+//   var mailOptions = {
+//     from: `${my_email}`,
+//     to: `${email_to}`,
+//     subject: '[Notification] New keyword found !',
+//     text: 'Check it out !!'
+//   }
 
-  transporter.sendMail(mailOptions, function(error, info){
-    if (error){
-      throw error;
-    } else {
-      console.log('Email sent: '+ info.response);
-    }
-  });
-}
-// =====
+//   transporter.sendMail(mailOptions, function(error, info){
+//     if (error){
+//       throw error;
+//     } else {
+//       console.log('Email sent: '+ info.response);
+//     }
+//   });
+// }
+// // =====
 
-// == Emitter helper function
+// // == Emitter helper function
 
-function isUpdated(dateline){ 
-  const TEN_MINUTES = 10*60;
-  const now = Date.now() / 1000;
-  console.log(`Now =  ${now} .. ContentDate = ${dateline}`);
-  console.log(`Delta = ${now-dateline}`);
-  return ((now - dateline) > TEN_MINUTES);
-}
+// function isUpdated(dateline){ 
+//   const TEN_MINUTES = 10*60;
+//   const now = Date.now() / 1000;
+//   console.log(`Now =  ${now} .. ContentDate = ${dateline}`);
+//   console.log(`Delta = ${now-dateline}`);
+//   return ((now - dateline) > TEN_MINUTES);
+// }
 
 // ==
 
