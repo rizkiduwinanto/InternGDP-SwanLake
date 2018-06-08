@@ -23,7 +23,7 @@ init_socket_io(server);
 app.use('/', require('./controller'));
 
 // Fire up the server on spesific port
-server.listen(config.API_PORT, () => console.log(`Listening on port ${config.API_PORT}`));
+server.listen(config.API_PORT, config.API_ADDR, () => console.log(`Listening on port ${config.API_PORT}`));
 
 
 
