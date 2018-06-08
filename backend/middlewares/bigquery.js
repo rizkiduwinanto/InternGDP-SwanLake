@@ -41,12 +41,12 @@ async function getWords(start_date, end_date, limit) {
 
 
   SELECT LOWER(word) as text, count(*) as value
-    FROM (
-
+  FROM (
         (SELECT splitSentence(page_text) as words
         FROM \`learngcp-205504.my_new_dataset.post_*\`
         WHERE _TABLE_SUFFIX BETWEEN '${start_table_date}' and '${end_table_date}') as new_sentences
-    CROSS JOIN UNNEST(new_sentences.words) as word)
+        CROSS JOIN UNNEST(new_sentences.words) as word)
+  WHERE LOWER(word) NOT IN (SELECT * FROM \`learngcp-205504.my_new_dataset.stop_words\`)
   GROUP BY text
   ORDER BY value DESC
   LIMIT ${limit};`;
