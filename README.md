@@ -4,19 +4,19 @@
 
 ## Commands to run
 0. Open 4 terminal
-1. Terminal#2 for redis server
+1. Terminal#1 for redis server
 ```
   npm run start:redis
 ```
-2. Terminal#3 for backend server API
+2. Terminal#2 for backend server API
 ```
   npm run start:server
 ```
-3. Terminal#2 for consumer pub/sub
+3. Terminal#3 for consumer pub/sub
 ```
   npm run start:consumer
 ```
-4. Terminal#1 for frontend
+4. Terminal#4 for frontend
 ```
   npm run start
 ```
@@ -53,23 +53,23 @@ example:
 2. Frequent Poster per Forum
 ```
 METHOD /GET
-URL : /api/frequent-poster/:since/:until?forum=:forum_id&?limit=:number
+URL : /api/frequent_poster/:since/:until?forum=:forum_id&?limit=:number
 RETURN : json [ {forum_id, forum_name, post_username, post_count}, ...]
 
 example:  
-  /api/frequent-poster/2018-05-27/2018-06-02?forum=10&limit=2
-  /api/frequent-poster/2018-05-27/2018-06-02?forum=10
+  /api/frequent_poster/2018-05-27/2018-06-02?forum=10&limit=2
+  /api/frequent_poster/2018-05-27/2018-06-02?forum=10
 ```
 
 3. Frequent Poster Global
 ```
 METHOD /GET
-URL : /api/frequent-poster/:since/:until?limit=:number
+URL : /api/frequent_poster/:since/:until?limit=:number
 RETURN : json [ post_username, post_count}, ...]
 
 example: 
-  /api/frequent-poster/2018-05-27/2018-06-02?limit=2
-  /api/frequent-poster/2018-05-27/2018-06-02
+  /api/frequent_poster/2018-05-27/2018-06-02?limit=2
+  /api/frequent_poster/2018-05-27/2018-06-02
 ```
 
 4. Trending Word
