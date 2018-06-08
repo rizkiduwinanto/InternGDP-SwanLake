@@ -45,11 +45,9 @@ export const fetchFrequentPerForum = (since, until, forum_id) => async dispatch 
   try {
     const sinceConverted = convertDate(since);
     const untilConverted = convertDate(until);
-    const url = `http://localhost:3001/api/frequent-poster/${sinceConverted}/${untilConverted}?forum=${forum_id}`
+    const url = `http://localhost:3001/api/frequent_poster/${sinceConverted}/${untilConverted}?forum=${forum_id}`
     const response = await fetch(url);
     const responseBody = await response.json();
-    console.log(url);
-    console.log(responseBody);
     dispatch(receiveFrequentPerForum(responseBody));
   } catch(error) {
     console.log(error);

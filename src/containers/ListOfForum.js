@@ -19,9 +19,16 @@ class ListOfForum extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state){
   return {
-    threads: state.threads
+    forum_list : state.frequent.forumList
+  };
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    fetchForumList: () => dispatch(fetchForumList()),
+    updateForum: (id, name) => dispatch(updateForum(id, name))
   };
 }
 

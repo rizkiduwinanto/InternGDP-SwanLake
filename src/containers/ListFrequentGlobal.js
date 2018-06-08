@@ -4,10 +4,6 @@ import { connect } from 'react-redux';
 import { fetchFrequentGlobal } from '../actions/frequentGlobalAction';
 
 class ListFrequentGlobal extends React.Component {
-  componentDidMount() {
-    this.props.fetchFrequentGlobal(this.props.since, this.props.until);
-  }
-
   componentDidUpdate(prevProps) {
     if ((prevProps.since !== this.props.since) || (prevProps.until !== this.props.until)) {
       this.props.fetchFrequentGlobal(this.props.since, this.props.until);

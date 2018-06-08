@@ -7,6 +7,13 @@ export function receiveTimeseries(data){
   };
 }
 
+export function loadingTimeseries(flag){
+  return {
+    type: 'LOADING_TIMESERIES',
+    flag
+  };
+}
+
 export const fetchTimeseries = (since, until, word) => async dispatch => {
   try {
     const sinceConverted = convertDate(since);
