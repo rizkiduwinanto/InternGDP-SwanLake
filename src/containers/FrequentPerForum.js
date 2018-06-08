@@ -1,13 +1,13 @@
 import React from 'react';
 import { Table, Typography, Paper, Button } from '@material-ui/core';
-import ListFrequentGlobal from '../containers/ListFrequentGlobal';
-import FrequentGlobalHead from './FrequentGlobalHead';
-import DatePicker from 'react-date-picker';
-import { updateFrequentGlobal } from '../actions/frequentGlobalAction';
+import ListFrequentPerForum from './ListFrequentPerForum';
+import FrequentPerForumHead from '../components/FrequentPerForumHead';
+import DatePicker from 'react-date-picker'
+import { updateFrequentPerForum } from '../actions/frequentPerForumAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-class FrequentGlobal extends React.Component {
+class FrequentPerForum extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,27 +28,34 @@ class FrequentGlobal extends React.Component {
   }
 
   handleChange() {
-    this.props.updateFrequentGlobal(this.state.since, this.state.until);
+    this.props.updateFrequentPerForum(this.state.since, this.state.until);
   }
 
   render(){
     return (
       <Paper>
-        <Typography variant="title" >Frequent Global</Typography>
+        <Typography variant="title" >{this.props.forum_name}</Typography>
         <DatePicker onChange={this.handleSince} value={this.state.since}/>
         <DatePicker onChange={this.handleUntil} value={this.state.until}/>
         <Button color="primary" onClick={this.handleChange}>Show!</Button>
         <Table>
-          <FrequentGlobalHead />
-          <ListFrequentGlobal />
+          <FrequentPerForumHead />
+          <ListFrequentPerForum />
         </Table>
       </Paper>
     );
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({updateFrequentGlobal: updateFrequentGlobal}, dispatch);
+function mapStateToProps(state){
+  return {
+    forum_name: state.frequent.name
+  };
 }
 
-export default connect(null, mapDispatchToProps)(FrequentGlobal);
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({updateFrequentPerForum: updateFrequentPerForum}, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FrequentPerForum);

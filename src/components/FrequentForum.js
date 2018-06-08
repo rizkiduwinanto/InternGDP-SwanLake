@@ -16,4 +16,5 @@ class FrequentForum extends React.Component {
     );
   }
 }
+
 export default FrequentForum;
