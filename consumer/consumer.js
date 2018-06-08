@@ -4,7 +4,7 @@ import axios from 'axios';
 var socket = require('socket.io-client')('http://localhost:3001');
 
 // == SOCKET IO TEST AS FRONTEND
-const subscribed_forum_id = '767';
+const subscribed_forum_id = '768';
 socket.on(`thread:${subscribed_forum_id}:new`,(data)=>{
   console.log(`New thread :`);
   console.log(data);
