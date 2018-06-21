@@ -6,21 +6,18 @@ import selectPost from '../actions/threadAction'
 
 class Forum extends React.Component {
   render() {
-    const thread = this.props.thread;
+    const forum = this.props.forum;
 
     return (
-    <ListItem button onClick={() => this.props.selectPost(thread)} divider>
+    <ListItem button divider key={forum.id}>
       <ListItemText
-      primary = {thread.title}
-      secondary = {thread.post_username}
+      primary = {forum.forum_name}
+      secondary = {forum.description}
       />
     </ListItem>
     );
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({selectPost: selectPost}, dispatch);
-}
 
-export default connect(null, mapDispatchToProps)(Forum);
+export default Forum;

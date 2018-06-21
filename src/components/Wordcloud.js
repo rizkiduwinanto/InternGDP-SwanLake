@@ -1,7 +1,8 @@
 import React from 'react';
 import { Paper, Button, Typography } from '@material-ui/core';
 import WordCloud from 'react-d3-cloud'
-import DatePicker from 'react-date-picker'
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import 'react-day-picker/lib/style.css';
 import { connect } from 'react-redux';
 import { fetchWordcloud } from '../actions/wordcloudAction';
 
@@ -47,8 +48,8 @@ class WordcloudPage extends React.Component {
     return(
       <Paper>
         <Typography variant="title" >WordCloud</Typography>
-        <DatePicker onChange={this.handleSince} value={this.state.since}/>
-        <DatePicker onChange={this.handleUntil} value={this.state.until}/>
+        <DayPickerInput onDayChange={this.handleSince}  />
+        <DayPickerInput onDayChange={this.handleSince}  />
         <Button color="primary" onClick={this.handleChange}>Show!</Button>
         {wordcloud}
       </Paper>

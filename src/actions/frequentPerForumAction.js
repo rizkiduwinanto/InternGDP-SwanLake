@@ -30,9 +30,9 @@ export function receiveFrequentPerForum(data){
   };
 }
 
-export const fetchForumList = () => async dispatch => {
+export const fetchForumList = () => async (dispatch, getState, url_api) => {
   try {
-    const url = 'http://localhost:3001/api/forum_list'
+    const url = `${url_api}/api/forum_list`
     const response = await fetch(url);
     const responseBody = await response.json();
     dispatch(receiveForumList(responseBody));
@@ -41,11 +41,11 @@ export const fetchForumList = () => async dispatch => {
   }
 }
 
-export const fetchFrequentPerForum = (since, until, forum_id) => async dispatch => {
+export const fetchFrequentPerForum = (since, until, forum_id) => async (dispatch, getState, url_api) => {
   try {
-    const sinceConverted = convertDate(since);
-    const untilConverted = convertDate(until);
-    const url = `http://localhost:3001/api/frequent_poster/${sinceConverted}/${untilConverted}?forum=${forum_id}`
+    const sinceConverted = convertDate(getState().since_perforum);
+    const untilConverted = convertDate(getState().until_perforum);
+    const url = `${url_api}/api/frequent_poster/${sinceConverted}/${untilConverted}?forum=${forum_id}`
     const response = await fetch(url);
     const responseBody = await response.json();
     dispatch(receiveFrequentPerForum(responseBody));

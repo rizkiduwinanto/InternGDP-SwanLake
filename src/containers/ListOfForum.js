@@ -1,13 +1,22 @@
 import React from 'react';
 import { List, Paper } from '@material-ui/core';
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import Forum from './Forum';
+import { fetchForumList } from '../actions/frequentPerForumAction';
 
 class ListOfForum extends React.Component {
+  componentDidMount() {
+    this.props.fetchForumList();
+  }
+
   render() {
-    const rows = this.props.threads.map((thread) =>
-      <Forum thread = {thread} key = {thread.id}/>
-    );
+    const rows = [];
+    if (this.props.forum_list.data != null) {
+      this.props.forum_list.data.forEach((forum) => {
+        rows.push(
+          <Forum forum = {forum} key = {forum.id}/>);
+      });
+    }
 
     return (
       <Paper style={{maxHeight: 570, overflow: 'auto'}} >
@@ -27,9 +36,8 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return {
-    fetchForumList: () => dispatch(fetchForumList()),
-    updateForum: (id, name) => dispatch(updateForum(id, name))
+    fetchForumList: () => dispatch(fetchForumList())
   };
 }
 
-export default connect(mapStateToProps)(ListOfForum);
+export default connect(mapStateToProps, mapDispatchToProps)(ListOfForum);

@@ -14,11 +14,11 @@ export function loadingTimeseries(flag){
   };
 }
 
-export const fetchTimeseries = (since, until, word) => async dispatch => {
+export const fetchTimeseries = (since, until, word) => async (dispatch, getState, url_api) => {
   try {
     const sinceConverted = convertDate(since);
     const untilConverted = convertDate(until);
-    const url = `http://localhost:3001/api/trend/${sinceConverted}/${untilConverted}/${word}`;
+    const url = `${url_api}/api/trend/${sinceConverted}/${untilConverted}/${word}`;
     const response = await fetch(url);
     const responseBody = await response.json();
     dispatch(receiveTimeseries(responseBody.data));

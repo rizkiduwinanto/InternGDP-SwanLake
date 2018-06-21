@@ -7,11 +7,11 @@ export function receiveWordcloud(data){
   };
 }
 
-export const fetchWordcloud = (since, until) => async dispatch => {
+export const fetchWordcloud = (since, until) => async (dispatch, getState, url_api) => {
   try {
     const sinceConverted = convertDate(since);
     const untilConverted = convertDate(until);
-    const url = `http://localhost:3001/api/words/${sinceConverted}/${untilConverted}`;
+    const url = `${url_api}/api/words/${sinceConverted}/${untilConverted}`;
     const response = await fetch(url);
     const responseBody = await response.json();
     dispatch(receiveWordcloud(responseBody.data));

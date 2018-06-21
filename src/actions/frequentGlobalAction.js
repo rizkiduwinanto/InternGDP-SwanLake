@@ -15,11 +15,11 @@ export function receiveFrequentGlobal(data){
   };
 }
 
-export const fetchFrequentGlobal = (since, until) => async dispatch => {
+export const fetchFrequentGlobal = (since, until) => async (dispatch, getState, url_api) => {
   try {
     const sinceConverted = convertDate(since);
     const untilConverted = convertDate(until);
-    const url = `http://localhost:3001/api/frequent_poster/${sinceConverted}/${untilConverted}`;
+    const url = `${url_api}/api/frequent_poster/${sinceConverted}/${untilConverted}`;
     const response = await fetch(url);
     const responseBody = await response.json();
     dispatch(receiveFrequentGlobal(responseBody));
