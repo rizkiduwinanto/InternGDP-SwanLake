@@ -8,6 +8,21 @@ import { Paper, Button, Typography, Input } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { fetchTimeseries } from '../actions/timeseriesAction';
 
+
+const DatePicker = (props) => {
+  return (
+    <div className="text-center py-3">
+          <div className="d-block">
+            <span className="d-inline-block pr-3"> Start Date</span>
+            <span className="text-center">
+            <DayPickerInput onDayChange={props.handleSince} value={props.date}/>
+            </span>
+            <span style={{fontSize: '25px'}} className="d-inline-block pl-3"> 📅 </span>
+          </div>
+        </div>
+  );
+}
+
 class Timeseries extends React.Component {
   constructor(props) {
     super(props);
@@ -25,7 +40,6 @@ class Timeseries extends React.Component {
   }
 
   handleSince(since) {
-    console.log(since);
     this.setState({ since : since });
   }
 
@@ -34,6 +48,7 @@ class Timeseries extends React.Component {
   }
 
   handleChange() {
+    const { since, until } = this.state;
     console.log(this.state.word);
     if ((this.state.word !== '') && (this.state.word != null)) {
       this.props.fetchTimeseries(this.state.since, this.state.until, this.state.word);
@@ -63,9 +78,6 @@ class Timeseries extends React.Component {
         areachart = <LineChart xtitle="Size" ytitle="Population" data={data}  xtitle="Date" ytitle="Word Count"  />;
       }
 
-      
-      
-
       var dataChart = [{
         key : this.state.word,
         values : data
@@ -73,13 +85,23 @@ class Timeseries extends React.Component {
 
     }
 
+    const modStyle = {
+
+    }
+
     return(
       <Paper>
-        <Typography variant="title" >Graph Timeseries</Typography>
-        <DayPickerInput onDayChange={this.handleSince} value={this.state.since}/>
-        <DayPickerInput onDayChange={this.handleUntil} value={this.state.until}/>
-        <Input placeholder="Type Here" label="Words" value={this.state.word} onChange={this.updateWord}/>
-        <Button color="primary" onClick={this.handleChange}>Show!</Button>
+        <Typography className="text-center py-3" variant="title" >Graph Timeseries</Typography>
+        <DatePicker handleSince={this.handleSince} date={this.state.since} />
+        <DatePicker handleSince={this.handleUntil} date={this.state.until} />
+
+        <div className="text-center">
+
+          <Input placeholder="Insert keyword" label="Words" value={this.state.word} onChange={this.updateWord}/>
+          <br />
+          <Button classcolor="primary" onClick={this.handleChange}>Show!</Button>
+        </div>
+        <br />
         {areachart}
       </Paper>
     );
