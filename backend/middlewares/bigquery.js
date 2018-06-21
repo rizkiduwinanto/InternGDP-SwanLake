@@ -191,7 +191,7 @@ async function getTrendWords(start_date, end_date, word) {
     SELECT
     CAST(EXTRACT(DATE FROM TIMESTAMP_SECONDS(dateline))AS STRING) as date,
     page_text as sentence
-    FROM \`kaskus-166400.intern_dataset.post_*\`
+    FROM \`learngcp-205504.my_new_dataset.post_*\`
     WHERE _TABLE_SUFFIX BETWEEN '${start_table_date}' and '${end_table_date}')
   WHERE date >= '${start_date}'
   GROUP BY date
