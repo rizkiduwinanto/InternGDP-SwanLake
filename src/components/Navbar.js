@@ -18,7 +18,7 @@ class Navbar extends React.Component {
           <AppBar position="static">
             <Toolbar>
               <Typography style={styles.flex} variant="title" color="inherit">
-                Explore One
+                Intern GDP
               </Typography>
               <Button color="inherit" component={Link} to='/' >Dashboard</Button>
               <Button color="inherit" component={Link} to='/FrequentPoster' >Frequent Poster</Button>

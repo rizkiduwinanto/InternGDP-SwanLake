@@ -1,7 +1,8 @@
 import React from 'react';
 import { TableCell, TableRow, TableBody, IconButton, Icon } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { fetchForumList, updateForum } from '../actions/frequentPerForumAction';
+import { updateForum } from '../actions/frequentPerForumAction';
+import { fetchForumList } from '../actions/forumAction';
 
 class ListFrequentForum extends React.Component {
   constructor(props) {

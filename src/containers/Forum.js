@@ -1,15 +1,14 @@
 import React from 'react';
 import { ListItem, ListItemText } from '@material-ui/core';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
-import selectPost from '../actions/threadAction'
+import { connect } from 'react-redux';
+import { selectThread } from '../actions/forumAction';
 
 class Forum extends React.Component {
   render() {
     const forum = this.props.forum;
 
     return (
-    <ListItem button divider key={forum.id}>
+    <ListItem button onClick={() => this.props.selectThread(forum)} divider>
       <ListItemText
       primary = {forum.forum_name}
       secondary = {forum.description}
@@ -19,5 +18,10 @@ class Forum extends React.Component {
   }
 }
 
+function mapDispatchToProps(dispatch) {
+  return { 
+    selectThread : (forum) => dispatch(selectThread(forum))
+  }; 
+}
 
-export default Forum;
+export default connect(null, mapDispatchToProps)(Forum);

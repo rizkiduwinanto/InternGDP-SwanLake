@@ -2,7 +2,7 @@ import React from 'react';
 import { List, Paper } from '@material-ui/core';
 import { connect } from 'react-redux'
 import Forum from './Forum';
-import { fetchForumList } from '../actions/frequentPerForumAction';
+import { fetchForumList } from '../actions/forumAction';
 
 class ListOfForum extends React.Component {
   componentDidMount() {
@@ -14,7 +14,7 @@ class ListOfForum extends React.Component {
     if (this.props.forum_list.data != null) {
       this.props.forum_list.data.forEach((forum) => {
         rows.push(
-          <Forum forum = {forum} key = {forum.id}/>);
+          <Forum forum = {forum} key = {forum.forum_id}/>);
       });
     }
 
