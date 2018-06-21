@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import logger from 'morgan';
 import http from 'http';
 import config from './config';
+import cors from 'cors';
 import init_socket_io from './middlewares/socket';
 
 const app = express();
@@ -15,6 +16,7 @@ const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
+app.use(cors());
 
 // Initialize socket io
 init_socket_io(server);
