@@ -9,7 +9,7 @@ import reducerTimeseries from './reducerTimeseries';
 export default combineReducers({
   posts: reducerDataPost,
   postsOfThread : reducerDataPostOfThread,
-  threads: reducerDataThread,
+  forum: reducerDataThread,
   frequent: reducerFrequent,
   wordcloud: reducerWordcloud,
   timeseries: reducerTimeseries

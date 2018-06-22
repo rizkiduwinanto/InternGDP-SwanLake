@@ -11,10 +11,9 @@ export const fetchForumList = () => async (dispatch, getState, url_api) => {
   }
 }
 
-export const selectThread = (forum) => async (dispatch, getState, url_api) => {
-  try {
-    
-  } catch(error) {
-    console.log(error);
-  }
+export function selectThread(forum){
+  return {
+    type: 'SELECT_THREAD',
+    payload: forum
+  };
 }

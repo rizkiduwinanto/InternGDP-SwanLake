@@ -6,7 +6,7 @@ import { fetchFrequentPerForum } from '../actions/frequentPerForumAction';
 class ListFrequentPerForum extends React.Component {
   componentDidUpdate(prevProps){
     if ((prevProps.since !== this.props.since) || (prevProps.until !== this.props.until) || (prevProps.forum_id !== this.props.forum_id)) {
-      this.props.fetchFrequentPerForum(this.props.since, this.props.until, this.props.forum_id);
+      this.props.fetchFrequentPerForum(this.props.forum_id);
     }
   }
 
@@ -42,7 +42,7 @@ function mapStateToDispatch(state){
 
 function mapDispatchToProps(dispatch){
   return {
-    fetchFrequentPerForum: (since, until, forum_id) => dispatch(fetchFrequentPerForum(since, until, forum_id))
+    fetchFrequentPerForum: (forum_id) => dispatch(fetchFrequentPerForum(forum_id))
   };
 }
 

@@ -63,13 +63,10 @@ class Timeseries extends React.Component {
         areachart = <LineChart xtitle="Size" ytitle="Population" data={data}  xtitle="Date" ytitle="Word Count"  />;
       }
 
-      
-      
-
-      var dataChart = [{
-        key : this.state.word,
-        values : data
-      }];
+      // var dataChart = [{
+      //   key : this.state.word,
+      //   values : data
+      // }];
 
     }
 

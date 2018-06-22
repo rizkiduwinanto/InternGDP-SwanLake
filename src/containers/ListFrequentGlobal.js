@@ -6,7 +6,7 @@ import { fetchFrequentGlobal } from '../actions/frequentGlobalAction';
 class ListFrequentGlobal extends React.Component {
   componentDidUpdate(prevProps) {
     if ((prevProps.since !== this.props.since) || (prevProps.until !== this.props.until)) {
-      this.props.fetchFrequentGlobal(this.props.since, this.props.until);
+      this.props.fetchFrequentGlobal();
     }
   }
 
@@ -40,7 +40,7 @@ function mapStateToDispatch(state){
 
 function mapDispatchToProps(dispatch){
   return {
-    fetchFrequentGlobal: (since, until) => dispatch(fetchFrequentGlobal(since, until))
+    fetchFrequentGlobal: () => dispatch(fetchFrequentGlobal())
   };
 }
 
