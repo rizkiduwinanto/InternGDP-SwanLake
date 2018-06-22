@@ -1,11 +1,12 @@
 import React from 'react';
 import Navbar from './Navbar';
 import Dashboard from './Dashboard';
-import FrequentPoster from './FrequentPoster';
 import Timeseries from './Timeseries';
 import WordcloudPage from './Wordcloud';
 import About from './About';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import FrequentGlobal from '../containers/FrequentGlobal';
+import FrequentPerForum from '../containers/FrequentPerForum';
 
 class App extends React.Component {
   render () {
@@ -13,11 +14,14 @@ class App extends React.Component {
       <Router>
         <div>
           <Navbar/>
-          <Route exact path='/' component={Dashboard}/>
-          <Route path='/FrequentPoster' component={FrequentPoster}/>
-          <Route path='/Timeseries' component={Timeseries}/>
-          <Route path='/Wordcloud' component={WordcloudPage}/>
-          <Route path='/About' component={About}/>
+          <Switch>
+            <Route exact path='/' component={Dashboard}/>
+            <Route path='/FrequentPoster/Global' component={FrequentGlobal}/>
+            <Route path='/FrequentPoster/Perforum' component={FrequentPerForum}/>
+            <Route path='/Timeseries' component={Timeseries}/>
+            <Route path='/Wordcloud' component={WordcloudPage}/>
+            <Route path='/About' component={About}/>
+          </Switch>
         </div>
       </Router>
     );

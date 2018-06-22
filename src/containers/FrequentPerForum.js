@@ -6,6 +6,8 @@ import DatePicker from 'react-date-picker'
 import { updateFrequentPerForum } from '../actions/frequentPerForumAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import FrequentNavTabs from '../components/FrequentNavTabs';
+import FrequentGlobal from './FrequentGlobal';
 
 class FrequentPerForum extends React.Component {
   constructor(props) {
@@ -34,6 +36,7 @@ class FrequentPerForum extends React.Component {
   render(){
     return (
       <Paper>
+        <FrequentNavTabs/>
         <Typography variant="title" >{this.props.forum_name}</Typography>
         <DatePicker onChange={this.handleSince} value={this.state.since}/>
         <DatePicker onChange={this.handleUntil} value={this.state.until}/>

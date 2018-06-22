@@ -13,9 +13,9 @@ const DatePicker = (props) => {
   return (
     <div className="text-center py-3">
           <div className="d-block">
-            <span className="d-inline-block pr-3"> Start Date</span>
+            <span className="d-inline-block pr-3">{props.label}</span>
             <span className="text-center">
-            <DayPickerInput onDayChange={props.handleSince} value={props.date}/>
+            <DayPickerInput onDayChange={props.handleChange} value={props.date}/>
             </span>
             <span style={{fontSize: '25px'}} className="d-inline-block pl-3"> 📅 </span>
           </div>
@@ -92,8 +92,8 @@ class Timeseries extends React.Component {
     return(
       <Paper>
         <Typography className="text-center py-3" variant="title" >Graph Timeseries</Typography>
-        <DatePicker handleSince={this.handleSince} date={this.state.since} />
-        <DatePicker handleSince={this.handleUntil} date={this.state.until} />
+        <DatePicker handleChange={this.handleSince} date={this.state.since} />
+        <DatePicker handleChange={this.handleUntil} date={this.state.until} />
 
         <div className="text-center">
 

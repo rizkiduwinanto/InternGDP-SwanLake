@@ -6,6 +6,7 @@ import DatePicker from 'react-date-picker';
 import { updateFrequentGlobal } from '../actions/frequentGlobalAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import FrequentNavTabs from '../components/FrequentNavTabs';
 
 class FrequentGlobal extends React.Component {
   constructor(props) {
@@ -34,6 +35,7 @@ class FrequentGlobal extends React.Component {
   render(){
     return (
       <Paper>
+        <FrequentNavTabs/>
         <Typography variant="title" >Frequent Global</Typography>
         <DatePicker onChange={this.handleSince} value={this.state.since}/>
         <DatePicker onChange={this.handleUntil} value={this.state.until}/>
