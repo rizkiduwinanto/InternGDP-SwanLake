@@ -17,7 +17,7 @@ const DatePicker = (props) => {
             <span className="text-center">
             <DayPickerInput onDayChange={props.handleSince} value={props.date}/>
             </span>
-            <span style={{fontSize: '25px'}} className="d-inline-block pl-3"> 📅 </span>
+            <span role="img" aria-label="calendar-emoji" style={{fontSize: '25px'}} className="d-inline-block pl-3"> 📅 </span>
           </div>
         </div>
   );
@@ -48,10 +48,10 @@ class Timeseries extends React.Component {
   }
 
   handleChange() {
-    const { since, until } = this.state;
-    console.log(this.state.word);
-    if ((this.state.word !== '') && (this.state.word != null)) {
-      this.props.fetchTimeseries(this.state.since, this.state.until, this.state.word);
+    const { since, until, word } = this.state;
+    console.log(word);
+    if ((word !== '') && (word != null)) {
+      this.props.fetchTimeseries(since, until, word);
     }
   }
 
@@ -75,17 +75,8 @@ class Timeseries extends React.Component {
       if (this.props.data.length === 0){
         areachart = <h3 style={emptyStyle}> Empty </h3>
       } else {
-        areachart = <LineChart xtitle="Size" ytitle="Population" data={data}  xtitle="Date" ytitle="Word Count"  />;
+        areachart = <LineChart data={data}  xtitle="Date" ytitle="Word Count"  />;
       }
-
-      var dataChart = [{
-        key : this.state.word,
-        values : data
-      }];
-
-    }
-
-    const modStyle = {
 
     }
 
