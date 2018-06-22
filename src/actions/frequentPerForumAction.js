@@ -32,8 +32,8 @@ export function receiveFrequentPerForum(data){
 
 export const fetchFrequentPerForum = (since, until, forum_id) => async (dispatch, getState, url_api) => {
   try {
-    const sinceConverted = convertDate(getState().since_perforum);
-    const untilConverted = convertDate(getState().until_perforum);
+    const sinceConverted = convertDate(since);
+    const untilConverted = convertDate(until);
     const url = `${url_api}/api/frequent_poster/${sinceConverted}/${untilConverted}?forum=${forum_id}`
     const response = await fetch(url);
     const responseBody = await response.json();
