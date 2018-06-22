@@ -11,7 +11,7 @@ import io from 'socket.io-client';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    const socket = io.connect('http://35.237.239.132:3001');
+    const socket = io.connect('http://35.231.65.98:3001');
     console.dir(socket);
   }
 
@@ -20,11 +20,13 @@ class App extends React.Component {
       <Router>
         <div>
           <Navbar/>
+          <div className="container">
           <Route exact path='/' component={Dashboard}/>
           <Route path='/FrequentPoster' component={FrequentPoster}/>
           <Route path='/Timeseries' component={Timeseries}/>
           <Route path='/Wordcloud' component={WordcloudPage}/>
           <Route path='/About' component={About}/>
+          </div>
         </div>
       </Router>
     );
