@@ -76,7 +76,7 @@ class Timeseries extends React.Component {
 
     return(
       <Paper>
-        <Typography className="text-center py-3" variant="title" >Graph Timeseries</Typography>
+        <Typography className="text-center py-3" variant="display2" >Graph Timeseries</Typography>
         <DatePicker handleChange={this.handleSince} date={this.state.since} />
         <DatePicker handleChange={this.handleUntil} date={this.state.until} />
 

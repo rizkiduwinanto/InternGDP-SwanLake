@@ -6,8 +6,9 @@ const initialState = {
   until_global: new Date(),
   since_perforum: new Date(), 
   until_perforum: new Date(),
-  id: 0,
-  name:'Frequent Poster Per Forum'
+  forum : {},
+  limit_global: 0,
+  limit_perforum:0
 }
 
 export default function (state = initialState, action) {
@@ -19,11 +20,9 @@ export default function (state = initialState, action) {
     case 'RECEIVE_FORUM_LIST':
       return {...state, forumList: action.data}; 
     case 'UPDATE_FREQUENT_GLOBAL':
-      return {...state, since_global: action.since, until_global: action.until};
+      return {...state, since_global: action.since, until_global: action.until, limit_global: action.limit};
     case 'UPDATE_FREQUENT_PERFORUM':
-      return {...state, since_perforum: action.since, until_perforum: action.until};
-    case 'UPDATE_FORUM':
-      return {...state, id: action.id, name: action.name};
+      return {...state, since_perforum: action.since, until_perforum: action.until, limit_perforum: action.limit, forum: action.forum};
     default:
       return state;
   }

@@ -18,7 +18,6 @@ class FrequentNavTabs extends React.Component {
   }
   
   render() {
-    console.log(this.state.selectedTab)
     return (
       <div style={styles.root}>
         <Tabs

@@ -1,18 +1,12 @@
 import convertDate from '../converterDate';
 
-export function updateForum(id, name) {
-  return {
-    type: 'UPDATE_FORUM',
-    id,
-    name
-  };
-}
-
-export function updateFrequentPerForum(since, until) {
+export function updateFrequentPerForum(since, until, limit, forum) {
   return {
     type: 'UPDATE_FREQUENT_PERFORUM',
     since,
-    until
+    until,
+    limit,
+    forum
   };
 }
 
@@ -30,11 +24,17 @@ export function receiveFrequentPerForum(data){
   };
 }
 
-export const fetchFrequentPerForum = (since, until, forum_id) => async (dispatch, getState, url_api) => {
+export const fetchFrequentPerForum = (since, until, limit, forum_id) => async (dispatch, getState, url_api) => {
   try {
     const sinceConverted = convertDate(since);
     const untilConverted = convertDate(until);
-    const url = `${url_api}/api/frequent_poster/${sinceConverted}/${untilConverted}?forum=${forum_id}`
+    var url = '';
+    if (limit === 0) {
+      url = `${url_api}/api/frequent_poster/${sinceConverted}/${untilConverted}?forum=${forum_id}`;
+    } else {
+      url = `${url_api}/api/frequent_poster/${sinceConverted}/${untilConverted}?forum=${forum_id}&limit=${limit}`;
+    }
+    console.log(url);
     const response = await fetch(url);
     const responseBody = await response.json();
     dispatch(receiveFrequentPerForum(responseBody));

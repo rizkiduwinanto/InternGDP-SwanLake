@@ -1,31 +1,29 @@
 import React from 'react';
-import { TableCell, TableRow, TableBody } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { fetchFrequentGlobal } from '../actions/frequentGlobalAction';
 
 class ListFrequentGlobal extends React.Component {
   componentDidUpdate(prevProps) {
     if ((prevProps.since !== this.props.since) || (prevProps.until !== this.props.until)) {
-      this.props.fetchFrequentGlobal(this.props.since, this.props.until);
+      this.props.fetchFrequentGlobal(this.props.since, this.props.until, this.props.limit);
     }
   }
 
   render() {
-    var rows = <TableRow><TableCell></TableCell></TableRow>;
-
+    var rows = <tr></tr>;
     if (this.props.data.data != null) {
       rows = this.props.data.data.map(freqGlobal => 
-        <TableRow key={freqGlobal.post_username}>
-          <TableCell>{freqGlobal.post_username}</TableCell>
-          <TableCell>{freqGlobal.post_count}</TableCell>
-        </TableRow>
+        <tr key={freqGlobal.post_username}>
+          <td>{freqGlobal.post_username}</td>
+          <td>{freqGlobal.post_count}</td>
+        </tr>
       );
     } 
 
     return (
-      <TableBody>
+      <tbody>
         {rows}
-      </TableBody>
+      </tbody>
     );
   }
 }
@@ -34,13 +32,14 @@ function mapStateToDispatch(state){
   return {
     since : state.frequent.since_global,
     until : state.frequent.until_global,
-    data : state.frequent.frequentGlobal
+    data : state.frequent.frequentGlobal,
+    limit : state.frequent.limit_global
   };
 }
 
 function mapDispatchToProps(dispatch){
   return {
-    fetchFrequentGlobal: (since, until) => dispatch(fetchFrequentGlobal(since, until))
+    fetchFrequentGlobal: (since, until, limit) => dispatch(fetchFrequentGlobal(since, until, limit))
   };
 }
 
