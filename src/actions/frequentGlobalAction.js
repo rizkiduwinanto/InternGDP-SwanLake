@@ -1,10 +1,11 @@
 import convertDate from '../converterDate';
 
-export function updateFrequentGlobal(since, until) {
+export function updateFrequentGlobal(since, until, limit) {
   return {
     type: 'UPDATE_FREQUENT_GLOBAL',
     since,
-    until
+    until,
+    limit
   };
 }
 
@@ -15,11 +16,17 @@ export function receiveFrequentGlobal(data){
   };
 }
 
-export const fetchFrequentGlobal = (since, until) => async (dispatch, getState, url_api) => {
+export const fetchFrequentGlobal = (since, until, limit) => async (dispatch, getState, url_api) => {
   try {
     const sinceConverted = convertDate(since);
     const untilConverted = convertDate(until);
-    const url = `${url_api}/api/frequent_poster/${sinceConverted}/${untilConverted}`;
+    var url = '';
+    if (limit === 0) {
+      url = `${url_api}/api/frequent_poster/${sinceConverted}/${untilConverted}`;
+    } else {
+      url = `${url_api}/api/frequent_poster/${sinceConverted}/${untilConverted}?limit=${limit}`;
+    }
+    console.log(url);
     const response = await fetch(url);
     const responseBody = await response.json();
     dispatch(receiveFrequentGlobal(responseBody));
