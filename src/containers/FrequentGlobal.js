@@ -1,27 +1,13 @@
 import React from 'react';
-import { Table, Typography, Paper, Button } from '@material-ui/core';
+import { Table, Typography, Paper, Button, TextField } from '@material-ui/core';
 import ListFrequentGlobal from './ListFrequentGlobal';
 import FrequentGlobalHead from '../components/FrequentGlobalHead';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import { updateFrequentGlobal } from '../actions/frequentGlobalAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import FrequentNavTabs from '../components/FrequentNavTabs';
-
-const DatePicker = (props) => {
-  return (
-    <div className="text-center py-3">
-          <div className="d-block">
-            <span className="d-inline-block pr-3">{props.label}</span>
-            <span className="text-center">
-            <DayPickerInput onDayChange={props.handleChange} value={props.date}/>
-            </span>
-            <span role="img" aria-label="calendar-emoji" style={{fontSize: '25px'}} className="d-inline-block pl-3"> 📅 </span>
-          </div>
-        </div>
-  );
-}
+import DatePicker from '../components/DatePicker';
 
 class FrequentGlobal extends React.Component {
   constructor(props) {
@@ -33,6 +19,11 @@ class FrequentGlobal extends React.Component {
     this.handleSince = this.handleSince.bind(this);
     this.handleUntil = this.handleUntil.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleLimit = this.handleLimit.bind(this);
+  }
+
+  handleLimit(event){
+    this.setState({limit : event.target.value});
   }
 
   handleSince(since) {
@@ -55,6 +46,8 @@ class FrequentGlobal extends React.Component {
         <DatePicker label='Start Date' handleChange={this.handleSince} date={this.state.since} />
         <DatePicker label='End Date' handleChange={this.handleUntil} date={this.state.until} />
         <div className="text-center">
+          <TextField type="number" label="Limit" placeholder="Insert Limit" value = {this.state.limit}/>
+          <br/>
           <Button color="primary" onClick={this.handleChange}>Show!</Button>
         </div>
         <Table>
