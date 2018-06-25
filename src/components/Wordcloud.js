@@ -6,6 +6,21 @@ import 'react-day-picker/lib/style.css';
 import { connect } from 'react-redux';
 import { fetchWordcloud } from '../actions/wordcloudAction';
 
+
+const DatePicker = (props) => {
+  return (
+    <div className="text-center py-3">
+          <div className="d-block">
+            <span className="d-inline-block pr-3"> {props.label}</span>
+            <span className="text-center">
+            <DayPickerInput onDayChange={props.handleChange} value={props.date}/>
+            </span>
+            <span role="img" aria-label="calendar-emoji" style={{fontSize: '25px'}} className="d-inline-block pl-3"> 📅 </span>
+          </div>
+        </div>
+  );
+}
+
 class WordcloudPage extends React.Component {
   constructor(props) {
     super(props);
@@ -19,6 +34,7 @@ class WordcloudPage extends React.Component {
   }
 
   handleSince(since) {
+    console.log(since);
     this.setState({ since : since });
   }
 
@@ -27,11 +43,13 @@ class WordcloudPage extends React.Component {
   }
 
   handleChange() {
+    console.log(this.state.since);
+    console.log(this.state.until);
     this.props.fetchWordcloud(this.state.since, this.state.until);
   }
 
   fontSizeMapper(text) {
-    return Math.sqrt(text.value) / 5;
+    return  text.value * 70  ;
   }
 
   rotate(text) {
@@ -42,15 +60,45 @@ class WordcloudPage extends React.Component {
     var wordcloud = <div></div>;
 
     if (this.props.data != null) {
-      wordcloud = <WordCloud data={this.props.data} fontSizeMapper={this.fontSizeMapper}/>;
+      let max = this.props.data.reduce((max, e) => e.value > max ? e.value : max, this.props.data[0].value);
+      const resizedDataValue = this.props.data.map(e => {
+        let newE = Object.assign({}, e);
+        newE.value /= max;
+        return newE;
+      });
+      const top5 = this.props.data.slice(0,5).map(e => {
+        return (
+          <tr key={e.text} >
+            <td>{e.text}</td>
+            <td>{e.value}</td>
+          </tr>
+        );
+      })
+      wordcloud = (
+        <div className="row mx-3">
+          <div className="col-sm-8">
+            <WordCloud data={resizedDataValue} fontSizeMapper={this.fontSizeMapper}/>
+          </div>
+          <div className="col-sm-4 my-auto text-center">
+            <h3 >Top 5 Words 🏆</h3>
+            <table className="table">
+              <tbody>
+                {top5}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
     }
 
     return(
       <Paper>
-        <Typography variant="title" >WordCloud</Typography>
-        <DayPickerInput onDayChange={this.handleSince}  />
-        <DayPickerInput onDayChange={this.handleSince}  />
+        <Typography className="text-center py-3" variant="title" >WordCloud</Typography>
+        <DatePicker label='Start Date' handleChange={this.handleSince} date={this.state.since} />
+        <DatePicker label='End Date' handleChange={this.handleUntil} date={this.state.until} />
+        <div className="text-center">
         <Button color="primary" onClick={this.handleChange}>Show!</Button>
+        </div>
         {wordcloud}
       </Paper>
     );

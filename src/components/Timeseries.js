@@ -6,7 +6,21 @@ import 'react-day-picker/lib/style.css';
 import { Paper, Button, Typography, Input } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { fetchTimeseries } from '../actions/timeseriesAction';
-import DatePicker from './DatePicker';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+
+const DatePicker = (props) => {
+  return (
+    <div className="text-center py-3">
+          <div className="d-block">
+            <span className="d-inline-block pr-3">{props.label}</span>
+            <span className="text-center">
+            <DayPickerInput onDayChange={props.handleChange} value={props.date}/>
+            </span>
+            <span role="img" aria-label="calendar-emoji" style={{fontSize: '25px'}} className="d-inline-block pl-3"> 📅 </span>
+          </div>
+        </div>
+  );
+}
 
 class Timeseries extends React.Component {
   constructor(props) {
@@ -33,10 +47,10 @@ class Timeseries extends React.Component {
   }
 
   handleChange() {
-    const { since, until } = this.state;
-    console.log(this.state.word);
-    if ((this.state.word !== '') && (this.state.word != null)) {
-      this.props.fetchTimeseries(this.state.since, this.state.until, this.state.word);
+    const { since, until, word } = this.state;
+    console.log(word);
+    if ((word !== '') && (word != null)) {
+      this.props.fetchTimeseries(since, until, word);
     }
   }
 
@@ -60,25 +74,16 @@ class Timeseries extends React.Component {
       if (this.props.data.length === 0){
         areachart = <h3 style={emptyStyle}> Empty </h3>
       } else {
-        areachart = <LineChart xtitle="Size" ytitle="Population" data={data}  xtitle="Date" ytitle="Word Count"  />;
+        areachart = <LineChart data={data}  xtitle="Date" ytitle="Word Count"  />;
       }
-
-      var dataChart = [{
-        key : this.state.word,
-        values : data
-      }];
-
-    }
-
-    const modStyle = {
 
     }
 
     return(
       <Paper>
-        <Typography className="text-center py-3" variant="display2" >Graph Timeseries</Typography>
-        <DatePicker handleChange={this.handleSince} date={this.state.since} />
-        <DatePicker handleChange={this.handleUntil} date={this.state.until} />
+        <Typography className="text-center py-3" variant="title" >Graph Timeseries</Typography>
+        <DatePicker label='Start Date' handleChange={this.handleSince} date={this.state.since} />
+        <DatePicker label='End Date' handleChange={this.handleUntil} date={this.state.until} />
 
         <div className="text-center">
 
