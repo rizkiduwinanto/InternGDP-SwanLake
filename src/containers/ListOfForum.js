@@ -1,5 +1,4 @@
 import React from 'react';
-import { List, Paper } from '@material-ui/core';
 import { connect } from 'react-redux'
 import Forum from './Forum';
 import { fetchForumList } from '../actions/forumAction';
@@ -19,11 +18,11 @@ class ListOfForum extends React.Component {
     }
 
     return (
-      <Paper style={{maxHeight: 570, overflow: 'auto'}} >
-        <List>
+      <div style={{maxHeight: 570, overflow: 'auto'}} >
+        <div className="list-group">
           {rows}
-        </List>
-      </Paper>
+        </div>
+      </div>
     );
   }
 }
