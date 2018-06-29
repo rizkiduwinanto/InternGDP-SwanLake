@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactLoading from 'react-loading';
 import ReactChartkick, { LineChart } from 'react-chartkick';
 import Chart from 'chart.js';
 import _ from 'lodash';
@@ -8,6 +7,7 @@ import { Paper, Button, Typography, Input } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { fetchTimeseries } from '../actions/timeseriesAction';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
+import Spinner from './Spinner';
 
 const DatePicker = (props) => {
   return (
@@ -73,11 +73,9 @@ class Timeseries extends React.Component {
     // var areachart = <LineChart xtitle="Size" ytitle="Population"  data={{"2017-05-13": 2, "2017-05-14": 5,"2017-05-15": 2, "2017-05-16": 5,"2017-05-17": 2, "2017-05-18": 5,}} />;
     let areachart = <h3 style={emptyStyle}> Please insert keywords </h3>
     if (this.state.loading){
-      let type='bubbles';
-      let color='rgb(63, 81, 181)';
       areachart = 
       <div className="my-5">
-        <ReactLoading className="mx-auto" type={type} color={color} height={300} width={150} />
+        <Spinner />
       </div>;
     }
     else if(this.props.data != null) {

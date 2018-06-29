@@ -1,11 +1,11 @@
 import React from 'react';
-import ReactLoading from 'react-loading';
 import { Paper, Button, Typography, TextField } from '@material-ui/core';
 import WordCloud from 'react-d3-cloud'
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import { connect } from 'react-redux';
 import { fetchWordcloud } from '../actions/wordcloudAction';
+import Spinner from './Spinner';
 
 
 const DatePicker = (props) => {
@@ -75,12 +75,10 @@ class WordcloudPage extends React.Component {
     var wordcloud = <div></div>;
 
     if(this.state.loading){
-      let type='bubbles';
-      let color='rgb(63, 81, 181)';
       wordcloud = 
-      <div className="my-5">
-        <ReactLoading className="mx-auto" type={type} color={color} height={300} width={150} />
-      </div>;
+        <div className="my-5">
+          <Spinner />
+        </div>;
     }
     else if (this.props.data != null) {
 
@@ -103,8 +101,8 @@ class WordcloudPage extends React.Component {
         })
         wordcloud = (
           <div className="row mx-3">
-            <div className="col-sm-8">
-              <WordCloud data={resizedDataValue} fontSizeMapper={this.fontSizeMapper}/>
+            <div className="col-sm-8 text-center">
+              <WordCloud  data={resizedDataValue} fontSizeMapper={this.fontSizeMapper}/>
             </div>
             <div className="col-sm-4 my-auto text-center">
               <h3 >Top 5 Words 🏆</h3>
@@ -127,7 +125,7 @@ class WordcloudPage extends React.Component {
         <DatePicker label='End Date' handleChange={this.handleUntil} date={this.state.until} />
 
         <div className="text-center">
-          <TextField type="number" label="Limit" placeholder="Insert Limit" onChange={this.handleLimit}/>
+          <TextField type="number" value={this.state.limit} label="Limit" placeholder="Insert Limit" onChange={this.handleLimit}/>
           <br className="my-3" />
           <Button color="primary" onClick={this.handleChange}>Show!</Button>
         </div>
