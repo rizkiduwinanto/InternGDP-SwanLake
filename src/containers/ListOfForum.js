@@ -1,5 +1,4 @@
 import React from 'react';
-import { List, Paper } from '@material-ui/core';
 import { connect } from 'react-redux'
 import Forum from './Forum';
 import { fetchForumList } from '../actions/forumAction';

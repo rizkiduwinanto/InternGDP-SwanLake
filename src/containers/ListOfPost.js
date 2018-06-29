@@ -1,7 +1,6 @@
 import React from 'react';
 import Post from './Post';
-import {connect} from 'react-redux'
-import { Paper } from '@material-ui/core';
+import {connect} from 'react-redux';
 import io from 'socket.io-client';
 
 const socket = io.connect('http://35.231.65.98:3001');
