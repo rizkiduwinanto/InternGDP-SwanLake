@@ -71,7 +71,7 @@ class FrequentPerForum extends React.Component {
 
     return (
       <div>
-        <FrequentNavTabs/>
+        <FrequentNavTabs selectedTab='perforum' />
         <Typography className="text-center py-3" variant="display2">Frequent Poster Perforum</Typography>
         <Grid container>
           <Grid item xs={6}>

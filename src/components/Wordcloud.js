@@ -1,10 +1,11 @@
 import React from 'react';
-import { Paper, Button, Typography } from '@material-ui/core';
+import { Paper, Button, Typography, TextField } from '@material-ui/core';
 import WordCloud from 'react-d3-cloud'
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import { connect } from 'react-redux';
 import { fetchWordcloud } from '../actions/wordcloudAction';
+import Spinner from './Spinner';
 
 
 const DatePicker = (props) => {
@@ -26,11 +27,14 @@ class WordcloudPage extends React.Component {
     super(props);
     this.state = {
       since: new Date(),
-      until: new Date()
+      until: new Date(),
+      limit: 15,
+      loading: false
     };
     this.handleSince = this.handleSince.bind(this);
     this.handleUntil = this.handleUntil.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleLimit = this.handleLimit.bind(this);
   }
 
   handleSince(since) {
@@ -45,7 +49,13 @@ class WordcloudPage extends React.Component {
   handleChange() {
     console.log(this.state.since);
     console.log(this.state.until);
-    this.props.fetchWordcloud(this.state.since, this.state.until);
+
+    this.setState({ loading: true });
+    this.props.fetchWordcloud(this.state.since, this.state.until, this.state.limit);
+  }
+
+  handleLimit(event) {
+    this.setState({ limit : event.target.value });
   }
 
   fontSizeMapper(text) {
@@ -56,51 +66,71 @@ class WordcloudPage extends React.Component {
     return text.value % 360;
   }
 
+  
+  componentWillReceiveProps(){
+    this.setState({ loading: false});
+  }
+
   render(){
     var wordcloud = <div></div>;
 
-    if (this.props.data != null) {
-      let max = this.props.data.reduce((max, e) => e.value > max ? e.value : max, this.props.data[0].value);
-      const resizedDataValue = this.props.data.map(e => {
-        let newE = Object.assign({}, e);
-        newE.value /= max;
-        return newE;
-      });
-      const top5 = this.props.data.slice(0,5).map(e => {
-        return (
-          <tr key={e.text} >
-            <td>{e.text}</td>
-            <td>{e.value}</td>
-          </tr>
+    if(this.state.loading){
+      wordcloud = 
+        <div className="my-5">
+          <Spinner />
+        </div>;
+    }
+    else if (this.props.data != null) {
+
+      if (this.props.data.length == 0){
+        wordcloud = <h3> Empty </h3>
+      } else {
+          let max = this.props.data.reduce((max, e) => e.value > max ? e.value : max, this.props.data[0].value);
+          const resizedDataValue = this.props.data.map(e => {
+            let newE = Object.assign({}, e);
+            newE.value /= max;
+            return newE;
+          });
+          const top5 = this.props.data.slice(0,5).map(e => {
+            return (
+              <tr key={e.text} >
+              <td>{e.text}</td>
+              <td>{e.value}</td>
+            </tr>
+          );
+        })
+        wordcloud = (
+          <div className="row mx-3">
+            <div className="col-sm-8 text-center">
+              <WordCloud  data={resizedDataValue} fontSizeMapper={this.fontSizeMapper}/>
+            </div>
+            <div className="col-sm-4 my-auto text-center">
+              <h3 >Top 5 Words 🏆</h3>
+              <table className="table">
+                <tbody>
+                  {top5}
+                </tbody>
+              </table>
+            </div>
+          </div>
         );
-      })
-      wordcloud = (
-        <div className="row mx-3">
-          <div className="col-sm-8">
-            <WordCloud data={resizedDataValue} fontSizeMapper={this.fontSizeMapper}/>
-          </div>
-          <div className="col-sm-4 my-auto text-center">
-            <h3 >Top 5 Words 🏆</h3>
-            <table className="table">
-              <tbody>
-                {top5}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      );
+      }
+
     }
 
     return(
-      <Paper>
+      <div>
         <Typography className="text-center py-3" variant="title" >WordCloud</Typography>
         <DatePicker label='Start Date' handleChange={this.handleSince} date={this.state.since} />
         <DatePicker label='End Date' handleChange={this.handleUntil} date={this.state.until} />
+
         <div className="text-center">
-        <Button color="primary" onClick={this.handleChange}>Show!</Button>
+          <TextField type="number" value={this.state.limit} label="Limit" placeholder="Insert Limit" onChange={this.handleLimit}/>
+          <br className="my-3" />
+          <Button color="primary" onClick={this.handleChange}>Show!</Button>
         </div>
         {wordcloud}
-      </Paper>
+      </div>
     );
   }
 }
@@ -113,7 +143,7 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchWordcloud: (since, until) => dispatch(fetchWordcloud(since, until))
+    fetchWordcloud: (since, until, limit) => dispatch(fetchWordcloud(since, until, limit))
   };
 }
 
