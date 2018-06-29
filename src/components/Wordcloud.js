@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Button, Typography } from '@material-ui/core';
+import { Paper, Button, Typography, TextField } from '@material-ui/core';
 import WordCloud from 'react-d3-cloud'
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
@@ -26,11 +26,13 @@ class WordcloudPage extends React.Component {
     super(props);
     this.state = {
       since: new Date(),
-      until: new Date()
+      until: new Date(),
+      limit: 15
     };
     this.handleSince = this.handleSince.bind(this);
     this.handleUntil = this.handleUntil.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleLimit = this.handleLimit.bind(this);
   }
 
   handleSince(since) {
@@ -45,7 +47,11 @@ class WordcloudPage extends React.Component {
   handleChange() {
     console.log(this.state.since);
     console.log(this.state.until);
-    this.props.fetchWordcloud(this.state.since, this.state.until);
+    this.props.fetchWordcloud(this.state.since, this.state.until, this.state.limit);
+  }
+
+  handleLimit(event) {
+    this.setState({ limit : event.target.value });
   }
 
   fontSizeMapper(text) {
@@ -96,8 +102,11 @@ class WordcloudPage extends React.Component {
         <Typography className="text-center py-3" variant="title" >WordCloud</Typography>
         <DatePicker label='Start Date' handleChange={this.handleSince} date={this.state.since} />
         <DatePicker label='End Date' handleChange={this.handleUntil} date={this.state.until} />
+
         <div className="text-center">
-        <Button color="primary" onClick={this.handleChange}>Show!</Button>
+          <TextField type="number" label="Limit" placeholder="Insert Limit" onChange={this.handleLimit}/>
+          <br className="my-3" />
+          <Button color="primary" onClick={this.handleChange}>Show!</Button>
         </div>
         {wordcloud}
       </Paper>
@@ -113,7 +122,7 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchWordcloud: (since, until) => dispatch(fetchWordcloud(since, until))
+    fetchWordcloud: (since, until, limit) => dispatch(fetchWordcloud(since, until, limit))
   };
 }
 
