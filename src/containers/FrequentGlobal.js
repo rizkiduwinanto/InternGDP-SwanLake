@@ -47,7 +47,7 @@ class FrequentGlobal extends React.Component {
   render(){
     return (
       <div>
-        <FrequentNavTabs/>
+        <FrequentNavTabs selectedTab='global' />
         <Typography className="text-center py-3" variant="display2" >Frequent Global</Typography>
         <Grid container>
           <Grid item xs={6}>
