@@ -9,12 +9,12 @@ class Thread extends React.Component {
     const thread = this.props.thread;
 
     return (
-    <ListItem button onClick={() => this.props.selectPost(thread)} divider>
-      <ListItemText
-      primary = {thread.title}
-      secondary = {thread.post_username}
-      />
-    </ListItem>
+    <a className="list-group-item list-group-item-action flex-column align-items-start">
+      <div className="d-flex w-100 justify-content-between">
+        <h6 className="mb-1"><strong>{thread.title}</strong> <span className="badge badge-primary">New</span></h6>
+      </div>
+      <small>{thread.post_username}</small>
+    </a>
     );
   }
 }

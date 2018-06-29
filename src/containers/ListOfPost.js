@@ -39,9 +39,9 @@ class ListOfPost extends React.Component {
     );
 
     return (
-      <Paper style={{maxHeight: 570, overflow: 'auto'}}>
+      <div style={{maxHeight: 570, overflow: 'auto'}}>
         {rows}
-      </Paper>
+      </div>
     );
   }
 }

@@ -4,14 +4,16 @@ import {connect} from 'react-redux'
 import Thread from './Thread';
 import io from 'socket.io-client';
 
-const socket = io.connect('http://35.231.65.98:3001');
+const socket = io.connect('http://10.181.24.141:3001');
 
 class ListOfThread extends React.Component {
   constructor(props) {
     super(props);
     console.dir(socket);
     this.state = {
-      arr_new: []
+      arr_new: [],
+      arr_update: [],
+      arr_dummy: []
     }
   }
 
@@ -27,30 +29,31 @@ class ListOfThread extends React.Component {
         socket.on(`thread:${this.props.forum.forum_id}:update`,(data)=>{
           console.log(`Updated thread :`);
           console.log(data);
-          this.setState({arr_new : [...this.state.arr_new, data]});
+          this.setState({arr_update : [...this.state.arr_update, data]});
         })
       }
     }
   }
 
   render() {
-    const rows = this.state.arr_new.map((thread, i) =>
+    const rows = this.props.thread.map((thread, i) =>
       <Thread thread = {thread} key = {i}/>
     );
 
     return (
-      <Paper style={{maxHeight: 570, overflow: 'auto'}} >
-        <List>
+      <div style={{maxHeight: 570, overflow: 'auto'}} >
+        <div className="list-group">
           {rows}
-        </List>
-      </Paper>
+        </div>
+      </div>
     );
   }
 }
 
 function mapStateToProps(state) {
   return {
-    forum: state.forum
+    forum: state.selectedForum,
+    thread: state.thread
   };
 }
 

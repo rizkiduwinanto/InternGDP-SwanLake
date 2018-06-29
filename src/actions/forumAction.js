@@ -11,7 +11,7 @@ export const fetchForumList = () => async (dispatch, getState, url_api) => {
   }
 }
 
-export function selectThread(forum){
+export function selectForum(forum){
   return {
     type: 'SELECT_THREAD',
     payload: forum

@@ -19,11 +19,11 @@ class ListOfForum extends React.Component {
     }
 
     return (
-      <Paper style={{maxHeight: 570, overflow: 'auto'}} >
-        <List>
+      <div style={{maxHeight: 570, overflow: 'auto'}} >
+        <div className="list-group">
           {rows}
-        </List>
-      </Paper>
+        </div>
+      </div>
     );
   }
 }

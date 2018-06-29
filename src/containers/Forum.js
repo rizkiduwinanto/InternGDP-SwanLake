@@ -1,26 +1,26 @@
 import React from 'react';
 import { ListItem, ListItemText } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { selectThread } from '../actions/forumAction';
+import { selectForum } from '../actions/forumAction';
 
 class Forum extends React.Component {
   render() {
     const forum = this.props.forum;
 
     return (
-    <ListItem button onClick={() => this.props.selectThread(forum)} divider>
-      <ListItemText
-      primary = {forum.forum_name}
-      secondary = {forum.description}
-      />
-    </ListItem>
+      <a className="list-group-item list-group-item-action flex-column align-items-start">
+        <div className="d-flex w-100 justify-content-between">
+          <h6 className="mb-1"><strong>{forum.forum_name}</strong></h6>
+        </div>
+        <small>{forum.description}</small>
+      </a>
     );
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return { 
-    selectThread : (forum) => dispatch(selectThread(forum))
+    selectForum : (forum) => dispatch(selectForum(forum))
   }; 
 }
 

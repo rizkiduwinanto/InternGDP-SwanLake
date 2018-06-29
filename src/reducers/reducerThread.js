@@ -1,8 +1,5 @@
-export default function (state = [], action) {
-  switch (action.type) {
-    case 'SELECT_THREAD':
-      return action.payload;
-    default :
-      return state;
-  }
+import STREAM_THREAD from '../sourceDatas/DataThread';
+
+export default function () {
+  return STREAM_THREAD;
 }
