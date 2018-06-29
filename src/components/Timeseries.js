@@ -3,7 +3,7 @@ import ReactChartkick, { LineChart } from 'react-chartkick';
 import Chart from 'chart.js';
 import _ from 'lodash';
 import 'react-day-picker/lib/style.css';
-import { Paper, Button, Typography, Input } from '@material-ui/core';
+import { Button, Typography, Input } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { fetchTimeseries } from '../actions/timeseriesAction';
 import DayPickerInput from 'react-day-picker/DayPickerInput';

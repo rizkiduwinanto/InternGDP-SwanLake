@@ -5,8 +5,8 @@ import Timeseries from './Timeseries';
 import WordcloudPage from './Wordcloud';
 import About from './About';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import FrequentGlobal from '../containers/FrequentGlobal';
 import FrequentPerForum from '../containers/FrequentPerForum';
+import FrequentGlobal from '../containers/FrequentGlobal';
 
 class App extends React.Component {
   render () {
