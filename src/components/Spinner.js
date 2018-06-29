@@ -3,7 +3,7 @@ import ReactLoading from 'react-loading';
 
 const defaultType = 'bubbles';
 const defaultColor = 'rgb(63, 81, 181)';
-const defaultHeight = 300;
+const defaultHeight = 150;
 const defaultWidth = 150;
 
 export default ({
