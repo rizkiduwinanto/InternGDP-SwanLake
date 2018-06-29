@@ -1,4 +1,4 @@
-import convertDate from '../converterDate';
+import convertDate from '../miscellaneous/converterDate';
 
 export function updateFrequentPerForum(since, until, limit, forum) {
   return {

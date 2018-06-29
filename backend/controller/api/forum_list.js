@@ -20,6 +20,7 @@ router.get('/forum_list', (req,res)=>{
 
       getForumList().then((result) => {
         redis_client.setex(cache_key, TTL, JSON.stringify(result));
+        console.log(result);
         return res.json(result);
       }, (err) => {
         return res.json({success:false, error: err});
