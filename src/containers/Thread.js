@@ -12,6 +12,7 @@ class Thread extends React.Component {
       <div className="d-flex w-100 justify-content-between">
         <h6 className="mb-1"><strong>{thread.title}</strong> {this.props.updated ? <span className="badge badge-info">Updated</span> : <span className="badge badge-primary">New</span>} </h6>
       </div>
+      <small>{thread.username}</small>
     </a>
     );
   }

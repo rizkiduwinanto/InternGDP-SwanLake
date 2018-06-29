@@ -3,7 +3,7 @@ import Post from './Post';
 import {connect} from 'react-redux';
 import io from 'socket.io-client';
 
-const socket = io.connect('http://35.231.65.98:3001');
+const socket = io.connect('http://10.181.24.141:3001');
 
 class ListOfPost extends React.Component {
   constructor(props) {

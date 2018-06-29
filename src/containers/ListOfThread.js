@@ -51,8 +51,7 @@ class ListOfThread extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    forum: state.selectedForum,
-    thread: state.thread
+    forum: state.selectedForum
   };
 }
 
