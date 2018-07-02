@@ -18,12 +18,12 @@ class ListOfPost extends React.Component {
     console.log(this.props.forum.forum_id);
     if (this.props.forum.forum_id !== 0) {
       if ((prevProps.forum.forum_id !== this.props.forum.forum_id)) {
-        socket.on(`post:768:new`,(data)=>{
+        socket.on(`post:${this.props.forum.forum_id}:new`,(data)=>{
           console.log(`New post :`);
           console.log(data);
           this.setState({arr_new : [...this.state.arr_new, data]});
         })
-        socket.on(`post:768:update`,(data)=>{
+        socket.on(`post:${this.props.forum.forum_id}:update`,(data)=>{
           console.log(`Updated post :`);
           console.log(data);
           this.setState({arr_new : [...this.state.arr_new, data]});
@@ -38,7 +38,7 @@ class ListOfPost extends React.Component {
     );
 
     return (
-      <div style={{maxHeight: 570, overflow: 'auto'}}>
+      <div id="accordion" style={{maxHeight: 570, overflow: 'auto'}}>
         {rows}
       </div>
     );
@@ -47,7 +47,8 @@ class ListOfPost extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    forum: state.forum
+    forum: state.forum,
+    post: state.posts
   };
 }
 

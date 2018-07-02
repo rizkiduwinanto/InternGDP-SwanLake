@@ -10,6 +10,13 @@ export function updateFrequentPerForum(since, until, limit, forum) {
   };
 }
 
+export function updateForum(forum) {
+  return {
+    type: 'UPDATE_FORUM',
+    forum
+  };
+}
+
 export function receiveForumList(data){
   return {
     type: 'RECEIVE_FORUM_LIST',

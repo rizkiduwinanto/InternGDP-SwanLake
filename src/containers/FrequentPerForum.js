@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import FrequentNavTabs from '../components/FrequentNavTabs';
 import DatePicker from '../components/DatePicker';
 import Spinner from '../components/Spinner';
+import ForumSelector from './ForumSelector';
 
 const tableStyle = {
   margin: '0 auto',
@@ -51,8 +52,12 @@ class FrequentPerForum extends React.Component {
   }
 
   handleChange() {
-    this.setState({ loading: true });
-    this.props.fetchFrequentPerForum(this.state.since, this.state.until, this.state.limit, this.state.forum.forum_id);
+    if (this.props.forum != null) {
+      this.setState({ loading: true });
+      this.props.fetchFrequentPerForum(this.state.since, this.state.until, this.state.limit, this.props.forum.forum_id);
+    } else {
+      alert('Choose a forum first!');
+    }
   }
 
   componentWillReceiveProps() {
@@ -126,12 +131,8 @@ class FrequentPerForum extends React.Component {
             </div>
           </Grid>
           <Grid item xs={6}>
-            <Typography variant="subheading" ><strong>Forum {this.state.forum == null ? '' : ': ' + this.state.forum.forum_name}</strong></Typography>
-            <Paper style={{maxHeight: 200, maxWidth: '80%', overflow: 'auto'}}>
-              <List>
-                {rows}
-              </List>
-            </Paper>
+            <Typography variant="subheading" ><strong>Forum {this.props.forum == null ? '' : ': ' + this.props.forum.forum_name}</strong></Typography>
+            <ForumSelector/>
           </Grid>
         </Grid>
         <div className="text-center align-center">
@@ -148,7 +149,8 @@ function mapStateToProps(state){
     since : state.frequent.since_perforum,
     until : state.frequent.until_perforum,
     data : state.frequent.frequentPerForum,
-    limit : state.frequent.limit_perforum
+    limit : state.frequent.limit_perforum,
+    forum : state.frequent.forum
   };
 }
 
