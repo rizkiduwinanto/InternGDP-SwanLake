@@ -5,7 +5,7 @@ import http from 'http';
 import config from './config';
 import cors from 'cors';
 import init_socket_io from './middlewares/socket';
-
+import { checkThreadIdMapForumIdFetched } from './middlewares/redis';
 const app = express();
 const server = http.createServer(app);
 
@@ -20,6 +20,9 @@ app.use(cors());
 
 // Initialize socket io
 init_socket_io(server);
+
+// Check And Fetch ThreadIdMapForumId if not exist
+checkThreadIdMapForumIdFetched();
 
 // Routing
 app.use('/', require('./controller'));
