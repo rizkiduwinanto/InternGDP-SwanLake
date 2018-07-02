@@ -61,8 +61,8 @@ class FrequentGlobal extends React.Component {
           </tr>
         );
       }
-      let rows = this.props.data.data.map(freqGlobal => 
-        <tr key={freqGlobal.post_username}>
+      let rows = this.props.data.data.map((freqGlobal, i) => 
+        <tr key={i}>
           <td>{freqGlobal.post_username}</td>
           <td>{freqGlobal.post_count}</td>
         </tr>
@@ -71,6 +71,7 @@ class FrequentGlobal extends React.Component {
     }
 
     const showSpinnerWhenLoading = () => (this.state.loading) ? <Spinner /> : "";
+    
     return(
       <div>
         <table className="table table-bordered centerTable" style={tableStyle}>
@@ -87,8 +88,8 @@ class FrequentGlobal extends React.Component {
         {showSpinnerWhenLoading()}
       </div>
     );
-
   }
+
   render(){
     return (
       <div>
@@ -106,7 +107,7 @@ class FrequentGlobal extends React.Component {
           </Grid>
           <Grid item xs={6}>
             <div className="text-center align-center">
-                {this.renderTable()}
+              {this.renderTable()}
             </div>
           </Grid>
         </Grid>
