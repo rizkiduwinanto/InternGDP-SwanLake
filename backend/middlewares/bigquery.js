@@ -28,6 +28,50 @@ async function getForumList() {
   return to_return;
 }
 
+async function getThreadIdMapForumId(callback){
+  const sqlQuery = `
+    SELECT * FROM \`learngcp-205504.my_new_dataset.thread_forum\`
+  `;
+
+  const queryRows = `
+    SELECT COUNT(*) as cnt FROM \`learngcp-205504.my_new_dataset.thread_forum\`
+  `;
+
+  const ROW_PAGINATION = 100000; // maximum 100000
+
+  const ROWS = await bigquery
+    .query({query:queryRows})
+    .then( results => {
+      let row_count = results[0][0].cnt;
+      return row_count;
+    }).catch(err => {throw errors});
+  
+  const TOTAL_OPERATION = (ROWS % ROW_PAGINATION == 0) ? (Math.floor(ROWS/ROW_PAGINATION)) : (Math.floor(ROWS/ROW_PAGINATION)+1)
+  let current_operation = 0;
+  
+  bigquery.createQueryJob(sqlQuery).then( data => {
+    const job = data[0];
+    const manualPaginationCallback = (err, rows, nextQuery, apiResponse) => {
+      console.log(`Fetching rows (${++current_operation}/${TOTAL_OPERATION})`);
+      if (nextQuery){
+        callback(rows);
+        job.getQueryResults(nextQuery, manualPaginationCallback);
+      }else {
+        if (rows.length > 0){
+          callback(rows);
+        }
+        callback(-1);
+      }
+    }
+
+    job.getQueryResults({ 
+      autoPaginate: false,
+      maxResults: ROW_PAGINATION
+    },  manualPaginationCallback);
+    
+  });
+}
+
 async function getWords(start_date, end_date, limit) {
   const start_table_date = start_date.split("-").join("");
   const end_table_date = end_date.split("-").join("");
@@ -225,4 +269,5 @@ module.exports = {
   getGlobalFrequentPoster,
   getPerForumFrequentPoster,
   getTrendWords,
+  getThreadIdMapForumId,
   getWords };
