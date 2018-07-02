@@ -10,7 +10,7 @@ class ListOfPost extends React.Component {
     super(props);
     console.dir(socket);
     this.state = {
-      arr_new: []
+      arr: []
     }
   }
 
@@ -21,25 +21,29 @@ class ListOfPost extends React.Component {
         socket.on(`post:${this.props.forum.forum_id}:new`,(data)=>{
           console.log(`New post :`);
           console.log(data);
-          this.setState({arr_new : [...this.state.arr_new, data]});
+          data['value'] = false;
+          this.setState({arr : [...this.state.arr, data]});
         })
         socket.on(`post:${this.props.forum.forum_id}:update`,(data)=>{
           console.log(`Updated post :`);
           console.log(data);
-          this.setState({arr_new : [...this.state.arr_new, data]});
+          data['value'] = true;
+          this.setState({arr : [...this.state.arr, data]});
         })
       }
     }
   }
 
   render() {
-    const rows  = this.state.arr_new.map((post, i) => 
-      <Post post = {post} key = {i}/>
+    const rows  = this.state.arr.map((post, i) => 
+      <Post post = {post} key = {i} updated={post.value}/>
     );
 
     return (
-      <div id="accordion" style={{maxHeight: 570, overflow: 'auto'}}>
-        {rows}
+      <div style={{maxHeight: 570, overflow: 'auto'}}>
+        <div className="list-group">
+          {rows}
+        </div>
       </div>
     );
   }
@@ -47,8 +51,8 @@ class ListOfPost extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    forum: state.forum,
-    post: state.posts
+    forum: state.selectedForum,
+    posts: state.posts
   };
 }
 
