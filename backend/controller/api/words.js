@@ -1,35 +1,33 @@
 import express from 'express';
-import redis_client from '../../middlewares/redis';
-import { getWords } from '../../middlewares/bigquery';
-
+import chalk from 'chalk';
+import redisClient from '../../services/redis';
+import { getWords } from '../../services/bigquery';
 const router = express.Router();
 
-router.get('/words/:since/:until', (req,res)=>{
+const LOG_ROOT = `${chalk.black.bgGreen(' API - ')}${chalk.black.bgGreen('Words ')}`;
 
-  const cache_key = req.url;
-  const TTL = 10*60; // 10 minutes
-  const limit = (req.query.limit) ? req.query.limit : 15;
+
+router.get('/words/:since/:until', (req, res) => {
+  const CACHE_KEY = req.url;
+  const TTL_10_MINUTES = 10*60; // 10 minutes
+  const LIMIT = (req.query.limit) ? req.query.limit : 15;
   
-  redis_client.get(cache_key, function(err, data){
-    if (data){
-      console.log(`Cached with key = ${cache_key}`);
+  redisClient.get(CACHE_KEY, (err, data) => {
+    if (data) {
+      console.log(`Cached with key = ${CACHE_KEY}`);
       return res.json(JSON.parse(data));
-    }
-    else {
-      console.log("Not Cached");
-      const start_date = req.params.since;
-      const end_date = req.params.until;
+    } else {
+      console.log(`${LOG_ROOT} Not Cached`);
+      const startDate = req.params.since;
+      const endDate = req.params.until;
       
-      getWords(start_date, end_date, limit).then((result) => {
-        redis_client.setex(cache_key, TTL, JSON.stringify(result));
+      getWords(startDate, endDate, LIMIT).then((result) => {
+        redisClient.setex(CACHE_KEY, TTL_10_MINUTES, JSON.stringify(result));
+        console.log(`${LOG_ROOT} Successfully cached with key = ${CACHE_KEY}`);
         return res.json(result);
-      }, (err) => {
-        return res.json({success:false, error: err});
-      });
-      
+      }, err => res.json({success: false, error: err}) );
     }
+  });
+});
 
-  })
-})
-
-module.exports = router;
+export default router;
