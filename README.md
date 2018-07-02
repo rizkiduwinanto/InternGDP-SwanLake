@@ -1,5 +1,13 @@
 ## INTERN GDP LABS 
 
+## Installation
+
+```
+  git clone https://github.com/rizkiduwinanto/InternGDP-SwanLake
+```
+```
+  cd InternGDP-SwanLake && npm install
+```
 
 
 ## Commands to run
