@@ -1,4 +1,5 @@
 import BigQuery from '@google-cloud/bigquery';
+import chalk from 'chalk';
 import { 
   getWordsQuery,
   getPerForumFrequentPosterQuery,
@@ -7,6 +8,8 @@ import {
  } from '../queries';
 import { start } from 'repl';
 const bigquery = new BigQuery();
+
+const LOG_ROOT = `${chalk.black.bgWhite(' SERVICE - ')}${chalk.black.bgWhite('BIGQUERY ')}`;
 
 export async function getForumList() {
   const getForumListQuery = `
@@ -25,20 +28,16 @@ export async function getThreadIdMapForumId(storeRedisCallback){
   `;
   const ROW_PAGINATION = 100000; // maximum 100000
   let queryResult = await getQueryResult(queryRows);
-  const ROWS = queryResult[0][0].cnt
+  const ROWS = queryResult[0][0].cnt;
+  console.log(ROWS);
   const TOTAL_OPERATION = (ROWS % ROW_PAGINATION == 0) ? (Math.floor(ROWS/ROW_PAGINATION)) : (Math.floor(ROWS/ROW_PAGINATION)+1)
   let current_operation = 0;
   
   bigquery.createQueryJob(threadIdMapForumIdQuery).then( data => {
-    job.getQueryResults({ 
-      autoPaginate: false,
-      maxResults: ROW_PAGINATION
-    },  manualPaginationCallback);
-
     const job = data[0];
     const FINISHED = -1;
     const manualPaginationCallback = (err, rows, nextQuery, apiResponse) => {
-      console.log(`Fetching rows (${++current_operation}/${TOTAL_OPERATION})`);
+      console.log(`${LOG_ROOT} Fetching rows (${++current_operation}/${TOTAL_OPERATION})`);
       if (nextQuery){
         storeRedisCallback(rows);
         job.getQueryResults(nextQuery, manualPaginationCallback);
@@ -49,7 +48,12 @@ export async function getThreadIdMapForumId(storeRedisCallback){
         storeRedisCallback(FINISHED);
       }
     }
+    job.getQueryResults({ 
+      autoPaginate: false,
+      maxResults: ROW_PAGINATION
+    },  manualPaginationCallback);
   });
+  
 }
 
 export async function getWords(startDate, endDate, limit) {
@@ -60,7 +64,6 @@ export async function getWords(startDate, endDate, limit) {
 
 export async function getPerForumFrequentPoster(startDate, endDate, forumId, limit){
   const posterPerForumQuery = getPerForumFrequentPosterQuery(startDate, endDate, forumId, limit);
-  console.log(posterPerForumQuery);
   const queryResult = await getQueryResult(posterPerForumQuery);
   return createAPIFormat(queryResult);
 }
