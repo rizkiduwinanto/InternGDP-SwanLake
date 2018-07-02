@@ -20,7 +20,7 @@ const init_socket_io = (server) => {
     socket.on('post', async (data) => {
       const thread_id = data.thread_id;
       const getAsync = promisify(client.hget).bind(client);
-      const getForumId = getAsync(THREAD_ID_MAP_FORUM_ID,thread_id).then(result => result);
+      const getForumId = () => getAsync(THREAD_ID_MAP_FORUM_ID,thread_id).then((result) => result);
       const forum_id = await getForumId();
 
       if (forum_id) {
