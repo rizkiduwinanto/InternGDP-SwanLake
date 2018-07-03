@@ -1,8 +1,8 @@
 import React from 'react';
 import Navbar from './Navbar';
 import Dashboard from './Dashboard';
-import Timeseries from './Timeseries';
-import WordcloudPage from './Wordcloud';
+import Timeseries from '../containers/Timeseries';
+import WordcloudPage from '../containers/Wordcloud';
 import About from './About';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import FrequentPerForum from '../containers/FrequentPerForum';

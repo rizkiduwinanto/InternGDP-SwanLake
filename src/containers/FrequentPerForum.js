@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Button, TextField, ListItem, ListItemText, Grid } from '@material-ui/core';
+import { Typography, Button, TextField, Grid } from '@material-ui/core';
 import { fetchFrequentPerForum } from '../actions/frequentPerForumAction';
 import { fetchForumList } from '../actions/forumAction';
 import { connect } from 'react-redux';
@@ -21,19 +21,13 @@ class FrequentPerForum extends React.Component {
       since: new Date(),
       until: new Date(),
       limit: 0,
-      forum: null,
       loading: false
     };
     this.handleSince = this.handleSince.bind(this);
     this.handleUntil = this.handleUntil.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleLimit = this.handleLimit.bind(this);
-    this.handleForum = this.handleForum.bind(this);
-  }
-
-  componentDidMount() {
-    this.props.fetchForumList();
-  }
+   }
 
   handleLimit(event){
     this.setState({ limit : event.target.value });
@@ -45,10 +39,6 @@ class FrequentPerForum extends React.Component {
 
   handleUntil(until) {
     this.setState({ until : until });
-  }
-
-  handleForum(forum) {
-    this.setState({ forum : forum });
   }
 
   handleChange() {
@@ -69,7 +59,7 @@ class FrequentPerForum extends React.Component {
       if (this.state.loading || this.props.data.data == null){
         return;
       }
-      if (this.props.data.data.length == 0){
+      if (this.props.data.data.length === 0){
         return (
           <tr>
             <td>{"No data found for this period"}</td>
@@ -106,16 +96,6 @@ class FrequentPerForum extends React.Component {
   }
 
   render(){
-    const rows = [];
-    if (this.props.forum_list.data != null) {
-      this.props.forum_list.data.forEach((forum) => {
-        rows.push(
-          <ListItem button key={forum.forum_id} onClick={() => this.handleForum(forum)}>
-            <ListItemText primary={forum.forum_name}/>
-          </ListItem>);
-      });
-    } 
-
     return (
       <div>
         <FrequentNavTabs selectedTab='perforum' />
@@ -145,7 +125,6 @@ class FrequentPerForum extends React.Component {
 
 function mapStateToProps(state){
   return {
-    forum_list : state.frequent.forumList,
     since : state.frequent.since_perforum,
     until : state.frequent.until_perforum,
     data : state.frequent.frequentPerForum,

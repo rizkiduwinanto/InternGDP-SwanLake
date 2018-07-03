@@ -7,7 +7,7 @@ import { Button, Typography, Input } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { fetchTimeseries } from '../actions/timeseriesAction';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import Spinner from './Spinner';
+import Spinner from '../components/Spinner';
 
 const DatePicker = (props) => {
   return (

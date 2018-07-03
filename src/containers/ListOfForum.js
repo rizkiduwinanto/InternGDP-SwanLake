@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import Forum from './Forum';
+import Forum from '../components/Forum';
 import { fetchForumList } from '../actions/forumAction';
-import { Typography } from '@material-ui/core';
 
 class ListOfForum extends React.Component {
   componentDidMount() {
@@ -19,7 +18,7 @@ class ListOfForum extends React.Component {
     }
 
     return (
-      <div style={{maxHeight: '90vh', overflow: 'auto'}} >
+      <div style={{maxHeight: '80vh', overflow: 'auto'}} >
         <div className="list-group">
           {rows}
         </div>

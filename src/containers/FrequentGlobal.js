@@ -54,7 +54,7 @@ class FrequentGlobal extends React.Component {
       if (this.state.loading || this.props.data.data == null){
         return;
       }
-      if (this.props.data.data.length == 0){
+      if (this.props.data.data.length === 0){
         return (
           <tr>
             <td>{"No data found for this period"}</td>

@@ -15,7 +15,7 @@ class ForumSelector extends React.Component {
     this.handleForum = this.handleForum.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.setState({ loading: true });
     this.props.fetchForumList();
   }

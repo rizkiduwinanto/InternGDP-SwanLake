@@ -5,7 +5,7 @@ import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import { connect } from 'react-redux';
 import { fetchWordcloud } from '../actions/wordcloudAction';
-import Spinner from './Spinner';
+import Spinner from '../components/Spinner';
 
 
 const DatePicker = (props) => {
@@ -82,7 +82,7 @@ class WordcloudPage extends React.Component {
     }
     else if (this.props.data != null) {
 
-      if (this.props.data.length == 0){
+      if (this.props.data.length === 0){
         wordcloud = <h3> Empty </h3>
       } else {
           let max = this.props.data.reduce((max, e) => e.value > max ? e.value : max, this.props.data[0].value);
@@ -105,7 +105,7 @@ class WordcloudPage extends React.Component {
               <WordCloud  data={resizedDataValue} fontSizeMapper={this.fontSizeMapper}/>
             </div>
             <div className="col-sm-4 my-auto text-center">
-              <h3 >Top 5 Words 🏆</h3>
+              <h3 >Top 5 Words <span role="img" aria-label="calendar-emoji">🏆</span></h3>
               <table className="table">
                 <tbody>
                   {top5}

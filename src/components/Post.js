@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Paper } from '@material-ui/core';
+import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 
 class Post extends React.Component {
   constructor(props) {
@@ -28,7 +28,7 @@ class Post extends React.Component {
   render() {
     const post = this.props.post;
     const pageText = post.page_text.length <= 25 ? post.page_text : post.page_text.substr(0,25) + '...';
-    const title = post.title == '' ? pageText : post.title;
+    const title = post.title === '' ? pageText : post.title;
     
     return (
       <div>
