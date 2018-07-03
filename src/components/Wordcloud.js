@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Button, Typography, TextField } from '@material-ui/core';
+import {  Button, Typography, TextField } from '@material-ui/core';
 import WordCloud from 'react-d3-cloud'
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';

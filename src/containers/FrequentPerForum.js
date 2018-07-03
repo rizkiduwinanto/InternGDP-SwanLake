@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Paper, Button, List, TextField, ListItem, ListItemText, Grid } from '@material-ui/core';
+import { Typography, Button, TextField, ListItem, ListItemText, Grid } from '@material-ui/core';
 import { fetchFrequentPerForum } from '../actions/frequentPerForumAction';
 import { fetchForumList } from '../actions/forumAction';
 import { connect } from 'react-redux';
