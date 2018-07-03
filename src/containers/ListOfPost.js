@@ -40,7 +40,7 @@ class ListOfPost extends React.Component {
     );
 
     return (
-      <div style={{maxHeight: 570, overflow: 'auto'}}>
+      <div style={{maxHeight: '90vh', overflow: 'auto'}}>
         <div className="list-group">
           {rows}
         </div>

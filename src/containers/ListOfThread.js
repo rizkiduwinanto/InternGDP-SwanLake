@@ -40,7 +40,7 @@ class ListOfThread extends React.Component {
     );
 
     return (
-      <div style={{maxHeight: 570, overflow: 'auto'}} >
+      <div style={{maxHeight: '90vh', overflow: 'auto'}} >
         <div className="list-group">
           {rows}
         </div>
@@ -51,7 +51,8 @@ class ListOfThread extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    forum: state.selectedForum
+    forum: state.selectedForum,
+    thread: state.thread
   };
 }
 
