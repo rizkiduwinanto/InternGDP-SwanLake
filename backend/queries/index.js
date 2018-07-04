@@ -12,10 +12,10 @@ export function getWordsQuery(startDate, endDate, limit) {
   SELECT LOWER(word) as text, count(*) as value
   FROM (
         (SELECT splitSentence(page_text) as words
-        FROM \`learngcp-205504.my_new_dataset.post_*\`
+        FROM \`my_new_dataset.post_*\`
         WHERE _TABLE_SUFFIX BETWEEN '${startTableDate}' and '${endTableDate}') as new_sentences
         CROSS JOIN UNNEST(new_sentences.words) as word)
-  WHERE LOWER(word) NOT IN (SELECT * FROM \`learngcp-205504.my_new_dataset.stop_words\`)
+  WHERE LOWER(word) NOT IN (SELECT * FROM \`my_new_dataset.stop_words\`)
   GROUP BY text
   ORDER BY value DESC
   LIMIT ${limit};`;
@@ -32,13 +32,13 @@ export function getPerForumFrequentPosterQuery(startDate, endDate, forumId, limi
   post.post_username,
   COUNT(*) AS post_count
   FROM
-    \`learngcp-205504.my_new_dataset.thread_*\` AS thread
+    \`my_new_dataset.thread_*\` AS thread
   INNER JOIN
-    \`learngcp-205504.my_new_dataset.forum\` AS forum
+    \`my_new_dataset.forum\` AS forum
   ON
     thread.forum_id = forum.forum_id
   INNER JOIN
-    \`learngcp-205504.my_new_dataset.post_*\` AS post
+    \`my_new_dataset.post_*\` AS post
   ON
     thread.id = post.thread_id
   WHERE
@@ -64,7 +64,7 @@ export function getGlobalFrequentPosterQuery(startDate, endDate, limit) {
 
   const query = `
   SELECT post_username, COUNT(*) as post_count
-  FROM \`learngcp-205504.my_new_dataset.post_*\`
+  FROM \`my_new_dataset.post_*\`
   WHERE _TABLE_SUFFIX BETWEEN '${startTableDate}' AND '${endTableDate}'
   GROUP BY post_username
   ORDER BY post_count DESC
@@ -94,7 +94,7 @@ export function getTrendWordsQuery(startDate, endDate, word) {
     SELECT
     CAST(EXTRACT(DATE FROM TIMESTAMP_SECONDS(dateline))AS STRING) as date,
     page_text as sentence
-    FROM \`learngcp-205504.my_new_dataset.post_*\`
+    FROM \`my_new_dataset.post_*\`
     WHERE _TABLE_SUFFIX BETWEEN '${startTableDate}' and '${endTableDate}')
   WHERE date >= '${startDate}'
   GROUP BY date
