@@ -16,6 +16,8 @@ services:
     command: ['npm', 'run', 'start:server']
     ports:
       - '3001:3001'
+    volumes:
+      - ~/.config/:/root/.config
     depends_on:
       - redis
     environment:
@@ -24,6 +26,8 @@ services:
       - redis
   consumer:
     build: .
+    volumes:
+      - ~/.config/:/root/.config
     command: ['npm', 'run', 'start:consumer']
     ports:
       - '3002:3001'
