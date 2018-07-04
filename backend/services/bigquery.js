@@ -88,6 +88,7 @@ const getQueryResult = async sqlQuery =>
   .then(result => {
     return result;
   }).catch(err => {
+    console.log(`Bigquery err : ${err}`);
     throw err;
   });
 
