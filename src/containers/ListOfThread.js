@@ -1,27 +1,51 @@
 import React from 'react';
-import { List, Paper } from '@material-ui/core';
 import {connect} from 'react-redux'
-import Thread from './Thread';
+import Thread from '../components/Thread';
+import io from 'socket.io-client';
+
+const socket = io.connect('http://10.181.24.141:3001');
 
 class ListOfThread extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      threads: []
+    }
+  }
+
+  componentDidUpdate(prevProps){
+    if (this.props.forum.forum_id !== 0) {
+      if ((prevProps.forum.forum_id !== this.props.forum.forum_id)) {
+        socket.on(`thread:${this.props.forum.forum_id}:new`,(data)=>{
+          data['value'] = false;
+          this.setState({threads: [...this.state.threads, data]});
+        })
+        socket.on(`thread:${this.props.forum.forum_id}:update`,(data)=>{
+          data['value'] = true;
+          this.setState({threads : [...this.state.threads, data]});
+        })
+      }
+    }
+  }
+
   render() {
-    const rows = this.props.threads.map((thread) =>
-      <Thread thread = {thread} key = {thread.id}/>
+    const rows = this.state.threads.map((thread, i) =>
+      <Thread thread = {thread} key = {i} updated={thread.value}/>
     );
 
     return (
-      <Paper style={{maxHeight: 570, overflow: 'auto'}} >
-        <List>
+      <div style={{maxHeight: '80vh', overflow: 'auto'}} >
+        <div className="list-group">
           {rows}
-        </List>
-      </Paper>
+        </div>
+      </div>
     );
   }
 }
 
 function mapStateToProps(state) {
   return {
-    threads: state.threads
+    forum: state.selectedForum
   };
 }
 

@@ -9,9 +9,12 @@ const styles = {
 }
 
 class FrequentNavTabs extends React.Component {
-  state = {
-    selectedTab: 'global'
-  };
+  constructor(props){
+    super(props);
+    this.state = {
+      selectedTab : this.props.selectedTab
+    };
+  }
 
   handleChange = (event, value) => {
     this.setState({selectedTab: value});

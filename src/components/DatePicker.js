@@ -9,7 +9,7 @@ export const DatePicker = (props) => {
             <span className="text-center">
             <DayPickerInput onDayChange={props.handleChange} value={props.date}/>
             </span>
-            <span style={{fontSize: '25px'}} className="d-inline-block pl-3"> 📅 </span>
+            <span role="img" style={{fontSize: '25px'}} className="d-inline-block pl-3" aria-label="calendar-emoji"> 📅 </span>
           </div>
         </div>
   );

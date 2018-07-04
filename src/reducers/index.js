@@ -1,16 +1,18 @@
 import { combineReducers } from 'redux';
 import reducerDataPost from './reducerPost';
 import reducerDataPostOfThread from './reducerPostOfThread';
-import reducerDataThread from './reducerThread';
+import reducerSelectedForum from './reducerSelectedForum';
 import reducerFrequent from './reducerFrequent';
 import reducerWordcloud from './reducerWordcloud';
 import reducerTimeseries from './reducerTimeseries';
+import reducerThread from './reducerThread';
 
 export default combineReducers({
   posts: reducerDataPost,
   postsOfThread : reducerDataPostOfThread,
-  threads: reducerDataThread,
+  selectedForum: reducerSelectedForum,
   frequent: reducerFrequent,
   wordcloud: reducerWordcloud,
-  timeseries: reducerTimeseries
+  timeseries: reducerTimeseries,
+  thread: reducerThread
 });

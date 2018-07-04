@@ -7,19 +7,19 @@ var socket = require('socket.io-client')(`http://${config.API_ADDR}:${config.API
 const subscribed_forum_id = '768';
 socket.on(`thread:${subscribed_forum_id}:new`,(data)=>{
   console.log(`New thread :`);
-  console.log(data);
+  // console.log(data);
 })
 socket.on(`thread:${subscribed_forum_id}:update`,(data)=>{
   console.log(`Updated thread :`);
-  console.log(data);
+  // console.log(data);
 })
 socket.on(`post:${subscribed_forum_id}:new`,(data)=>{
   console.log(`New post :`);
-  console.log(data);
+  // console.log(data);
 })
 socket.on(`post:${subscribed_forum_id}:update`,(data)=>{
   console.log(`Updated post :`);
-  console.log(data);
+  // console.log(data);
 })
 // ==
 

@@ -3,10 +3,11 @@ import ReactChartkick, { LineChart } from 'react-chartkick';
 import Chart from 'chart.js';
 import _ from 'lodash';
 import 'react-day-picker/lib/style.css';
-import { Paper, Button, Typography, Input } from '@material-ui/core';
+import { Button, Typography, Input } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { fetchTimeseries } from '../actions/timeseriesAction';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
+import Spinner from '../components/Spinner';
 
 const DatePicker = (props) => {
   return (
@@ -30,7 +31,7 @@ class Timeseries extends React.Component {
       until: new Date(),
       word: '',
       data: [],
-      isLoaded: false
+      loading: false
     };
     this.handleSince = this.handleSince.bind(this);
     this.handleUntil = this.handleUntil.bind(this);
@@ -49,6 +50,7 @@ class Timeseries extends React.Component {
   handleChange() {
     const { since, until, word } = this.state;
     console.log(word);
+    this.setState({ loading: true });
     if ((word !== '') && (word != null)) {
       this.props.fetchTimeseries(since, until, word);
     }
@@ -58,6 +60,10 @@ class Timeseries extends React.Component {
     this.setState({word : event.target.value});
   }
 
+  componentWillReceiveProps() {
+    this.setState({ loading: false });
+  }
+
   render(){
     let emptyStyle = {
       textAlign: 'center',
@@ -65,14 +71,20 @@ class Timeseries extends React.Component {
     };
 
     // var areachart = <LineChart xtitle="Size" ytitle="Population"  data={{"2017-05-13": 2, "2017-05-14": 5,"2017-05-15": 2, "2017-05-16": 5,"2017-05-17": 2, "2017-05-18": 5,}} />;
-    var areachart = <h3 style={emptyStyle}> Please insert keywords </h3>
-    if(this.props.data != null) {
+    let areachart = <h3 style={emptyStyle}> Please insert keywords </h3>
+    if (this.state.loading){
+      areachart = 
+      <div className="my-5">
+        <Spinner />
+      </div>;
+    }
+    else if(this.props.data != null) {
       var data =  _.transform(this.props.data, (result, e) => {
         result[e.date] = e.counted_word
       }, {});
       
       if (this.props.data.length === 0){
-        areachart = <h3 style={emptyStyle}> Empty </h3>
+        areachart = <h3 style={emptyStyle}> No data for that periods </h3>
       } else {
         areachart = <LineChart data={data}  xtitle="Date" ytitle="Word Count"  />;
       }
@@ -80,7 +92,7 @@ class Timeseries extends React.Component {
     }
 
     return(
-      <Paper>
+      <div>
         <Typography className="text-center py-3" variant="title" >Graph Timeseries</Typography>
         <DatePicker label='Start Date' handleChange={this.handleSince} date={this.state.since} />
         <DatePicker label='End Date' handleChange={this.handleUntil} date={this.state.until} />
@@ -93,7 +105,7 @@ class Timeseries extends React.Component {
         </div>
         <br />
         {areachart}
-      </Paper>
+      </div>
     );
   }
 }
