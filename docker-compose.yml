@@ -45,38 +45,6 @@ services:
     links:
       - server
 
-  test_thread:
-    build: .
-    command: ['npm', 'run', 'test:thread']
-    volumes:
-      - '.:/usr/src/app'
-      - '/usr/src/app/node_modules'
-      - ~/.config/:/root/.config
-    depends_on:
-      - server
-      - consumer
-    environment:
-      - NODE_ENV=development
-    links:
-      - server
-      - consumer
-
-  test_post:
-    build: .
-    command: ['npm', 'run', 'test:post']
-    volumes:
-      - '.:/usr/src/app'
-      - '/usr/src/app/node_modules'
-      - ~/.config/:/root/.config
-    depends_on:
-      - server
-      - consumer
-    environment:
-      - NODE_ENV=development
-    links:
-      - server
-      - consumer
-
   redis:
     image: redis:alpine
 
