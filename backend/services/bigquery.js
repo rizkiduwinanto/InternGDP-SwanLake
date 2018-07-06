@@ -6,14 +6,15 @@ import {
   getGlobalFrequentPosterQuery,
   getTrendWordsQuery
  } from '../queries';
-import { start } from 'repl';
-const bigquery = new BigQuery();
+const bigquery = new BigQuery({
+  projectId: "learngcp-205504"
+});
 
 const LOG_ROOT = `${chalk.black.bgWhite(' SERVICE - ')}${chalk.black.bgWhite('BIGQUERY ')}`;
 
 export async function getForumList() {
   const getForumListQuery = `
-    SELECT forum_id, name as forum_name, description FROM \`learngcp-205504.my_new_dataset.forum\` ORDER BY forum_id;
+    SELECT forum_id, name as forum_name, description FROM \`my_new_dataset.forum\` ORDER BY forum_id;
     `;
   const queryResult = await getQueryResult(getForumListQuery);
   return createAPIFormat(queryResult);
@@ -21,10 +22,10 @@ export async function getForumList() {
 
 export async function getThreadIdMapForumId(storeRedisCallback){
   const threadIdMapForumIdQuery = `
-    SELECT * FROM \`learngcp-205504.my_new_dataset.thread_forum\`
+    SELECT * FROM \`my_new_dataset.thread_forum\`
   `;
   const queryRows = `
-    SELECT COUNT(*) as cnt FROM \`learngcp-205504.my_new_dataset.thread_forum\`
+    SELECT COUNT(*) as cnt FROM \`my_new_dataset.thread_forum\`
   `;
   const ROW_PAGINATION = 100000; // maximum 100000
   let queryResult = await getQueryResult(queryRows);
@@ -87,6 +88,7 @@ const getQueryResult = async sqlQuery =>
   .then(result => {
     return result;
   }).catch(err => {
+    console.log(`Bigquery err : ${err}`);
     throw err;
   });
 

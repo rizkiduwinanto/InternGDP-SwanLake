@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import Thread from '../components/Thread';
 import io from 'socket.io-client';
 
-const socket = io.connect('http://10.181.24.141:3001');
+const socket = io.connect('http://127.0.0.1:3001');
 
 class ListOfThread extends React.Component {
   constructor(props) {

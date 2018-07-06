@@ -1,4 +1,4 @@
-import convertDate from '../converterDate';
+import convertDate from '../miscellaneous/converterDate';
 
 export function receiveWordcloud(data){
   return {

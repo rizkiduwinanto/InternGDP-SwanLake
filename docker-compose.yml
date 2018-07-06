@@ -1,0 +1,51 @@
+version: '3'
+services: 
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - server
+      - consumer
+
+  server:
+    build: .
+    command: ['npm', 'run', 'start:server']
+    ports:
+      - "3001:3001"
+    volumes:
+      - '.:/usr/src/app'
+      - '/usr/src/app/node_modules'
+      - ~/.config/:/root/.config
+    depends_on:
+      - redis
+    environment:
+      - NODE_ENV=development
+    links:
+      - redis
+
+  consumer:
+    build: .
+    command: ['npm', 'run', 'start:consumer']
+    volumes:
+      - '.:/usr/src/app'
+      - '/usr/src/app/node_modules'
+      - ~/.config/:/root/.config
+    depends_on:
+      - server
+    environment:
+      - NODE_ENV=development
+    links:
+      - server
+
+  redis:
+    image: redis:alpine
+
+    
