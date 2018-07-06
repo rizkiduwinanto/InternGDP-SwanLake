@@ -29,6 +29,8 @@ class FrequentGlobal extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleLimit = this.handleLimit.bind(this);
     this.handleClick = this.handleClick.bind(this); 
+    this.handlePrevious = this.handlePrevious.bind(this); 
+    this.handleNext = this.handleNext.bind(this); 
   }
 
   handleLimit(event){
@@ -52,6 +54,23 @@ class FrequentGlobal extends React.Component {
     this.setState({
       currentPage: id
     });
+  }
+
+  handleNext() {
+    const numberOfPageItem = Math.ceil(this.props.data.data.length/this.state.dataPerPage);
+    if (this.state.currentPage < numberOfPageItem) {
+      this.setState({
+        currentPage: this.state.currentPage+1
+      });
+    }
+  }
+
+  handlePrevious() {
+    if (this.state.currentPage > 1) {
+      this.setState({
+        currentPage: this.state.currentPage-1
+      });
+    }
   }
 
   componentWillReceiveProps() {
@@ -96,12 +115,24 @@ class FrequentGlobal extends React.Component {
       const numberOfPageItem = Math.ceil(this.props.data.data.length/dataPerPage);
 
       for (let i = 1; i <= numberOfPageItem; i++) {
-        pageNumber.push(<li key={i} onClick={() => this.handleClick(i)} className="page-item"><a className="page-link">{i}</a></li>)
+        pageNumber.push(<li key={i} className="page-item"><a onClick={() => this.handleClick(i)} className="page-link">{i}</a></li>)
       }
 
       let pageNumberList = (<nav>
         <ul className="pagination justify-content-center">
+          <li className="page-item">
+            <a className="page-link" onClick={() => this.handlePrevious()}>
+              <span>&laquo;</span>
+              <span className="sr-only">Previous</span>
+            </a>
+          </li>
           {pageNumber}
+          <li className="page-item">
+            <a className="page-link" onClick={() => this.handleNext()}>
+              <span>&raquo;</span>
+              <span className="sr-only">Next</span>
+            </a>
+          </li>
         </ul>
       </nav>);
 
