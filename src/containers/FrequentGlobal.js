@@ -105,7 +105,6 @@ class FrequentGlobal extends React.Component {
     }
 
     const getPageNumber = () => {
-    
       if ((this.state.loading || this.props.data.data == null) || this.props.data.data.length <= dataPerPage){
         return;
       }
@@ -191,7 +190,6 @@ function mapStateToDispatch(dispatch) {
 }
 
 function mapStateToProps(state){
-  // console.log(state);
   return {
     since : state.frequent.since_global,
     until : state.frequent.until_global,

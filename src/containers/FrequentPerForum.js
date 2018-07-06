@@ -21,12 +21,17 @@ class FrequentPerForum extends React.Component {
       since: new Date(),
       until: new Date(),
       limit: 0,
-      loading: false
+      loading: false,
+      currentPage: 1,
+      dataPerPage: 2
     };
     this.handleSince = this.handleSince.bind(this);
     this.handleUntil = this.handleUntil.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleLimit = this.handleLimit.bind(this);
+    this.handleClick = this.handleClick.bind(this); 
+    this.handlePrevious = this.handlePrevious.bind(this); 
+    this.handleNext = this.handleNext.bind(this);
    }
 
   handleLimit(event){
@@ -50,11 +55,36 @@ class FrequentPerForum extends React.Component {
     }
   }
 
+  handleClick(id) {
+    this.setState({
+      currentPage: id
+    });
+  }
+
+  handleNext() {
+    const numberOfPageItem = Math.ceil(this.props.data.data.length/this.state.dataPerPage);
+    if (this.state.currentPage < numberOfPageItem) {
+      this.setState({
+        currentPage: this.state.currentPage+1
+      });
+    }
+  }
+
+  handlePrevious() {
+    if (this.state.currentPage > 1) {
+      this.setState({
+        currentPage: this.state.currentPage-1
+      });
+    }
+  }
+
   componentWillReceiveProps() {
     this.setState({ loading: false });
   }
 
   renderTable() {
+    const { currentPage, dataPerPage } = this.state;
+
     const getData = () => {
       if (this.state.loading || this.props.data.data == null){
         return;
@@ -66,13 +96,51 @@ class FrequentPerForum extends React.Component {
           </tr>
         );
       }
-      let rows = this.props.data.data.map((freqPerForum, i) => 
+
+      let indexLast = currentPage * dataPerPage;
+      let indexFirst = indexLast - dataPerPage; 
+      let currentData = this.props.data.data.slice(indexFirst, indexLast);
+      let rows = currentData.map((freqGlobal, i) => 
         <tr key={i}>
-          <td>{freqPerForum.post_username}</td>
-          <td>{freqPerForum.post_count}</td>
+          <td>{freqGlobal.post_username}</td>
+          <td>{freqGlobal.post_count}</td>
         </tr>
       );
       return rows;
+    }
+
+    const getPageNumber = () => {
+      if ((this.state.loading || this.props.data.data == null) || this.props.data.data.length <= dataPerPage){
+        return;
+      }
+      
+      let pageNumber = [];
+
+      const numberOfPageItem = Math.ceil(this.props.data.data.length/dataPerPage);
+
+      for (let i = 1; i <= numberOfPageItem; i++) {
+        pageNumber.push(<li key={i} className="page-item"><a onClick={() => this.handleClick(i)} className="page-link">{i}</a></li>)
+      }
+
+      let pageNumberList = (<nav>
+        <ul className="pagination justify-content-center">
+          <li className="page-item">
+            <a className="page-link" onClick={() => this.handlePrevious()}>
+              <span>&laquo;</span>
+              <span className="sr-only">Previous</span>
+            </a>
+          </li>
+          {pageNumber}
+          <li className="page-item">
+            <a className="page-link" onClick={() => this.handleNext()}>
+              <span>&raquo;</span>
+              <span className="sr-only">Next</span>
+            </a>
+          </li>
+        </ul>
+      </nav>);
+
+      return pageNumberList;
     }
 
     const showSpinnerWhenLoading = () => (this.state.loading) ? <Spinner /> : "";
@@ -90,6 +158,7 @@ class FrequentPerForum extends React.Component {
             {getData()}
           </tbody>
         </table>
+        {getPageNumber()}
         {showSpinnerWhenLoading()}
       </div>
     );
