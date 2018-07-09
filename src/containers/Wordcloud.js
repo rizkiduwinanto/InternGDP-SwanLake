@@ -81,7 +81,6 @@ class WordcloudPage extends React.Component {
         </div>;
     }
     else if (this.props.data != null) {
-
       if (this.props.data.length === 0){
         wordcloud = <h3> Empty </h3>
       } else {

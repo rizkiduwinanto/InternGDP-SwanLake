@@ -30,20 +30,25 @@ class ForumSelector extends React.Component {
   }
 
   render() {
-    const showSpinnerWhenLoading = () => (this.state.loading) ? <Spinner /> : <List>{rows}</List>;
-    const rows = [];
-    if (this.props.forum_list.data != null) {
-      this.props.forum_list.data.forEach((forum) => {
-        rows.push(
-          <ListItem button key={forum.forum_id} onClick={() => this.handleForum(forum)}>
-            <ListItemText primary={forum.forum_name}/>
-          </ListItem>);
-      });
+    var forumSelector = <div></div>;
+    if (this.state.loading) {
+      forumSelector = <Spinner />;
+    } else {
+      const rows = [];
+      if (this.props.forum_list.data != null) {
+        this.props.forum_list.data.forEach((forum) => {
+          rows.push(
+            <ListItem button key={forum.forum_id} onClick={() => this.handleForum(forum)}>
+              <ListItemText primary={forum.forum_name}/>
+            </ListItem>);
+        });
+      }
+      forumSelector = <List>{rows}</List>;
     }
 
     return (
       <Paper style={{maxHeight: 200, maxWidth: '80%', overflow: 'auto'}}>
-        {showSpinnerWhenLoading()}
+        {forumSelector}
       </Paper>
     )
   }
