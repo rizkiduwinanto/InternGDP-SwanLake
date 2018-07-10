@@ -40,12 +40,16 @@ class Post extends React.Component {
       </a>
       <Dialog open={this.state.open} onClose={this.handleClose} scroll='paper'>
       <DialogTitle>{title}</DialogTitle>
+      <DialogContent>{post.post_username}</DialogContent>
       <DialogContent>
         <DialogContentText>
           {post.page_text}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
+        <Button onClick={(e) => this.handlePage(post.id)} color="primary">
+          Email Keyword
+        </Button>
         <Button onClick={(e) => this.handlePage(post.id)} color="primary">
           Open Page
         </Button>

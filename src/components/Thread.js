@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Dialog, DialogTitle, DialogActions } from '@material-ui/core';
+import { Button, Dialog, DialogTitle, DialogActions, DialogContent } from '@material-ui/core';
 
 class Thread extends React.Component {
   constructor(props) {
@@ -38,6 +38,7 @@ class Thread extends React.Component {
         </a>
         <Dialog open={this.state.open} onClose={this.handleClose} scroll='paper'>
         <DialogTitle>{thread.title}</DialogTitle>
+        <DialogContent>{thread.post_username}</DialogContent>
         <DialogActions>
           <Button onClick={(e) => this.handlePage(thread.id)} color="primary">
             Open Page

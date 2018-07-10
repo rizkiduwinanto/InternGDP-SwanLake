@@ -29,7 +29,7 @@ class ListOfPost extends React.Component {
   }
 
   render() {
-    const rows  = this.state.posts.map((post, i) => 
+    const rows  = this.props.posts.map((post, i) => 
       <Post post = {post} key = {i} updated={post.value}/>
     );
 
@@ -45,7 +45,8 @@ class ListOfPost extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    forum: state.selectedForum
+    forum: state.selectedForum,
+    posts: state.posts
   };
 }
 
