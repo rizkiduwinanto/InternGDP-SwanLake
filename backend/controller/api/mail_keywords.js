@@ -1,6 +1,7 @@
 import express from 'express';
 import chalk from 'chalk';
 import redisClient from '../../services/redis';
+import _ from 'lodash';
 const router = express.Router();
 
 const LOG_ROOT = `${chalk.black.bgGreen(' API - ')}${chalk.black.bgGreen('MAIL KEYWORD ')}`;
@@ -13,17 +14,25 @@ router.get('/mail_keywords', (req, res) => {
     if (!keywords) {
       res.json({ success: false, message: "Empty Set" });
     } else{
-      console.log(keywords);
-      res.json(keywords);
+      var listOfKeywords = _.transform(keywords, (res, value, key) => {
+        let parsedValue = JSON.parse(value);
+        let interval = parsedValue['interval'];
+        
+        res.push({keyword:key, interval });
+      }, []);
+      res.json(listOfKeywords);
     }
   });
 
 })
 
 router.post('/mail_keywords', (req, res) => {
-
   const { keyword, interval } = req.body;
-  redisClient.hset(MAIL_KEYWORDS, keyword, interval);
+  let value = {
+    TTL: interval,
+    interval: interval
+  }
+  redisClient.hset(MAIL_KEYWORDS, keyword, JSON.stringify(value));
 
   res.json({success: true});
 })
@@ -31,7 +40,11 @@ router.post('/mail_keywords', (req, res) => {
 router.patch('/mail_keywords', (req, res) => {
 
   const { keyword, interval } = req.body;
-  redisClient.hset(MAIL_KEYWORDS, keyword, interval);
+  let value = {
+    TTL: interval,
+    interval: interval
+  }
+  redisClient.hset(MAIL_KEYWORDS, keyword, JSON.stringify(value));
 
   res.json({success: true});
 })
