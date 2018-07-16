@@ -48,9 +48,6 @@ class Post extends React.Component {
       </DialogContent>
       <DialogActions>
         <Button onClick={(e) => this.handlePage(post.id)} color="primary">
-          Email Keyword
-        </Button>
-        <Button onClick={(e) => this.handlePage(post.id)} color="primary">
           Open Page
         </Button>
         <Button onClick={this.handleClose} color="primary">
