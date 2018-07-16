@@ -1,12 +1,16 @@
 import client, { THREAD_ID_MAP_FORUM_ID } from './redis';
 import chalk from 'chalk';
 import { promisify } from 'util';
+import { checkAndSendKeywordNotification } from './mailer';
+
 
 const LOG_ROOT = `${chalk.black.bgWhite(' SERVICE - ')}${chalk.black.bgWhite('SOCKET.IO ')}`;
+let io;
+
 
 export const initSocketIO = server => {
 
-  const io = require('socket.io').listen(server);
+  io = require('socket.io').listen(server);
 
   io.on('connection', socket => {
     console.log(`${LOG_ROOT} A client connected`);
@@ -25,6 +29,8 @@ export const initSocketIO = server => {
       const getForumId = () => getAsync(THREAD_ID_MAP_FORUM_ID, threadID).then((result) => result);
       const forumID = await getForumId();
 
+      checkAndSendKeywordNotification(data.page_text);
+
       if (forumID == null) return;
 
       if (isDateLineUpdated(data.dateline))
@@ -39,6 +45,9 @@ export const initSocketIO = server => {
   });
 
 };
+
+export default io;
+
 
 function isDateLineUpdated(dateline){ 
   const TEN_MINUTES = 10*60;
