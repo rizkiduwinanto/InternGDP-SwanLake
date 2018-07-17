@@ -1,5 +1,7 @@
 import React from 'react';
 import { TextField, Button, Typography } from '@material-ui/core';
+import { fetchEmail, fetchKeyword } from '../actions/keywordAction';
+import { connect } from 'react-redux';
 
 const textFieldStyle = {
   marginLeft : 22
@@ -20,18 +22,29 @@ class Keyword extends React.Component {
     super(props);
     this.state = {
       keyword : '',
-      interval : 0
+      interval : 0,
     };
+  }
+
+  componentWillMount() {
+    this.props.fetchEmail();
+    this.props.fetchKeyword();
   }
 
   renderTableKeyword() {
     const getData = () => {
-       let rows = ( <tr key={1}>
-          <td>Rizki</td>
-          <td>1</td>
-          <td><a href="#">Edit</a> <a href="#">Delete</a></td>
-        </tr>);
-      return rows;
+      // if (this.props.keyword.data.length === 0) {
+      //   return;
+      // }
+
+      // let rows = this.props.keyword.data.map((keyword) => 
+      //   <tr key={1}>
+      //     <td>{}</td>
+      //     <td>1</td>
+      //     <td><a href="#">Edit</a> <a href="#">Delete</a></td>
+      //   </tr>
+      // );
+      // return rows;
     }
 
     return (
@@ -50,6 +63,12 @@ class Keyword extends React.Component {
         </table>
       </div>
     );
+  }
+
+  renderListHistory() {
+    const getData = () => {
+
+    }
   }
   
   render(){
@@ -77,4 +96,18 @@ class Keyword extends React.Component {
   }
 }
 
-export default Keyword;
+function mapStateToProps(state){
+  return {
+    email: state.keyword.email,
+    keyword: state.keyword.keyword
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchEmail: () => dispatch(fetchEmail()),
+    fetchKeyword: () => dispatch(fetchKeyword())
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Keyword);

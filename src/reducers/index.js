@@ -6,6 +6,7 @@ import reducerFrequent from './reducerFrequent';
 import reducerWordcloud from './reducerWordcloud';
 import reducerTimeseries from './reducerTimeseries';
 import reducerThread from './reducerThread';
+import reducerKeyword from './reducerKeyword';
 
 export default combineReducers({
   posts: reducerDataPost,
@@ -14,5 +15,6 @@ export default combineReducers({
   frequent: reducerFrequent,
   wordcloud: reducerWordcloud,
   timeseries: reducerTimeseries,
-  thread: reducerThread
+  thread: reducerThread,
+  keyword: reducerKeyword
 });
