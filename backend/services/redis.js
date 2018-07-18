@@ -2,7 +2,10 @@ import redis from 'redis';
 import chalk from 'chalk';
 import _ from 'lodash';
 import { getThreadIdMapForumId } from '../services/bigquery';
-const client = redis.createClient();
+const client = redis.createClient({
+  host: 'redis'
+});
+
 
 
 export const THREAD_ID_MAP_FORUM_ID = 'thread_id_map_forum_id';
