@@ -7,6 +7,7 @@ const client = redis.createClient({
 });
 
 
+
 export const THREAD_ID_MAP_FORUM_ID = 'thread_id_map_forum_id';
 
 const LOG_ROOT = `${chalk.black.bgWhite(' SERVICE - ')}${chalk.black.bgWhite('REDIS ')}`;
