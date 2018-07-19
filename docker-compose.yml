@@ -1,22 +1,25 @@
 version: '3'
+services: 
   server:
-    build: 
-      context: .
-      dockerfile: ./backend
+    build: ./backend
     ports:
       - "3001:3001"
     volumes:
-      - './backend:/home/node'
+      - /root/GCPConfig/:/root/GCPConfig
     depends_on:
       - redis
     environment:
-      - REDIS_HOST=redis
-      - EMAIL=myemail@gmail.com
-      - PASSWORD=mypass
       - NODE_ENV=development
-    command: ['npm', 'run', 'start']
+      - REDIS_HOST=redis
+      - EMAIL=my_email@gmail.com
+      - PASSWORD=somepassword
+    links:
+      - redis
+    command: npm run start
 
   redis:
     image: redis:alpine
+    volumes:
+      - /root/redis-data:/data
 
     
