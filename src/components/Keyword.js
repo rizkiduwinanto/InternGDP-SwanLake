@@ -28,7 +28,7 @@ class Keyword extends React.Component {
   }
 
   insertKeyword() {
-    if (this.state.interval < 1 && this.state.keyword){
+    if (this.state.interval > 0 && this.state.keyword){
       fetch('http://127.0.0.1:3001/api/mail_keywords', {
         method: 'POST',
         headers: {
