@@ -11,17 +11,13 @@ router.get('/mail_keywords', (req, res) => {
 
   redisClient.hgetall(MAIL_KEYWORDS, (err, keywords) => {
     if (err) throw err;
-    if (!keywords) {
-      res.json({ success: false, message: "Empty Set" });
-    } else{
-      var listOfKeywords = _.transform(keywords, (res, value, key) => {
-        let parsedValue = JSON.parse(value);
-        let interval = parsedValue['interval'];
-        
-        res.push({keyword:key, interval });
-      }, []);
-      res.json(listOfKeywords);
-    }
+    var listOfKeywords = _.transform(keywords, (res, value, key) => {
+      let parsedValue = JSON.parse(value);
+      let interval = parsedValue['interval'];
+      
+      res.push({keyword:key, interval });
+    }, []);
+    res.json(listOfKeywords);
   });
 
 })
