@@ -17,6 +17,21 @@ services:
     links:
       - redis
     command: npm run start
+  
+  consumer:
+    build: ./consumer
+    volumes:
+      - /root/GCPConfig/:/root/GCPConfig
+    depends_on:
+      - server
+    environment:
+      - NODE_ENV=development
+      - SOCKET_ADDR=server
+      - SOCKET_PORT=3001
+      - GOOGLE_APPLICATION_CREDENTIALS=/root/GCPConfig/GCPCredential.json
+    links:
+      - server
+    command: npm run start
 
   redis:
     image: redis:alpine
