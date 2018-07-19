@@ -13,12 +13,15 @@ services:
       - REDIS_HOST=redis
       - EMAIL=my_email@gmail.com
       - PASSWORD=somepassword
+      - GOOGLE_APPLICATION_CREDENTIALS=/root/GCPConfig/GCPCredential.json
     links:
       - redis
     command: npm run start
 
   redis:
     image: redis:alpine
+    ports:
+      - "6379:6379"
     volumes:
       - /root/redis-data:/data
 

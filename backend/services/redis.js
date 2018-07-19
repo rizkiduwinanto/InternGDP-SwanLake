@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { getThreadIdMapForumId } from '../services/bigquery';
 import config from '../config';
 const client = redis.createClient({
-  host: config.REDIS_HOST
+  host: 'redis'
 });
 
 
