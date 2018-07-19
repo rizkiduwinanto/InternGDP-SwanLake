@@ -2,8 +2,9 @@ import redis from 'redis';
 import chalk from 'chalk';
 import _ from 'lodash';
 import { getThreadIdMapForumId } from '../services/bigquery';
+import config from '../config';
 const client = redis.createClient({
-  host: 'redis'
+  host: config.REDIS_HOST
 });
 
 
