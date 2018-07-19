@@ -13,7 +13,8 @@
   },
   "scripts": {
     "start": "nodemon consumer.js --exec babel-node --presets es2015,stage-0",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:post": "node test_publish/post_publish.js",
+    "test:thread": "node test_publish/thread_publish.js"
   },
   "author": "Azis Adi Kuncoro, M. Rizki Duwinanto",
   "license": "ISC"

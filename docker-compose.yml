@@ -2,6 +2,7 @@ version: '3'
 services: 
   server:
     build: ./backend
+    image: backend-img
     ports:
       - "3001:3001"
     volumes:
@@ -17,9 +18,10 @@ services:
     links:
       - redis
     command: npm run start
-  
+
   consumer:
     build: ./consumer
+    image: consumer-img
     volumes:
       - /root/GCPConfig/:/root/GCPConfig
     depends_on:

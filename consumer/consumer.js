@@ -34,7 +34,6 @@ const threadMessageHandler = message => {
 
   var msg = JSON.parse(message.data);
 
-  checkAlertForKeyword(msg, keyword);
   socket.emit('thread',msg);
 
   message.ack();
@@ -46,7 +45,6 @@ const postMessageHandler = message => {
   var msg = JSON.parse(message.data);
   
   
-  checkAlertForKeyword(message.data, keyword);
   socket.emit('post',msg);
   
 
