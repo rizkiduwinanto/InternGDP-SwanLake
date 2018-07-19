@@ -6,7 +6,7 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - /root/GCPConfig/:/root/GCPConfig
+      - ./GCPConfig:/root/GCPConfig
     depends_on:
       - redis
     environment:
@@ -23,7 +23,7 @@ services:
     build: ./consumer
     image: consumer-img
     volumes:
-      - /root/GCPConfig/:/root/GCPConfig
+      - ./GCPConfig:/root/GCPConfig
     depends_on:
       - server
     environment:
@@ -40,6 +40,6 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - /root/redis-data:/data
+      - ./redis-data:/data
 
     
