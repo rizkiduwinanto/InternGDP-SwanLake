@@ -2,8 +2,8 @@ import React from 'react';
 import Post from '../components/Post';
 import {connect} from 'react-redux';
 import io from 'socket.io-client';
-
-const socket = io.connect('http://127.0.0.1:3001');
+import { API_URL } from '../config';
+const socket = io.connect(`${API_URL}`);
 
 class ListOfPost extends React.Component {
   constructor(props) {
