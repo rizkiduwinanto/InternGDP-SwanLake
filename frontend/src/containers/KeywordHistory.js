@@ -1,7 +1,8 @@
 import React from 'react';
 import io from 'socket.io-client';
+import { API_URL } from '../config';
 
-const socket = io.connect('http://127.0.0.1:3001');
+const socket = io.connect(`${API_URL}`);
 
 class KeywordHistory extends React.Component {
   constructor(props) {

@@ -29,7 +29,7 @@ class ListOfThread extends React.Component {
   }
 
   render() {
-    const rows = this.props.thread.map((thread, i) =>
+    const rows = this.state.threads.map((thread, i) =>
       <Thread thread = {thread} key = {i} updated={thread.value}/>
     );
 
@@ -46,7 +46,7 @@ class ListOfThread extends React.Component {
 function mapStateToProps(state) {
   return {
     forum: state.selectedForum,
-    thread: state.thread
+    threads: state.thread
   };
 }
 

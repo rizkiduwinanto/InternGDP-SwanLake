@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dialog, TextField, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 import { fetchEmail } from '../actions/keywordAction';
+import { API_URL } from '../config';
 
 const inlineTextStyle = {
   marginTop : 20
@@ -34,7 +35,7 @@ class KeywordTable extends React.Component {
   }
 
   handleEditEmail() {
-    fetch('http://127.0.0.1:3001/api/keyword_mail_addr', {
+    fetch(`${API_URL}/api/keyword_mail_addr`, {
       method: 'PATCH', 
       headers: {
         'Content-Type': 'application/json'

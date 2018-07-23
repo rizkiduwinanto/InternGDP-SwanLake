@@ -29,7 +29,7 @@ class ListOfPost extends React.Component {
   }
 
   render() {
-    const rows  = this.props.posts.map((post, i) => 
+    const rows  = this.state.posts.map((post, i) => 
       <Post post = {post} key = {i} updated={post.value}/>
     );
 

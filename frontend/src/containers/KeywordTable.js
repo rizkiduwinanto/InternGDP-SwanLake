@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dialog, TextField, DialogTitle, DialogContentText, DialogContent, DialogActions, Button } from '@material-ui/core';
 import { fetchKeyword } from '../actions/keywordAction';
+import { API_URL } from '../config';
 
 const tableStyle = {
   margin: '0 auto',
@@ -43,7 +44,7 @@ class KeywordTable extends React.Component {
 
   handleEditKeyword() {
     if (this.state.interval >= 1) {
-      fetch('http://127.0.0.1:3001/api/mail_keywords', {
+      fetch(`${API_URL}/api/mail_keywords`, {
         method: 'PATCH', 
         headers: {
           'Content-Type': 'application/json'
@@ -72,7 +73,7 @@ class KeywordTable extends React.Component {
   }
 
   handleDeleteKeyword() {
-    fetch('http://127.0.0.1:3001/api/mail_keywords', {
+    fetch(`${API_URL}/api/mail_keywords`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
@@ -153,7 +154,7 @@ class KeywordTable extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {getData()}
+            {/* {getData()} */}
           </tbody>
         </table>
       </div>

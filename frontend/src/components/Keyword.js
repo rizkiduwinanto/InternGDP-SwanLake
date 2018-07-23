@@ -1,8 +1,9 @@
 import React from 'react';
 import { TextField, Button, Typography } from '@material-ui/core';
-import KeywordTable from './KeywordTable';
-import KeywordEmail from './KeywordEmail';
-import KeywordHistory from './KeywordHistory';
+import KeywordTable from '../containers/KeywordTable';
+import KeywordEmail from '../containers/KeywordEmail';
+import KeywordHistory from '../containers/KeywordHistory';
+import { API_URL } from '../config';
 
 const textFieldStyle = {
   marginLeft : 22
@@ -29,7 +30,7 @@ class Keyword extends React.Component {
 
   insertKeyword() {
     if (this.state.interval > 0 && this.state.keyword){
-      fetch('http://127.0.0.1:3001/api/mail_keywords', {
+      fetch(`${API_URL}/api/mail_keywords`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
