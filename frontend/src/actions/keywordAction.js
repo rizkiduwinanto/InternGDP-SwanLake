@@ -1,10 +1,8 @@
 export const fetchEmail = () => async (dispatch, getState, url_api) => {
   try {
-    const url =  `${url_api}/api/keyword_mail_addr`
-    console.log(url);
+    const url =  `${url_api}/api/keyword_mail_addr`;
     const response = await fetch(url);
     const responseBody = await response.json();
-    console.log(responseBody.success);
     dispatch(receiveEmail(responseBody));
   } catch (error) {
     console.log(error);
@@ -20,11 +18,9 @@ export function receiveEmail(data) {
 
 export const fetchKeyword = () => async (dispatch, getState, url_api) => {
   try {
-    const url =  `${url_api}/api/mail_keywords`
-    console.log(url);
+    const url =  `${url_api}/api/mail_keywords`;
     const response = await fetch(url);
     const responseBody = await response.json();
-    console.log(responseBody.success);
     dispatch(receiveKeyword(responseBody));
   } catch (error) {
     console.log(error);

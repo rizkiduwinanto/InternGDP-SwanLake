@@ -7,16 +7,14 @@ const socket = io.connect(`${API_URL}`);
 class KeywordHistory extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      history: []
-    }
     console.dir(socket);
   }
 
   render() {
     let rows = [];
     socket.on('mail',(data)=>{
-      rows.push(data);
+      rows.push( <li className="list-group-item" >{data}</li>);
+      console.log(data);
     })
 
     return (
