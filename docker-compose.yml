@@ -20,6 +20,17 @@ services:
       - redis
     command: npm run start
 
+  frontend:
+    build: ./frontend
+    image: frontend-img
+    ports:
+      - '80:3000'
+    depends_on:
+     - server
+    environment:
+     - NODE_ENV=development
+    command: serve -l tcp://0.0.0.0:3000
+
   consumer:
     build: ./consumer
     image: consumer-img
