@@ -154,7 +154,7 @@ class KeywordTable extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {/* {getData()} */}
+            {getData()}
           </tbody>
         </table>
       </div>
