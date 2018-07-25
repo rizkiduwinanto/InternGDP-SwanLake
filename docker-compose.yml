@@ -1,51 +1,59 @@
 version: '3'
 services: 
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - '.:/usr/src/app'
-      - '/usr/src/app/node_modules'
-    ports:
-      - '3000:3000'
-    environment:
-      - NODE_ENV=development
-    depends_on:
-      - server
-      - consumer
-
   server:
-    build: .
-    command: ['npm', 'run', 'start:server']
+    build: ./backend
+    image: backend-img
     ports:
       - "3001:3001"
     volumes:
-      - '.:/usr/src/app'
-      - '/usr/src/app/node_modules'
-      - ~/.config/:/root/.config
+      - ./GCPConfig:/root/GCPConfig
     depends_on:
       - redis
     environment:
+      - API_ADDR=0.0.0.0
       - NODE_ENV=development
+      - REDIS_HOST=redis
+#      - EMAIL=
+#      - PASSWORD=
+      - GOOGLE_APPLICATION_CREDENTIALS=/root/GCPConfig/GCPCredential.json
     links:
       - redis
+    command: npm run start
+
+  frontend:
+    build: ./frontend
+    image: frontend-img
+    volumes:
+      - ./frontend:/home/node
+    ports:
+      - '80:3000'
+    depends_on:
+     - server
+    environment:
+     - NODE_ENV=development
+    command: npm run start
 
   consumer:
-    build: .
-    command: ['npm', 'run', 'start:consumer']
+    build: ./consumer
+    image: consumer-img
     volumes:
-      - '.:/usr/src/app'
-      - '/usr/src/app/node_modules'
-      - ~/.config/:/root/.config
+      - ./GCPConfig:/root/GCPConfig
     depends_on:
       - server
     environment:
       - NODE_ENV=development
+      - SOCKET_ADDR=server
+      - SOCKET_PORT=3001
+      - GOOGLE_APPLICATION_CREDENTIALS=/root/GCPConfig/GCPCredential.json
     links:
       - server
+    command: npm run start
 
   redis:
     image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
 
     

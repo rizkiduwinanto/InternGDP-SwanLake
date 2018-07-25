@@ -12,7 +12,7 @@ router.get('/keyword_mail_addr', (req, res) => {
   redisClient.hget(KEYWORD_MAIL_ADDR, EMAIL_FIELD, (err, emailAddress) => {
     if (err) throw err;
     if (!emailAddress) {
-      res.json({ success: false, message: "Empty Set" });
+      res.json({ [EMAIL_FIELD]: 'empty'});
     } else{
       console.log(emailAddress);
       res.json({ [EMAIL_FIELD]: emailAddress});

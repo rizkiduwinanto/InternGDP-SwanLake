@@ -40,6 +40,7 @@ class Post extends React.Component {
       </a>
       <Dialog open={this.state.open} onClose={this.handleClose} scroll='paper'>
       <DialogTitle>{title}</DialogTitle>
+      <DialogContent>{post.post_username}</DialogContent>
       <DialogContent>
         <DialogContentText>
           {post.page_text}

@@ -3,7 +3,7 @@ import Navbar from './Navbar';
 import Dashboard from './Dashboard';
 import Timeseries from '../containers/Timeseries';
 import WordcloudPage from '../containers/Wordcloud';
-import About from './About';
+import Keyword from './Keyword';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import FrequentPerForum from '../containers/FrequentPerForum';
 import FrequentGlobal from '../containers/FrequentGlobal';
@@ -20,7 +20,7 @@ class App extends React.Component {
             <Route path='/FrequentPoster/Perforum' component={FrequentPerForum}/>
             <Route path='/Timeseries' component={Timeseries}/>
             <Route path='/Wordcloud' component={WordcloudPage}/>
-            <Route path='/About' component={About}/>
+            <Route path='/Keyword' component={Keyword}/>
           </Switch>
         </div>
       </Router>

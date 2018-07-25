@@ -24,7 +24,7 @@ class Navbar extends React.Component {
             <Button color="inherit" component={Link} to='/FrequentPoster/Global' >Frequent Poster</Button>
             <Button color="inherit" component={Link} to='/Timeseries' >Graph</Button>
             <Button color="inherit" component={Link} to='/Wordcloud' >Wordcloud</Button>
-            <Button color="inherit" component={Link} to='/About' >About</Button>
+            <Button color="inherit" component={Link} to='/Keyword' >Keyword</Button>
           </Toolbar>
         </AppBar>
       </div>
