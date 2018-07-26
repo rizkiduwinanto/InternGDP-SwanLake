@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dialog, TextField, DialogTitle, DialogContentText, DialogContent, DialogActions, Button } from '@material-ui/core';
-import { fetchKeyword } from '../actions/keywordAction';
-import { API_URL } from '../config';
+import { fetchKeyword, patchKeyword, deleteKeyword } from '../actions/keywordAction';
 
 const tableStyle = {
   margin: '0 auto',
@@ -44,16 +43,7 @@ class KeywordTable extends React.Component {
 
   handleEditKeyword() {
     if (this.state.interval >= 1) {
-      fetch(`${API_URL}/api/mail_keywords`, {
-        method: 'PATCH', 
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          keyword: this.state.keyword,
-          interval: this.state.interval
-        })
-      })
+      this.props.patchKeyword(this.state.interval, this.state.keyword);
       this.setState({ editKeywordDialog: false, keyword: '', interval: 0});
     } else {
       alert('Interval cannot be a minus');
@@ -73,16 +63,7 @@ class KeywordTable extends React.Component {
   }
 
   handleDeleteKeyword() {
-    fetch(`${API_URL}/api/mail_keywords`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        keyword: this.state.keyword,
-        interval: this.state.interval
-      })
-    });
+    this.props.deleteKeyword(this.state.interval, this.state.keyword);
     this.setState({ deleteKeywordDialog: false, keyword: '', interval: 0});
   }
 
@@ -100,7 +81,11 @@ class KeywordTable extends React.Component {
             <a onClick={(e) => this.handleOpenKeyword(keyword)} >Edit</a>
             <Dialog open={this.state.editKeywordDialog} onClose={this.handleCloseKeyword}>
               <DialogTitle>Edit Keyword</DialogTitle>
-              <form onSubmit={(e)=>{this.handleEditKeyword();}}>
+              <form onSubmit={(e)=>{
+                e.preventDefault();
+                this.handleEditKeyword();
+                e.target.reset();
+                }}>
                 <DialogContent>
                   <DialogContentText>
                     Edit Interval for Keyword "{this.state.keyword}"?
@@ -131,7 +116,11 @@ class KeywordTable extends React.Component {
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <form onSubmit={(e)=>{this.handleDeleteKeyword(keyword)}}>
+                <form onSubmit={(e)=>{
+                  e.preventDefault();
+                  this.handleDeleteKeyword(keyword);
+                  e.target.reset();
+                  }}>
                   <Button onClick={this.handleCloseDeleteKeyword}>Cancel</Button>
                   <Button type="submit">Delete</Button>
                 </form>
@@ -170,7 +159,9 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchKeyword: () => dispatch(fetchKeyword())
+    fetchKeyword : () => dispatch(fetchKeyword()),
+    patchKeyword : (interval, keyword) => dispatch(patchKeyword(interval, keyword)),
+    deleteKeyword: (interval, keyword) => dispatch(deleteKeyword(interval, keyword))
   };
 }
 

@@ -33,3 +33,116 @@ export function receiveKeyword(data) {
     data
   };
 }
+
+export const insertKeyword = (interval, keyword) => {
+  return (dispatch, getState, url_api) => {
+    const json = {
+      keyword: keyword,
+      interval: interval
+    };
+
+    return fetch(`${url_api}/api/mail_keywords`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(json)
+      })
+      .then(response => {
+        dispatch(addKeyword(json));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+} 
+
+export function addKeyword(data) {
+  return {
+    type: 'ADD_KEYWORD',
+    data
+  };
+}
+
+export const deleteKeyword = (interval, keyword) => {
+  return (dispatch, getState, url_api) => {
+    const json = {
+      keyword: keyword,
+      interval: interval
+    };
+
+    return fetch(`${url_api}/api/mail_keywords`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(json)
+      })
+      .then(response => {
+        dispatch(eraseKeyword(json));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+} 
+
+export function eraseKeyword(data) {
+  return {
+    type: 'ERASE_KEYWORD',
+    data
+  };
+}
+
+export const patchKeyword = (interval, keyword) => {
+  return (dispatch, getState, url_api) => {
+    const json = {
+      keyword: keyword,
+      interval: interval
+    };
+
+    return fetch(`${url_api}/api/mail_keywords`, {
+        method: 'PATCH', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(json)
+      })
+      .then(response => {
+        dispatch(editKeyword(json));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+} 
+
+export function editKeyword(data) {
+  return {
+    type: 'EDIT_KEYWORD',
+    data
+  };
+}
+
+
+export const patchEmail = (email) => {
+  return (dispatch, getState, url_api) => {
+    const json = {
+      email : email
+    };
+
+    return fetch(`${url_api}/api/keyword_mail_addr`, {
+        method: 'PATCH', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(json)
+      })
+      .then(response => {
+        dispatch(receiveEmail(json));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+} 
