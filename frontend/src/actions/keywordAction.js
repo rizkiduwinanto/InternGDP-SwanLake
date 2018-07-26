@@ -33,3 +33,33 @@ export function receiveKeyword(data) {
     data
   };
 }
+
+export const insertKeyword = (interval, keyword) => {
+  return (dispatch, getState, url_api) => {
+    const json = {
+      keyword: keyword,
+      interval: interval
+    };
+
+    return fetch(`${url_api}/api/mail_keywords`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(json)
+      })
+      .then(response => {
+        dispatch(postKeyword(json));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+} 
+
+export function postKeyword(data) {
+  return {
+    type: 'POST_KEYWORD',
+    data
+  };
+}

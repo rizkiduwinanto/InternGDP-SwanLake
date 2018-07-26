@@ -3,6 +3,8 @@ import { TextField, Button, Typography } from '@material-ui/core';
 import KeywordTable from '../containers/KeywordTable';
 import KeywordEmail from '../containers/KeywordEmail';
 import KeywordHistory from '../containers/KeywordHistory';
+import { insertKeyword } from '../actions/keywordAction';
+import { connect } from 'react-redux';
 import { API_URL } from '../config';
 
 const textFieldStyle = {
@@ -30,17 +32,7 @@ class Keyword extends React.Component {
 
   insertKeyword() {
     if (this.state.interval > 0 && this.state.keyword){
-      fetch(`${API_URL}/api/mail_keywords`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          keyword: this.state.keyword,
-          interval: this.state.interval
-        })
-      });
-      this.setState({keyword: '', interval: 0});
+      this.props.insertKeyword(this.state.interval, this.state.keyword);
     } else {
       alert('Interval cannot be a minus or Keyword cannot be a null!');
     }
@@ -51,8 +43,12 @@ class Keyword extends React.Component {
       <div style={{marginBottom: '30px'}}>
         <Typography className="text-center py-3" variant="display1" >Keyword</Typography>
         <div className="text-center">
-          <form onSubmit={(e)=>{this.insertKeyword();}}>
-            <TextField style={textFieldStyle} type="text" placeholder="Insert new Keyword here" label="Keyword" onChange={this.onChangeKeyword}/>
+          <form onSubmit={e =>{
+              e.preventDefault();
+              this.insertKeyword();
+              e.target.reset();
+            }}>
+            <TextField style={textFieldStyle} type="text" placeholder="Insert new Keyword here" label="Keyword" onChange={this.onChangeKeyword} value={this.state.keyword}/>
             <TextField style={textFieldStyle} type="number" placeholder="Interval" label="Interval" onChange={this.onChangeInterval}/>
             <Button color="primary" type="submit" >Register Keyword</Button>
           </form>
@@ -68,5 +64,10 @@ class Keyword extends React.Component {
   }
 }
 
+function mapDispatchToProps(dispatch) {
+  return {
+    insertKeyword: (interval, keyword) => dispatch(insertKeyword(interval, keyword))
+  };
+}
 
-export default Keyword;
+export default connect(null, mapDispatchToProps)(Keyword);
