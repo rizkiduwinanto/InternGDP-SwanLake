@@ -8,7 +8,7 @@ const LOG_ROOT = `${chalk.black.bgGreen(' API - ')}${chalk.black.bgGreen('MAIL K
 const MAIL_KEYWORDS = 'mail_keywords';
 
 router.get('/mail_keywords', (req, res) => {
-
+  try {
   redisClient.hgetall(MAIL_KEYWORDS, (err, keywords) => {
     if (err) throw err;
     var listOfKeywords = _.transform(keywords, (res, value, key) => {
@@ -19,38 +19,51 @@ router.get('/mail_keywords', (req, res) => {
     }, []);
     res.json(listOfKeywords);
   });
+  } catch(err) {
+    console.log(err);
+  }
 
 })
 
 router.post('/mail_keywords', (req, res) => {
-  const { keyword, interval } = req.body;
-  let value = {
-    TTL: interval,
-    interval: interval
+  try {
+    const { keyword, interval } = req.body;
+    let value = {
+      TTL: interval,
+      interval: interval
+    }
+    redisClient.hset(MAIL_KEYWORDS, keyword, JSON.stringify(value));
+    
+    res.json({success: true});
+  } catch(err) {
+    console.log(err);
   }
-  redisClient.hset(MAIL_KEYWORDS, keyword, JSON.stringify(value));
-
-  res.json({success: true});
 })
 
 router.patch('/mail_keywords', (req, res) => {
+  try {
+    const { keyword, interval } = req.body;
+    let value = {
+      TTL: interval,
+      interval: interval
+    }
+    redisClient.hset(MAIL_KEYWORDS, keyword, JSON.stringify(value));
 
-  const { keyword, interval } = req.body;
-  let value = {
-    TTL: interval,
-    interval: interval
+    res.json({success: true});
+  } catch(err) {
+    console.log(err);
   }
-  redisClient.hset(MAIL_KEYWORDS, keyword, JSON.stringify(value));
-
-  res.json({success: true});
 })
 
 router.delete('/mail_keywords', (req, res) => {
+  try {
+    const { keyword } = req.body;
+    redisClient.hdel(MAIL_KEYWORDS, keyword);
 
-  const { keyword } = req.body;
-  redisClient.hdel(MAIL_KEYWORDS, keyword);
-
-  res.json({success: true});
+    res.json({success: true});
+  } catch(err) {
+    console.log(err);
+  }
 })
 
 export default router;

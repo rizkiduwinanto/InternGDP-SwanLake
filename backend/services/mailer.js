@@ -34,7 +34,7 @@ export function checkAndSendKeywordNotification(paragraph) {
           let interval = parsedResult['interval'];
 
           console.log(`${keyword} TTL : ${TTL}, interval ${interval}`);
-          if (TTL <= 0) {
+          if (TTL <= 1) {
             console.log("Sending email ...");
             TTL = interval;
             const KEYWORD_MAIL_ADDR = 'keyword_mail_addr';
@@ -42,11 +42,10 @@ export function checkAndSendKeywordNotification(paragraph) {
             const hgetAsync = promisify(redisClient.hget).bind(redisClient);
             const getEmailAddress = () => hgetAsync(KEYWORD_MAIL_ADDR, EMAIL_FIELD).then((result) => result);
             const emailAddress = await getEmailAddress();
-            sendMailNotif(
-                  emailAddress,
-                 `[Keyword Alert] ${keyword}`,
-                 `Keyword ${keyword} telah ditemukan ${interval} kali.`);
-      
+              sendMailNotif(
+                emailAddress,
+                `[Keyword Alert] ${keyword}`,
+                `Keyword ${keyword} telah ditemukan ${interval} kali.`);
           } else {
             TTL = TTL - 1;
           } 
@@ -66,39 +65,44 @@ export function checkAndSendKeywordNotification(paragraph) {
 
 // === Send email function
 export async function sendMailNotif(destEmail, subject, content){
-  const SENDER_EMAIL = config.NODE_MAILER.sender_email;
-  const SENDER_PASS = config.NODE_MAILER.sender_password;
-  const MAIL_SERVICE = config.NODE_MAILER.service;
+  try {
 
-  if (SENDER_EMAIL == null || SENDER_PASS == null) {
-    console.log(`${LOG_ROOT} : ${chalk.red(' Seems you forget to put email/pass in the env variable')}`);
-    return;
-  }
-  const transporter = nodemailer.createTransport({
-    service: `${MAIL_SERVICE}`,
-    auth:{
-      user: `${SENDER_EMAIL}`,
-      pass: `${SENDER_PASS}`
+    const SENDER_EMAIL = config.NODE_MAILER.sender_email;
+    const SENDER_PASS = config.NODE_MAILER.sender_password;
+    const MAIL_SERVICE = config.NODE_MAILER.service;
+    
+    if (SENDER_EMAIL == null || SENDER_PASS == null) {
+      console.log(`${LOG_ROOT} : ${chalk.red(' Seems you forget to put email/pass in the env variable')}`);
+      return;
     }
-  });
-
-  const mailOptions = {
-    from: `${SENDER_EMAIL}`,
-    to: `${destEmail}`,
-    subject: `${subject}`,
-    text: `${content}`
-  }
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(`${LOG_ROOT} : `);
-      throw error;
-    } else {
-      console.log(`${LOG_ROOT} sent: ${info.response}`);
-      let log_data =`${subject} sent at ${new Date()}`;
-      // console.log(`Log data : ${log_data}`);
-      io.emit(`mail`,log_data);
+    
+    const transporter = nodemailer.createTransport({
+      service: `${MAIL_SERVICE}`,
+      auth:{
+        user: `${SENDER_EMAIL}`,
+        pass: `${SENDER_PASS}`
+      }
+    });
+    
+    const mailOptions = {
+      from: `${SENDER_EMAIL}`,
+      to: `${destEmail}`,
+      subject: `${subject}`,
+      text: `${content}`
     }
-  });
+    
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(`${LOG_ROOT} : `, error);
+      } else {
+        console.log(`${LOG_ROOT} sent: ${info.response}`);
+        let log_data =`${subject} sent at ${new Date()}`;
+        // console.log(`Log data : ${log_data}`);
+        io.emit(`mail`,log_data);
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
 }
-// =====
+  // =====

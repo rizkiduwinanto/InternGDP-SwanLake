@@ -13,8 +13,8 @@ services:
       - API_ADDR=0.0.0.0
       - NODE_ENV=development
       - REDIS_HOST=redis
-#      - EMAIL=
-#      - PASSWORD=
+      - EMAIL=${EMAIL}
+      - PASSWORD=${PASSWORD}
       - GOOGLE_APPLICATION_CREDENTIALS=/root/GCPConfig/GCPCredential.json
     links:
       - redis

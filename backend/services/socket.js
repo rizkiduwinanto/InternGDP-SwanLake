@@ -28,8 +28,11 @@ export const initSocketIO = server => {
       const getAsync = promisify(client.hget).bind(client);
       const getForumId = () => getAsync(THREAD_ID_MAP_FORUM_ID, threadID).then((result) => result);
       const forumID = await getForumId();
-
-      checkAndSendKeywordNotification(data.page_text);
+      try {
+        checkAndSendKeywordNotification(data.page_text);
+      } catch (error) {
+        console.log(error);
+      }
 
       if (forumID == null) return;
 
