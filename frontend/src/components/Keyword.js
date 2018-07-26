@@ -48,7 +48,7 @@ class Keyword extends React.Component {
   
   render(){
     return(
-      <div>
+      <div style={{marginBottom: '30px'}}>
         <Typography className="text-center py-3" variant="display1" >Keyword</Typography>
         <div className="text-center">
           <form onSubmit={(e)=>{this.insertKeyword();}}>

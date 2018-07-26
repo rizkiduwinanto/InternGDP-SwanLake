@@ -7,19 +7,26 @@ const socket = io.connect('http://0.0.0.0:3002');
 class KeywordHistory extends React.Component {
   constructor(props) {
     super(props);
-    console.dir(socket);
+    this.state = {
+      messages : [],
+    }
+  }
+
+  componentDidMount() {
+    socket.on('mail', (message) => {
+      this.setState({messages: [...this.state.messages, message]});
+      console.log(message);
+    });
   }
 
   render() {
-    let rows = [];
-    socket.on('mail', (message) => {
-      rows.push( <li className="list-group-item" >{message}</li>);
-      console.log(message);
-    });
+    const getRows = this.state.messages.map((message, i)=> 
+    <li key={i} className="list-group-item" >{message}</li>
+    );
 
     return (
       <ul className="list-group mx-auto justify-content-center" style={{maxWidth:'50%'}}>
-        {rows.length === 0 ? <li className="list-group-item" >No email sent yet.</li> : rows}
+        {this.state.messages.length === 0 ? <li className="list-group-item" >No email sent yet.</li> : getRows}
       </ul>
     );
   }
