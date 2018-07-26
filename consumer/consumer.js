@@ -40,12 +40,18 @@ const threadMessageHandler = message => {
   
 };
 const postMessageHandler = message => {
+
   console.log(`[POST] Received message ${message.id}:`);
 
-  var msg = JSON.parse(message.data);
-  
-  
-  socket.emit('post',msg);
+  try {
+    var msg = JSON.parse(message.data);
+
+    socket.emit('post',msg);
+
+  } catch (err) {
+    console.log(err);
+  }
+
   
 
   message.ack();
