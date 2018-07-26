@@ -11,7 +11,7 @@ export default function (state = initialState, action) {
       return {...state, keyword: action.data}
     case 'ADD_KEYWORD':
       let index = state.keyword.findIndex(keyword => keyword.keyword === action.data.keyword);
-      if (index == -1) {
+      if (index === -1) {
         return {...state, keyword: [...state.keyword, action.data]}
       }
       return state;
