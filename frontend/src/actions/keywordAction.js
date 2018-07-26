@@ -123,3 +123,26 @@ export function editKeyword(data) {
     data
   };
 }
+
+
+export const patchEmail = (email) => {
+  return (dispatch, getState, url_api) => {
+    const json = {
+      email : email
+    };
+
+    return fetch(`${url_api}/api/keyword_mail_addr`, {
+        method: 'PATCH', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(json)
+      })
+      .then(response => {
+        dispatch(receiveEmail(json));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+} 

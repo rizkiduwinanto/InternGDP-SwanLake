@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dialog, TextField, DialogTitle, DialogContentText, DialogContent, DialogActions, Button } from '@material-ui/core';
 import { fetchKeyword, patchKeyword, deleteKeyword } from '../actions/keywordAction';
-import { API_URL } from '../config';
 
 const tableStyle = {
   margin: '0 auto',

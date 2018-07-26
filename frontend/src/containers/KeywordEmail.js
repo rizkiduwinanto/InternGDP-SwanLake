@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dialog, TextField, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
-import { fetchEmail } from '../actions/keywordAction';
-import { API_URL } from '../config';
+import { fetchEmail, patchEmail } from '../actions/keywordAction';
 
 const inlineTextStyle = {
   marginTop : 20
@@ -35,15 +34,7 @@ class KeywordTable extends React.Component {
   }
 
   handleEditEmail() {
-    fetch(`${API_URL}/api/keyword_mail_addr`, {
-      method: 'PATCH', 
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: this.state.email
-      })
-    })
+    this.props.patchEmail(this.state.email);
     this.setState({ editEmail: false, email: ''});
   }
 
@@ -57,7 +48,11 @@ class KeywordTable extends React.Component {
         <h5>Email to : {this.props.email} <a onClick={this.handleOpenEditEmail}>Edit</a></h5>
         <Dialog open={this.state.editEmail} onClose={this.handleCloseEditEmail}>
           <DialogTitle>Edit Email</DialogTitle>
-          <form onSubmit={(e)=>{this.handleEditEmail();}}>
+          <form onSubmit={(e)=>{
+            e.preventDefault();
+            this.handleEditEmail();
+            e.target.reset();
+            }}>
             <DialogContent>
               <TextField
                 autoFocus
@@ -89,6 +84,7 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch) {
   return {
     fetchEmail: () => dispatch(fetchEmail()),
+    patchEmail: (email) => dispatch(patchEmail(email))
   };
 }
 

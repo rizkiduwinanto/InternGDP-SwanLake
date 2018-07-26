@@ -2,10 +2,9 @@ import React from 'react';
 import { TextField, Button, Typography } from '@material-ui/core';
 import KeywordTable from '../containers/KeywordTable';
 import KeywordEmail from '../containers/KeywordEmail';
-import KeywordHistory from '../containers/KeywordHistory';
+import KeywordHistory from './KeywordHistory';
 import { insertKeyword } from '../actions/keywordAction';
 import { connect } from 'react-redux';
-import { API_URL } from '../config';
 
 const textFieldStyle = {
   marginLeft : 22
@@ -33,6 +32,7 @@ class Keyword extends React.Component {
   insertKeyword() {
     if (this.state.interval > 0 && this.state.keyword){
       this.props.insertKeyword(this.state.interval, this.state.keyword);
+      this.setState({ keyword : '', interval : 0 });
     } else {
       alert('Interval cannot be a minus or Keyword cannot be a null!');
     }
