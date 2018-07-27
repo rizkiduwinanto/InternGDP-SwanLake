@@ -5,7 +5,7 @@ import { checkAndSendKeywordNotification } from './mailer';
 
 
 const LOG_ROOT = `${chalk.black.bgWhite(' SERVICE - ')}${chalk.black.bgWhite('SOCKET.IO ')}`;
-let io;
+var io = null;
 
 
 export const initSocketIO = server => {
@@ -42,6 +42,10 @@ export const initSocketIO = server => {
         io.emit(`post:${forumID}:new`,data);
     });
     
+    socket.on('mail',(message) => {
+	    console.log(`Received ${message}`);
+	});
+	  
     socket.on('disconnect',()=>{
       console.log(`${LOG_ROOT} A client disconnected`);
     });
@@ -49,7 +53,9 @@ export const initSocketIO = server => {
 
 };
 
-export default io;
+export default () => {
+  return io;
+};
 
 
 function isDateLineUpdated(dateline){ 

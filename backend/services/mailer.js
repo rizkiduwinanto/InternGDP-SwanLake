@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import config from '../config';
 import redisClient from './redis';
 import { promisify } from 'util';
-import io from './socket';
+import getIO from './socket';
 
 
 const LOG_ROOT = `${chalk.black.bgWhite(' SERVICE - ')}${chalk.black.bgWhite('MAILER ')}`;
@@ -98,7 +98,7 @@ export async function sendMailNotif(destEmail, subject, content){
         console.log(`${LOG_ROOT} sent: ${info.response}`);
         let log_data =`${subject} sent at ${new Date()}`;
         // console.log(`Log data : ${log_data}`);
-        io.emit(`mail`,log_data);
+        getIO().emit(`mail`,log_data);
       }
     });
   } catch (err) {

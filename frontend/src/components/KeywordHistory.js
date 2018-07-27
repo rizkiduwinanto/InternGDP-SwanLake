@@ -14,6 +14,7 @@ class KeywordHistory extends React.Component {
 
   componentDidMount() {
     socket.on('mail', (message) => {
+	console.log(`Message : ${message}`);
       this.setState({messages: [...this.state.messages, message]});
     });
   }
