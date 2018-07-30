@@ -28,5 +28,4 @@ yarn-debug.log*
 yarn-error.log*
 
 /GCPConfig
-frontend/build
 /redis-data
