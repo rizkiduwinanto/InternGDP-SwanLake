@@ -27,10 +27,12 @@ services:
       - ./frontend:/home/node
     ports:
       - '80:5000'
+    links:
+      - server
     depends_on:
-     - server
+      - server
     environment:
-     - NODE_ENV=development
+      - NODE_ENV=production
     command: serve -s build
 
   consumer:
