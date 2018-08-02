@@ -23,8 +23,6 @@ services:
   frontend:
     build: ./frontend
     image: frontend-img
-    volumes:
-      - ./frontend:/home/node
     ports:
       - '80:5000'
     links:
@@ -32,8 +30,8 @@ services:
     depends_on:
       - server
     environment:
-      - NODE_ENV=production
-    command: serve -s build
+      - NODE_ENV=development
+    command: serve -s .
 
   consumer:
     build: ./consumer

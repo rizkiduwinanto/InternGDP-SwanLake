@@ -50,4 +50,4 @@ function publishMessage(topicName, data) {
 
 setInterval(() => {
   publishMessage('projects/learngcp-205504/topics/post',post);
-},10000);
+},5000);

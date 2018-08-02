@@ -97,4 +97,4 @@ function publishMessage(topicName, data) {
 
 setInterval(() => {
   publishMessage('projects/learngcp-205504/topics/thread',thread)
-},10000);
+},5000);
