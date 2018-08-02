@@ -16,13 +16,18 @@ class ListOfPost extends React.Component {
   componentDidUpdate(prevProps){
     if (this.props.forum.forum_id !== 0) {
       if ((prevProps.forum.forum_id !== this.props.forum.forum_id)) {
-        socket.on(`post:${this.props.forum.forum_id}:new`,(data)=>{
-          data['value'] = false;
-          this.setState({posts : [...this.state.posts, data]});
+        this.setState({posts : []});
+        socket.on(`post:new`,(data)=>{
+          if (this.props.forum.forum_id == data.forum_id) {
+            data['value'] = false;
+            this.setState({posts : [...this.state.posts, data]});
+          }
         })
-        socket.on(`post:${this.props.forum.forum_id}:update`,(data)=>{
-          data['value'] = true;
-          this.setState({posts : [...this.state.posts, data]});
+        socket.on(`post:update`,(data)=>{
+          if (this.props.forum.forum_id == data.forum_id) {
+            data['value'] = true;
+            this.setState({posts : [...this.state.posts, data]});
+          }
         })
       }
     }
