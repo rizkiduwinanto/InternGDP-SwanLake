@@ -16,13 +16,18 @@ class ListOfThread extends React.Component {
   componentDidUpdate(prevProps){
     if (this.props.forum.forum_id !== 0) {
       if ((prevProps.forum.forum_id !== this.props.forum.forum_id)) {
-        socket.on(`thread:${this.props.forum.forum_id}:new`,(data)=>{
-          data['value'] = false;
-          this.setState({threads: [...this.state.threads, data]});
+        this.setState({threads : []});
+        socket.on(`thread:new`,(data)=>{
+          if (this.props.forum.forum_id == data.forum_id) {
+            data['value'] = false;
+            this.setState({threads: [...this.state.threads, data]});
+          }
         })
-        socket.on(`thread:${this.props.forum.forum_id}:update`,(data)=>{
-          data['value'] = true;
-          this.setState({threads : [...this.state.threads, data]});
+        socket.on(`thread:update`,(data)=>{
+          if (this.props.forum.forum_id == data.forum_id) {
+            data['value'] = true;
+            this.setState({threads : [...this.state.threads, data]});
+          }
         })
       }
     }
