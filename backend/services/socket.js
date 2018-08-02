@@ -18,9 +18,9 @@ export const initSocketIO = server => {
     socket.on('thread', data => {
       const forumID = data.forum_id;
       if (isDateLineUpdated(data.dateline))
-        io.emit(`thread:${forumID}:update`,data);
+        io.emit(`thread:update`,data);
       else
-        io.emit(`thread:${forumID}:new`,data);
+        io.emit(`thread:new`,data);
     });
   
     socket.on('post', async data => {
@@ -37,9 +37,9 @@ export const initSocketIO = server => {
       if (forumID == null) return;
 
       if (isDateLineUpdated(data.dateline))
-        io.emit(`post:${forumID}:update`,data);
+        io.emit(`post:update`,{...data, forum_id:forumID});
       else
-        io.emit(`post:${forumID}:new`,data);
+        io.emit(`post:new`,{...data, forum_id:forumID});
     });
     
     socket.on('mail',(message) => {
