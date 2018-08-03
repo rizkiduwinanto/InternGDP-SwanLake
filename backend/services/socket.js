@@ -2,6 +2,7 @@ import client, { THREAD_ID_MAP_FORUM_ID } from './redis';
 import chalk from 'chalk';
 import { promisify } from 'util';
 import { checkAndSendKeywordNotification } from './mailer';
+import bbparser from '../utils/bbcode_parser';
 
 
 const LOG_ROOT = `${chalk.black.bgWhite(' SERVICE - ')}${chalk.black.bgWhite('SOCKET.IO ')}`;
@@ -18,9 +19,9 @@ export const initSocketIO = server => {
     socket.on('thread', data => {
       const forumID = data.forum_id;
       if (isDateLineUpdated(data.dateline))
-        io.emit(`thread:update`,data);
+        io.emit(`thread:update`,{...data,page_text:bbparser(data.page_text)});
       else
-        io.emit(`thread:new`,data);
+        io.emit(`thread:new`,{...data,page_text:bbparser(data.page_text)});
     });
   
     socket.on('post', async data => {
@@ -37,9 +38,9 @@ export const initSocketIO = server => {
       if (forumID == null) return;
 
       if (isDateLineUpdated(data.dateline))
-        io.emit(`post:update`,{...data, forum_id:forumID});
+        io.emit(`post:update`,{...data,page_text:bbparser(data.page_text), forum_id:forumID});
       else
-        io.emit(`post:new`,{...data, forum_id:forumID});
+        io.emit(`post:new`,{...data,page_text:bbparser(data.page_text), forum_id:forumID});
     });
     
     socket.on('mail',(message) => {
