@@ -31,6 +31,8 @@ class FrequentGlobal extends React.Component {
     this.handleClick = this.handleClick.bind(this); 
     this.handlePrevious = this.handlePrevious.bind(this); 
     this.handleNext = this.handleNext.bind(this); 
+    this.handleFirst = this.handleFirst.bind(this); 
+    this.handleLast = this.handleLast.bind(this); 
   }
 
   handleLimit(event){
@@ -48,6 +50,7 @@ class FrequentGlobal extends React.Component {
   handleChange() {
     this.setState({ loading: true });
     this.props.fetchFrequentGlobal(this.state.since, this.state.until, this.state.limit);
+    this.setState({currentPage : 1});
   }
 
   handleClick(id) {
@@ -73,6 +76,23 @@ class FrequentGlobal extends React.Component {
     }
   }
 
+  handleLast() {
+    const numberOfPageItem = Math.ceil(this.props.data.data.length/this.state.dataPerPage);
+    if (this.state.currentPage < numberOfPageItem) {
+      this.setState({
+        currentPage: numberOfPageItem
+      });
+    }
+  }
+
+  handleFirst() {
+    if (this.state.currentPage > 1) {
+      this.setState({
+        currentPage: 1
+      });
+    }
+  }
+
   componentWillReceiveProps() {
     this.setState({ loading: false });
   }
@@ -87,7 +107,7 @@ class FrequentGlobal extends React.Component {
       if (this.props.data.data.length === 0){
         return (
           <tr>
-            <td>{"No data found for this period"}</td>
+            <td colSpan="2">{"No data found for this period"}</td>
           </tr>
         );
       }
@@ -105,6 +125,8 @@ class FrequentGlobal extends React.Component {
     }
 
     const getPageNumber = () => {
+      const { currentPage, dataPerPage } = this.state;
+
       if ((this.state.loading || this.props.data.data == null) || this.props.data.data.length <= dataPerPage){
         return;
       }
@@ -113,27 +135,75 @@ class FrequentGlobal extends React.Component {
 
       const numberOfPageItem = Math.ceil(this.props.data.data.length/dataPerPage);
 
-      for (let i = 1; i <= numberOfPageItem; i++) {
+      var startPage, endPage;
+      if (numberOfPageItem <= 10) {
+         startPage = 1;
+         endPage = numberOfPageItem;
+      } else {
+        if (currentPage <= 3) {
+          startPage = 1;
+          endPage = 5;
+        } else if (currentPage + 2 >= numberOfPageItem) {
+          startPage = numberOfPageItem - 4;
+          endPage = numberOfPageItem;
+        } else {
+          startPage = currentPage - 2;
+          endPage = currentPage + 2;
+        }
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
         pageNumber.push(<li key={i} className="page-item"><a onClick={() => this.handleClick(i)} className="page-link">{i}</a></li>)
       }
 
-      let pageNumberList = (<nav>
-        <ul className="pagination justify-content-center">
-          <li className="page-item">
-            <a className="page-link" onClick={() => this.handlePrevious()}>
-              <span>&laquo;</span>
-              <span className="sr-only">Previous</span>
-            </a>
-          </li>
-          {pageNumber}
-          <li className="page-item">
-            <a className="page-link" onClick={() => this.handleNext()}>
-              <span>&raquo;</span>
-              <span className="sr-only">Next</span>
-            </a>
-          </li>
-        </ul>
-      </nav>);
+      const firstDirection = (
+        <li className="page-item">
+          <a className="page-link" onClick={() => this.handleFirst()}>
+            <span>&laquo;</span>
+            <span className="sr-only">Next</span>
+          </a>
+        </li>
+      );
+
+      const previousDirection = (
+        <li className="page-item">
+          <a className="page-link" onClick={() => this.handlePrevious()}>
+            <span>&lt;</span>
+            <span className="sr-only">Previous</span>
+          </a>
+        </li>
+      );
+
+      const nextDirection = (
+        <li className="page-item">
+          <a className="page-link" onClick={() => this.handleNext()}>
+            <span>&gt;</span>
+            <span className="sr-only">Next</span>
+          </a>
+        </li>
+      );
+
+      const lastDirection = (
+        <li className="page-item">
+          <a className="page-link" onClick={() => this.handleLast()}>
+            <span>&raquo;</span>
+            <span className="sr-only">Next</span>
+          </a>
+        </li>
+      );
+
+      let pageNumberList = (<div>
+        <small>Page {this.state.currentPage} of {numberOfPageItem}</small>
+        <nav>
+          <ul className="pagination justify-content-center">
+            {currentPage === 1 ? <br/> : firstDirection}
+            {currentPage === 1 ? <br/> : previousDirection}
+            {pageNumber}
+            {currentPage === numberOfPageItem ? <br/> : nextDirection}
+            {currentPage === numberOfPageItem ? <br/> : lastDirection}
+          </ul>
+        </nav>
+      </div>);
 
       return pageNumberList;
     }
