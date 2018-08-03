@@ -18,6 +18,7 @@ client.on('connect', () => {
 });
 
 export function checkThreadIdMapForumIdFetched() {
+  
   client.hlen(THREAD_ID_MAP_FORUM_ID, (err, dataLength) => {
     if (dataLength) {
       console.log(`${LOG_ROOT} ThreadIdMapForumId Stored ${dataLength} rows`);
@@ -25,6 +26,7 @@ export function checkThreadIdMapForumIdFetched() {
       console.log(`${LOG_ROOT} ThreadIdMapForumId Not stored`);
       let stored_count = 0;
       const storeData = (data) => {
+        console.log(`DATAA : ${data.length}`);
         if (data == -1){
           console.log(`${LOG_ROOT} All data stored successfully`);
         } else{
@@ -32,7 +34,11 @@ export function checkThreadIdMapForumIdFetched() {
             result.push(e.id);
             result.push(e.forum_id);
           },[THREAD_ID_MAP_FORUM_ID]);
-          client.hmset(newData);
+          client.hmset(newData, (err, res) => {
+            if (err){
+              console.log(err);
+            }
+          });
           console.log(`${LOG_ROOT} Stored ${++stored_count}`);
         }
       }
