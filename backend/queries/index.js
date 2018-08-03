@@ -15,7 +15,7 @@ export function getWordsQuery(startDate, endDate, limit) {
         FROM \`my_new_dataset.post_*\`
         WHERE _TABLE_SUFFIX BETWEEN '${startTableDate}' and '${endTableDate}') as new_sentences
         CROSS JOIN UNNEST(new_sentences.words) as word)
-  WHERE LOWER(word) NOT IN (SELECT * FROM \`my_new_dataset.stop_words\`)
+  WHERE LOWER(word) NOT IN (SELECT * FROM \`my_new_dataset.stop_words\`) AND LENGTH(word) > 1 AND word NOT LIKE ':%' AND NOT REGEXP_CONTAINS(word,'^\\\\d+[.]?$')
   GROUP BY text
   ORDER BY value DESC
   LIMIT ${limit};`;
