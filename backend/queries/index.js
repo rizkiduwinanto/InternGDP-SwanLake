@@ -30,6 +30,7 @@ export function getPerForumFrequentPosterQuery(startDate, endDate, forumId, limi
   thread.forum_id,
   name AS forum_name,
   post.post_username,
+  post.post_user_id,
   COUNT(*) AS post_count
   FROM
     \`my_new_dataset.thread_*\` AS thread
@@ -50,7 +51,8 @@ export function getPerForumFrequentPosterQuery(startDate, endDate, forumId, limi
   GROUP BY
     forum_id,
     name,
-    post_username
+    post_username,
+    post_user_id
   ORDER BY
     post_count DESC
   LIMIT
@@ -63,10 +65,10 @@ export function getGlobalFrequentPosterQuery(startDate, endDate, limit) {
   const endTableDate = endDate.split("-").join("");
 
   const query = `
-  SELECT post_username, COUNT(*) as post_count
+  SELECT post_username, post_user_id, COUNT(*) as post_count
   FROM \`my_new_dataset.post_*\`
   WHERE _TABLE_SUFFIX BETWEEN '${startTableDate}' AND '${endTableDate}'
-  GROUP BY post_username
+  GROUP BY post_username, post_user_id
   ORDER BY post_count DESC
   LIMIT ${limit}`;
 
