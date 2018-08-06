@@ -22,6 +22,8 @@ class ListOfPost extends React.Component {
           }
         })
         this.props.socket.on(`post:update`,(data)=>{
+          console.log(data);
+
           if (this.props.forum.forum_id === data.forum_id) {
             data['value'] = true;
             this.setState({posts : [...this.state.posts, data]});

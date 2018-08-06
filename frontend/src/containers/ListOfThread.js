@@ -22,6 +22,7 @@ class ListOfThread extends React.Component {
           }
         })
         this.props.socket.on(`thread:update`,(data)=>{
+          console.log(data);
           if (this.props.forum.forum_id === data.forum_id) {
             data['value'] = true;
             this.setState({threads : [...this.state.threads, data]});
