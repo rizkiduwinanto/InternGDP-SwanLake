@@ -14,7 +14,7 @@ const LOG_ROOT = `${chalk.black.bgWhite(' SERVICE - ')}${chalk.black.bgWhite('BI
 
 export async function getForumList() {
   const getForumListQuery = `
-    SELECT forum_id, name as forum_name, description FROM \`my_new_dataset.forum\` ORDER BY forum_id;
+    SELECT forum_id, name as forum_name, description FROM \`my_new_dataset.forum\` WHERE forum_id NOT IN (SELECT * FROM \`my_new_dataset.banned_forum\`) ORDER BY forum_id;
     `;
   const queryResult = await getQueryResult(getForumListQuery);
   return createAPIFormat(queryResult);
