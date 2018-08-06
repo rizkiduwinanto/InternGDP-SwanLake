@@ -34,6 +34,7 @@ class Keyword extends React.Component {
       this.props.insertKeyword(this.state.interval, this.state.keyword);
       this.setState({ keyword : '', interval : 0 });
     } else {
+      debugger;
       alert('Interval cannot be a minus or Keyword cannot be a null!');
     }
   }
@@ -49,7 +50,7 @@ class Keyword extends React.Component {
               e.target.reset();
             }}>
             <TextField style={textFieldStyle} type="text" placeholder="Insert new Keyword here" label="Keyword" onChange={this.onChangeKeyword} value={this.state.keyword}/>
-            <TextField style={textFieldStyle} type="number" placeholder="Interval" label="Interval" onChange={this.onChangeInterval}/>
+            <TextField style={textFieldStyle} type="number" placeholder="Interval" label="Interval" onChange={this.onChangeInterval} value={this.state.interval}/>
             <Button color="primary" type="submit" >Register Keyword</Button>
           </form>
           <KeywordTable/>
