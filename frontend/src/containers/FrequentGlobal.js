@@ -216,7 +216,7 @@ class FrequentGlobal extends React.Component {
           <thead className="thead-dark">
             <tr>
               <th>Post Username</th>
-              <th>Count</th>
+              <th>Post Count</th>
             </tr>
           </thead>
           <tbody>
