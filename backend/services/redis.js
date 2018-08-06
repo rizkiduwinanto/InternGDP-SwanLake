@@ -26,7 +26,6 @@ export function checkThreadIdMapForumIdFetched() {
       console.log(`${LOG_ROOT} ThreadIdMapForumId Not stored`);
       let stored_count = 0;
       const storeData = (data) => {
-        console.log(`DATAA : ${data.length}`);
         if (data == -1){
           console.log(`${LOG_ROOT} All data stored successfully`);
         } else{

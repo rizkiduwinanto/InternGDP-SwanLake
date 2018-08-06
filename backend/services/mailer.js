@@ -10,7 +10,50 @@ const LOG_ROOT = `${chalk.black.bgWhite(' SERVICE - ')}${chalk.black.bgWhite('MA
 const MAIL_KEYWORDS = 'mail_keywords';
 
 
-export function checkAndSendKeywordNotification(paragraph) {
+function getSentence(paragraph, word) {
+  const nbWordInSentence = 7;
+  let listOfWordsFromParagraph = paragraph.split(' ');
+  if (listOfWordsFromParagraph.length <= nbWordInSentence) return paragraph;
+
+  let idxWordInSentence = listOfWordsFromParagraph.indexOf(word.toLowerCase());
+  listOfWordsFromParagraph[idxWordInSentence] = "<b>"+word+"</b>";
+
+  // In Middle  ... word1 word2 word3 word word4 word5 word6 ...
+  let leftTreshold = idxWordInSentence - Math.floor(nbWordInSentence/2);
+  let rightTreshold = idxWordInSentence + Math.floor(nbWordInSentence/2);
+  let body;
+
+  if (0 <= leftTreshold && rightTreshold < listOfWordsFromParagraph.length) {
+    body = listOfWordsFromParagraph.slice(leftTreshold,rightTreshold+1).join(' ');
+    return "... "+body+" ...";
+  } else if (leftTreshold < 0) {
+    // In front word word1 word2 word3 word4 word5 word6 ...
+    body = listOfWordsFromParagraph.slice(0,nbWordInSentence).join(' ');
+    return body+" ...";
+
+  } else { // rightTreshold > listOfWordsFromParagraph.length
+    // In back word word1 word2 word3 word4 word5 word6 word
+    let startIdx =  listOfWordsFromParagraph.length - nbWordInSentence;
+    body = listOfWordsFromParagraph.slice(startIdx,listOfWordsFromParagraph.length).join(' ');
+    return "... "+body;
+  } 
+}
+
+function getBody(keyword, hmap) {
+  let body = `<h4>Keyword ${keyword} telah ditemukan sebanyak ${Object.keys(hmap).length}</h4>`;
+  let list = '<ul>';
+  for (var key in hmap ){
+    if (hmap.hasOwnProperty(key)){
+      let url = `https://www.kaskus.co.id/show_post/${key}`;
+      list = list + `<li><a href="${url}">${hmap[key]}</a></li>`;
+    }
+  }
+  body = body + list + '</ul>';
+  return body;
+}
+
+
+export function checkAndSendKeywordNotification(paragraph, post_id) {
   let lowerParagraph = paragraph.toLowerCase();
   var deleteBBTAG = new RegExp('\\[.*?\\]|\n+','g');
   var deleteTrailingSpace = new RegExp('[ ]+[ ]','g');
@@ -21,7 +64,7 @@ export function checkAndSendKeywordNotification(paragraph) {
                       .replace(trimInitLastSpace,'');
 
   // console.log(cleanParagraph);
-  let setOfWordsInParagraph = new Set(cleanParagraph.split(' '))
+  let setOfWordsInParagraph = new Set(cleanParagraph.split(' '));
   console.log(`Size set : ${setOfWordsInParagraph.size}`);
 
   redisClient.hgetall(MAIL_KEYWORDS, async (err, keywords) => {
@@ -30,13 +73,18 @@ export function checkAndSendKeywordNotification(paragraph) {
       for (var keyword in keywords) {
         if (setOfWordsInParagraph.has(keyword.toLowerCase())) {
           let parsedResult = JSON.parse(keywords[keyword]);
-          let TTL = parsedResult['TTL'];
           let interval = parsedResult['interval'];
+          let hmap = parsedResult['urls'];
 
-          console.log(`${keyword} TTL : ${TTL}, interval ${interval}`);
-          if (TTL <= 1) {
+          if (Object.keys(hmap).length && post_id in hmap) return;
+          console.log(`Got new url for ${keyword}`);
+
+          let sentence = getSentence(cleanParagraph, keyword);
+          hmap[post_id] = sentence;
+
+          let newValue;
+          if (Object.keys(hmap).length == interval) {
             console.log("Sending email ...");
-            TTL = interval;
             const KEYWORD_MAIL_ADDR = 'keyword_mail_addr';
             const EMAIL_FIELD = 'email'; 
             const hgetAsync = promisify(redisClient.hget).bind(redisClient);
@@ -45,15 +93,21 @@ export function checkAndSendKeywordNotification(paragraph) {
               sendMailNotif(
                 emailAddress,
                 `[Keyword Alert] ${keyword}`,
-                `Keyword ${keyword} telah ditemukan ${interval} kali.`);
+                getBody(keyword, hmap));
+
+            newValue = {
+              interval: interval,
+              urls: {}
+            }
+
           } else {
-            TTL = TTL - 1;
-          } 
-    
-          let newValue = {
-            TTL: TTL,
-            interval: interval
+            newValue = {
+              interval: interval,
+              urls: hmap
+            }
+
           }
+    
           
           redisClient.hset(MAIL_KEYWORDS, keyword, JSON.stringify(newValue));
         } 
@@ -88,7 +142,7 @@ export async function sendMailNotif(destEmail, subject, content){
       from: `${SENDER_EMAIL}`,
       to: `${destEmail}`,
       subject: `${subject}`,
-      text: `${content}`
+      html: `${content}`
     }
     
     transporter.sendMail(mailOptions, (error, info) => {
@@ -96,7 +150,8 @@ export async function sendMailNotif(destEmail, subject, content){
         console.log(`${LOG_ROOT} : `, error);
       } else {
         console.log(`${LOG_ROOT} sent: ${info.response}`);
-        let log_data =`${subject} sent at ${new Date()}`;
+        let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' ,hour:'numeric',minute:'numeric'};
+        let log_data =`${subject} sent at ${(new Date()).toLocaleString("en-us",options)}`;
         // console.log(`Log data : ${log_data}`);
         getIO().emit(`mail`,log_data);
       }

@@ -29,10 +29,12 @@ router.post('/mail_keywords', (req, res) => {
   try {
     const { keyword, interval } = req.body;
     let value = {
-      TTL: interval,
-      interval: interval
+      interval: interval,
+      urls: {}
     }
     redisClient.hset(MAIL_KEYWORDS, keyword, JSON.stringify(value));
+    var strgfy = JSON.stringify(value);
+
     
     res.json({success: true});
   } catch(err) {
@@ -43,11 +45,12 @@ router.post('/mail_keywords', (req, res) => {
 router.patch('/mail_keywords', (req, res) => {
   try {
     const { keyword, interval } = req.body;
-    let value = {
-      TTL: interval,
-      interval: interval
-    }
-    redisClient.hset(MAIL_KEYWORDS, keyword, JSON.stringify(value));
+    redisClient.hget(MAIL_KEYWORDS, keyword, (err, obj) => {
+      let value = JSON.parse(obj);
+      value['interval'] = interval;
+      value['urls'] = {};
+      redisClient.hset(MAIL_KEYWORDS, keyword, JSON.stringify(value));
+    });
 
     res.json({success: true});
   } catch(err) {

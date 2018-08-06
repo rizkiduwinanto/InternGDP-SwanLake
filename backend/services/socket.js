@@ -30,7 +30,7 @@ export const initSocketIO = server => {
       const getForumId = () => getAsync(THREAD_ID_MAP_FORUM_ID, threadID).then((result) => result);
       const forumID = await getForumId();
       try {
-        checkAndSendKeywordNotification(data.page_text);
+        checkAndSendKeywordNotification(data.page_text, data.id);
       } catch (error) {
         console.log(error);
       }
