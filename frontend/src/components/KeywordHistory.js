@@ -1,8 +1,5 @@
 import React from 'react';
-import io from 'socket.io-client';
-import { API_URL } from '../config';
-
-const socket = io.connect(`${API_URL}`);
+import SocketContext from '../miscellaneous/SocketContext';
 
 class KeywordHistory extends React.Component {
   constructor(props) {
@@ -13,8 +10,8 @@ class KeywordHistory extends React.Component {
   }
 
   componentDidMount() {
-    socket.on('mail', (message) => {
-	console.log(`Message : ${message}`);
+    this.props.socket.on('mail', (message) => {
+	    console.log(`Message : ${message}`);
       this.setState({messages: [...this.state.messages, message]});
     });
   }
@@ -32,5 +29,11 @@ class KeywordHistory extends React.Component {
   }
 }
 
-export default KeywordHistory;
+const KeywordHistoryWithSocket = props => (
+  <SocketContext.Consumer>
+    {socket => <KeywordHistory {...props} socket={socket}/>}
+  </SocketContext.Consumer>
+)
+
+export default KeywordHistoryWithSocket;
 

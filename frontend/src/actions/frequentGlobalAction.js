@@ -26,7 +26,6 @@ export const fetchFrequentGlobal = (since, until, limit) => async (dispatch, get
     } else {
       url = `${url_api}/api/frequent_poster/${sinceConverted}/${untilConverted}?limit=${limit}`;
     }
-    console.log(url);
     const response = await fetch(url);
     const responseBody = await response.json();
     dispatch(receiveFrequentGlobal(responseBody));

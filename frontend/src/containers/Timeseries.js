@@ -49,10 +49,12 @@ class Timeseries extends React.Component {
 
   handleChange() {
     const { since, until, word } = this.state;
-    console.log(word);
-    this.setState({ loading: true });
     if ((word !== '') && (word != null)) {
+      console.log(word);
+      this.setState({ loading: true });
       this.props.fetchTimeseries(since, until, word);
+    } else {
+      alert('Word must not be empty');
     }
   }
 

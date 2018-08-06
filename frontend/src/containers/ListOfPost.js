@@ -1,9 +1,7 @@
 import React from 'react';
 import Post from '../components/Post';
 import {connect} from 'react-redux';
-import io from 'socket.io-client';
-import { API_URL } from '../config';
-const socket = io.connect(`${API_URL}`);
+import SocketContext from '../miscellaneous/SocketContext';
 
 class ListOfPost extends React.Component {
   constructor(props) {
@@ -17,14 +15,14 @@ class ListOfPost extends React.Component {
     if (this.props.forum.forum_id !== 0) {
       if ((prevProps.forum.forum_id !== this.props.forum.forum_id)) {
         this.setState({posts : []});
-        socket.on(`post:new`,(data)=>{
-          if (this.props.forum.forum_id == data.forum_id) {
+        this.props.socket.on(`post:new`,(data)=>{
+          if (this.props.forum.forum_id === data.forum_id) {
             data['value'] = false;
             this.setState({posts : [...this.state.posts, data]});
           }
         })
-        socket.on(`post:update`,(data)=>{
-          if (this.props.forum.forum_id == data.forum_id) {
+        this.props.socket.on(`post:update`,(data)=>{
+          if (this.props.forum.forum_id === data.forum_id) {
             data['value'] = true;
             this.setState({posts : [...this.state.posts, data]});
           }
@@ -55,4 +53,10 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(ListOfPost);
+const ListOfPostWithSocket = props => (
+  <SocketContext.Consumer>
+    {socket => <ListOfPost {...props} socket={socket}/>}
+  </SocketContext.Consumer>
+)
+
+export default connect(mapStateToProps)(ListOfPostWithSocket);
