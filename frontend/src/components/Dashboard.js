@@ -1,6 +1,6 @@
 import React from 'react';
-import ListOfPost from '../containers/ListOfPost';
-import ListOfThread from '../containers/ListOfThread';
+import ListOfPostWithSocket from '../containers/ListOfPost';
+import ListOfThreadWithSocket from '../containers/ListOfThread';
 import ListOfForum from '../containers/ListOfForum';
 import { Grid } from '@material-ui/core';
 import { connect } from 'react-redux';
@@ -25,11 +25,11 @@ class Dashboard extends React.Component {
         </Grid>
         <Grid item xs>
           <h1 style={styles}>{titleThread}</h1>
-          <ListOfThread/>
+          <ListOfThreadWithSocket/>
         </Grid>
         <Grid item xs>
           <h1 style={styles}>{titlePost}</h1>
-          <ListOfPost/>
+          <ListOfPostWithSocket/>
         </Grid>
       </Grid>
     );

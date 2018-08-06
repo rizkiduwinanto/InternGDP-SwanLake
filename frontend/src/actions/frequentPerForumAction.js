@@ -41,7 +41,6 @@ export const fetchFrequentPerForum = (since, until, limit, forum_id) => async (d
     } else {
       url = `${url_api}/api/frequent_poster/${sinceConverted}/${untilConverted}?forum=${forum_id}&limit=${limit}`;
     }
-    console.log(url);
     const response = await fetch(url);
     const responseBody = await response.json();
     dispatch(receiveFrequentPerForum(responseBody));

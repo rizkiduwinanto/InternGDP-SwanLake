@@ -76,13 +76,13 @@ class WordcloudPage extends React.Component {
 
     if(this.state.loading){
       wordcloud = 
-        <div className="my-5">
+        <div className="my-5" >
           <Spinner />
         </div>;
     }
     else if (this.props.data != null) {
       if (this.props.data.length === 0){
-        wordcloud = <h3> Empty </h3>
+        wordcloud = <div className="text-center" style={{paddingTop : '10px'}}><h3> Empty </h3></div>
       } else {
           let max = this.props.data.reduce((max, e) => e.value > max ? e.value : max, this.props.data[0].value);
           const resizedDataValue = this.props.data.map(e => {
@@ -106,6 +106,12 @@ class WordcloudPage extends React.Component {
             <div className="col-sm-4 my-auto text-center">
               <h3 >Top 5 Words <span role="img" aria-label="calendar-emoji">🏆</span></h3>
               <table className="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Count</th>
+                  </tr>
+                </thead>
                 <tbody>
                   {top5}
                 </tbody>
