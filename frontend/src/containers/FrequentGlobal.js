@@ -33,6 +33,7 @@ class FrequentGlobal extends React.Component {
     this.handleNext = this.handleNext.bind(this); 
     this.handleFirst = this.handleFirst.bind(this); 
     this.handleLast = this.handleLast.bind(this); 
+    this.handleUsername = this.handleUsername.bind(this);
   }
 
   handleLimit(event){
@@ -93,6 +94,11 @@ class FrequentGlobal extends React.Component {
     }
   }
 
+  handleUsername = (user_id, e) => {
+    e.preventDefault();
+    window.location = `https://www.kaskus.co.id/profile/${user_id}`;
+  }
+
   componentWillReceiveProps() {
     this.setState({ loading: false });
   }
@@ -101,6 +107,8 @@ class FrequentGlobal extends React.Component {
     const { currentPage, dataPerPage } = this.state;
 
     const getData = () => {
+      console.log(this.props.data);
+
       if (this.state.loading || this.props.data.data == null){
         return;
       }
@@ -117,7 +125,7 @@ class FrequentGlobal extends React.Component {
       let currentData = this.props.data.data.slice(indexFirst, indexLast);
       let rows = currentData.map((freqGlobal, i) => 
         <tr key={i}>
-          <td>{freqGlobal.post_username}</td>
+          <td><a href='#' onClick={(e) => this.handleUsername(freqGlobal.post_user_id, e)}>{freqGlobal.post_username}</a></td>
           <td>{freqGlobal.post_count}</td>
         </tr>
       );
