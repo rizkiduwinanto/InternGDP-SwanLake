@@ -65,7 +65,7 @@ export function checkAndSendKeywordNotification(paragraph, post_id) {
 
   // console.log(cleanParagraph);
   let setOfWordsInParagraph = new Set(cleanParagraph.split(' '));
-  console.log(`Size set : ${setOfWordsInParagraph.size}`);
+  // console.log(`Size set : ${setOfWordsInParagraph.size}`);
 
   redisClient.hgetall(MAIL_KEYWORDS, async (err, keywords) => {
     if (err) throw err;
@@ -77,7 +77,7 @@ export function checkAndSendKeywordNotification(paragraph, post_id) {
           let hmap = parsedResult['urls'];
 
           if (Object.keys(hmap).length && post_id in hmap) return;
-          console.log(`Got new url for ${keyword}`);
+          // console.log(`Got new url for ${keyword}`);
 
           let sentence = getSentence(cleanParagraph, keyword);
           hmap[post_id] = sentence;
@@ -149,7 +149,7 @@ export async function sendMailNotif(destEmail, subject, content){
       if (error) {
         console.log(`${LOG_ROOT} : `, error);
       } else {
-        console.log(`${LOG_ROOT} sent: ${info.response}`);
+        // console.log(`${LOG_ROOT} sent: ${info.response}`);
         let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' ,hour:'numeric',minute:'numeric'};
         let log_data =`${subject} sent at ${(new Date()).toLocaleString("en-us",options)}`;
         // console.log(`Log data : ${log_data}`);

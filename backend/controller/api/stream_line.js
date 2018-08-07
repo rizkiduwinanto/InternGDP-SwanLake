@@ -11,6 +11,7 @@ router.post('/streamline/thread', (req, res) => {
 });
 
 router.post('/streamline/post', (req, res) => {
+  // console.log(req.body);
   emitPost(req.body);
   res.sendStatus(200);
 });

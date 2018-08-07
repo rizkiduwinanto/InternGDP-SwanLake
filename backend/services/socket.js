@@ -25,7 +25,7 @@ export const initSocketIO = server => {
     });
     
     socket.on('mail',(message) => {
-	    console.log(`Received ${message}`);
+	    // console.log(`Received ${message}`);
 	});
 	  
     socket.on('disconnect',()=>{
@@ -41,9 +41,9 @@ export default () => {
 
 export async function emitThread(data) {
   if (isDateLineUpdated(data.dateline))
-    io.emit(`thread:update`,{...data,page_text:bbparser(data.page_text)});
+    io.emit(`thread:update`,{...data, id:data._id, page_text:bbparser(data.page_text)});
   else
-    io.emit(`thread:new`,{...data,page_text:bbparser(data.page_text)});
+    io.emit(`thread:new`,{...data, id:data._id, page_text:bbparser(data.page_text)});
 }
 
 export async function emitPost(data) {
@@ -55,24 +55,25 @@ export async function emitPost(data) {
   // console.log(forumID);
   // console.log(`Done getting forum_Id`);
 
-  try {
-    checkAndSendKeywordNotification(data.page_text, data.id);
-  } catch (error) {
-    console.log(error);
-  }
+  // TODO: uncomment this
+  // try {
+  //   checkAndSendKeywordNotification(data.page_text, data.id);
+  // } catch (error) {
+  //   console.log(error);
+  // }
 
   if (forumID == null) return;
   if (isDateLineUpdated(data.dateline))
-    io.emit(`post:update`,{...data,page_text:bbparser(data.page_text), forum_id:forumID});
+    io.emit(`post:update`,{...data, id:data._id, page_text:bbparser(data.page_text), forum_id:forumID});
   else
-    io.emit(`post:new`,{...data,page_text:bbparser(data.page_text), forum_id:forumID});
+    io.emit(`post:new`,{...data, id:data._id, page_text:bbparser(data.page_text), forum_id:forumID});
 }
 
 export function isDateLineUpdated(dateline){ 
   const TEN_MINUTES = 10*60;
   const now = Date.now() / 1000;
-  console.log(`Now =  ${now} .. ContentDate = ${dateline}`);
-  console.log(`Delta = ${now-dateline}`);
+  // console.log(`Now =  ${now} .. ContentDate = ${dateline}`);
+  // console.log(`Delta = ${now-dateline}`);
   return ((now - dateline) > TEN_MINUTES);
 }
 
