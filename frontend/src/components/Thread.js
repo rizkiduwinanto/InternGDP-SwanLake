@@ -22,7 +22,7 @@ class Thread extends React.Component {
 
   handlePage(id){
     this.setState({ open: false });
-    window.location = `https://www.kaskus.co.id/thread/${id}`
+    window.open(`https://www.kaskus.co.id/thread/${id}`);
   }
 
   render() {
