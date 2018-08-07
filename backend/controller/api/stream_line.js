@@ -5,6 +5,7 @@ const router = express.Router();
 
 
 router.post('/streamline/thread', (req, res) => {
+  // console.log(req.body);
   emitThread(req.body);
   res.sendStatus(200);
 });

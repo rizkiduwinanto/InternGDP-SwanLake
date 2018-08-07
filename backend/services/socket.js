@@ -50,7 +50,11 @@ export async function emitPost(data) {
   const threadID = data.thread_id;
   const getAsync = promisify(client.hget).bind(client);
   const getForumId = () => getAsync(THREAD_ID_MAP_FORUM_ID, threadID).then((result) => result);
+  // console.log(`getting forum_Id`);
   const forumID = await getForumId();
+  // console.log(forumID);
+  // console.log(`Done getting forum_Id`);
+
   try {
     checkAndSendKeywordNotification(data.page_text, data.id);
   } catch (error) {
@@ -58,7 +62,6 @@ export async function emitPost(data) {
   }
 
   if (forumID == null) return;
-
   if (isDateLineUpdated(data.dateline))
     io.emit(`post:update`,{...data,page_text:bbparser(data.page_text), forum_id:forumID});
   else
