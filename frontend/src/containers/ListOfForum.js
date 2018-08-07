@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import Forum from '../components/Forum';
 import { fetchForumList } from '../actions/forumAction';
 import Spinner from '../components/Spinner';
-import { Input } from '@material-ui/core';
 
 class ListOfForum extends React.Component {
   constructor(props) {
@@ -49,7 +48,8 @@ class ListOfForum extends React.Component {
           }
         });
       }
-      listOfForum = <div className="list-group">{rows}</div>
+      let empty = <div className="text-center" style={{paddingTop : 55, paddingBottom : 55}}><h5> Empty list, or does not match </h5></div>;
+      listOfForum = rows.length === 0 ? empty : <div className="list-group">{rows}</div>
     }
 
     return (
