@@ -73,7 +73,8 @@ class ListOfPostAndThread extends React.Component {
   }
 
   render() {
-    console.log(this.state.data);
+    console.log(this.props.forum);
+
     const rows = [];
     this.state.data.forEach((row, i) => {
       if (row['type'] === 'thread') {
@@ -83,10 +84,12 @@ class ListOfPostAndThread extends React.Component {
       }
     });
 
+    let empty = <div className="text-center" style={{paddingTop : '35.5vh', paddingBottom : '30vh'}}><h5>{this.props.forum.forum_name != null ? 'Empty list, so far' : 'Select a Forum, First'}</h5></div>;
+
     return (
       <div style={{maxHeight: '80vh', overflow: 'auto'}}>
         <div className="list-group">
-          {rows}
+          {rows.length === 0 ? empty : rows}
         </div>
       </div>
     );

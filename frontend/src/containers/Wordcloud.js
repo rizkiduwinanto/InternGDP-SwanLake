@@ -106,9 +106,9 @@ class WordcloudPage extends React.Component {
             <div className="col-sm-4 my-auto text-center">
               <h3 >Top 5 Words <span role="img" aria-label="calendar-emoji">🏆</span></h3>
               <table className="table">
-                <thead>
+                <thead className="thead-dark">
                   <tr>
-                    <th>Name</th>
+                    <th>Word</th>
                     <th>Count</th>
                   </tr>
                 </thead>

@@ -48,7 +48,7 @@ class ListOfForum extends React.Component {
           }
         });
       }
-      let empty = <div className="text-center" style={{paddingTop : 55, paddingBottom : 55}}><h5> Empty list, or does not match </h5></div>;
+      let empty = <div className="text-center" style={{paddingTop : '30vh', paddingBottom : '30vh'}}><h5> Empty list, or does not match </h5></div>;
       listOfForum = rows.length === 0 ? empty : <div className="list-group">{rows}</div>
     }
 
