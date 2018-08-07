@@ -31,10 +31,14 @@ class Keyword extends React.Component {
 
   insertKeyword() {
     if (this.state.interval > 0 && this.state.keyword){
-      this.props.insertKeyword(this.state.interval, this.state.keyword);
-      this.setState({ keyword : '', interval : 0 });
+      let index = this.props.keyword.findIndex(keyword => keyword.keyword === this.state.keyword);
+      if (index === -1) {
+        this.props.insertKeyword(this.state.interval, this.state.keyword);
+        this.setState({ keyword : '', interval : 0 });
+      } else {
+        alert('Keyword is already there, delete it first!');
+      }
     } else {
-      debugger;
       alert('Interval cannot be a minus or Keyword cannot be a null!');
     }
   }
@@ -65,10 +69,16 @@ class Keyword extends React.Component {
   }
 }
 
+function mapStateToProps(state){
+  return {
+    keyword: state.keyword.keyword
+  };
+}
+
 function mapDispatchToProps(dispatch) {
   return {
     insertKeyword: (interval, keyword) => dispatch(insertKeyword(interval, keyword))
   };
 }
 
-export default connect(null, mapDispatchToProps)(Keyword);
+export default connect(mapStateToProps, mapDispatchToProps)(Keyword);
