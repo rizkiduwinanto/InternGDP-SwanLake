@@ -11,8 +11,14 @@ class ForumSelector extends React.Component {
     this.state = {
       forum: null,
       loading: false,
+      valueText: '',
     };
     this.handleForum = this.handleForum.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({valueText : event.target.value});
   }
 
   componentWillMount() {
@@ -29,6 +35,13 @@ class ForumSelector extends React.Component {
     this.props.updateForum(forum);
   }
 
+  renderSearchBar() {
+    return (
+    <div className="input-group" style={{position: 'sticky', top:'0px', zIndex:'100'}}> 
+      <input type="text" className="form-control" placeholder="Search Forum" value={this.state.valueText} onChange={this.handleChange}/>
+    </div>);
+  }
+
   render() {
     var forumSelector = <div></div>;
     if (this.state.loading) {
@@ -37,17 +50,22 @@ class ForumSelector extends React.Component {
       const rows = [];
       if (this.props.forum_list.data != null) {
         this.props.forum_list.data.forEach((forum) => {
-          rows.push(
-            <ListItem button key={forum.forum_id} onClick={() => this.handleForum(forum)}>
-              <ListItemText primary={forum.forum_name}/>
-            </ListItem>);
+          let index = forum.forum_name.toLowerCase().indexOf(this.state.valueText.toLowerCase());
+          if (index !== -1) {
+            rows.push(
+              <ListItem button key={forum.forum_id} onClick={() => this.handleForum(forum)}>
+                <ListItemText primary={forum.forum_name}/>
+              </ListItem>);
+          }
         });
       }
-      forumSelector = <List>{rows}</List>;
+      let empty = <div className="text-center" style={{paddingTop : 55, paddingBottom : 55}}><h5> Empty list, or does not match </h5></div>;
+      forumSelector = rows.length === 0 ? empty : <List>{rows}</List>;
     }
 
     return (
       <Paper style={{maxHeight: 200, maxWidth: '80%', overflow: 'auto'}}>
+        {this.renderSearchBar()}
         {forumSelector}
       </Paper>
     )

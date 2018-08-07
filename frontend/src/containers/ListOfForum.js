@@ -9,7 +9,13 @@ class ListOfForum extends React.Component {
     super(props);
     this.state = {
       loading: false,
+      valueText: ''
     }
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({valueText : event.target.value});
   }
 
   componentDidMount() {
@@ -21,6 +27,13 @@ class ListOfForum extends React.Component {
     this.setState({ loading: false });
   }
 
+  renderSearchBar() {
+    return (
+    <div className="input-group" style={{position: 'sticky', top:'0px', zIndex:'100'}}> 
+      <input type="text" className="form-control" placeholder="Search Forum" value={this.state.valueText} onChange={this.handleChange}/>
+    </div>);
+  }
+
   render() {
     var listOfForum = <div></div>;
     if (this.state.loading) {
@@ -29,15 +42,19 @@ class ListOfForum extends React.Component {
       const rows = [];
       if (this.props.forum_list.data != null) {
         this.props.forum_list.data.forEach((forum) => {
-          rows.push(
-            <Forum forum = {forum} key = {forum.forum_id}/>);
+          let index = forum.forum_name.toLowerCase().indexOf(this.state.valueText.toLowerCase());
+          if (index !== -1) {
+            rows.push(<Forum forum = {forum} key = {forum.forum_id}/>);
+          }
         });
       }
-      listOfForum = <div className="list-group">{rows}</div>
+      let empty = <div className="text-center" style={{paddingTop : 55, paddingBottom : 55}}><h5> Empty list, or does not match </h5></div>;
+      listOfForum = rows.length === 0 ? empty : <div className="list-group">{rows}</div>
     }
 
     return (
       <div style={{maxHeight: '80vh', overflow: 'auto'}} >
+        {this.renderSearchBar()}
         {listOfForum}
       </div>
     );

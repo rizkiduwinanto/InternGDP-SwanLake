@@ -107,8 +107,6 @@ class FrequentGlobal extends React.Component {
     const { currentPage, dataPerPage } = this.state;
 
     const getData = () => {
-      console.log(this.props.data);
-
       if (this.state.loading || this.props.data.data == null){
         return;
       }
