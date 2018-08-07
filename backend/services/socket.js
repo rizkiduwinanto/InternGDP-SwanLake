@@ -17,30 +17,11 @@ export const initSocketIO = server => {
     console.log(`${LOG_ROOT} A client connected`);
     
     socket.on('thread', data => {
-      const forumID = data.forum_id;
-      if (isDateLineUpdated(data.dateline))
-        io.emit(`thread:update`,{...data,page_text:bbparser(data.page_text)});
-      else
-        io.emit(`thread:new`,{...data,page_text:bbparser(data.page_text)});
+      emitThread(data);
     });
   
     socket.on('post', async data => {
-      const threadID = data.thread_id;
-      const getAsync = promisify(client.hget).bind(client);
-      const getForumId = () => getAsync(THREAD_ID_MAP_FORUM_ID, threadID).then((result) => result);
-      const forumID = await getForumId();
-      try {
-        checkAndSendKeywordNotification(data.page_text, data.id);
-      } catch (error) {
-        console.log(error);
-      }
-
-      if (forumID == null) return;
-
-      if (isDateLineUpdated(data.dateline))
-        io.emit(`post:update`,{...data,page_text:bbparser(data.page_text), forum_id:forumID});
-      else
-        io.emit(`post:new`,{...data,page_text:bbparser(data.page_text), forum_id:forumID});
+      emitPost(data);
     });
     
     socket.on('mail',(message) => {
@@ -58,8 +39,33 @@ export default () => {
   return io;
 };
 
+export async function emitThread(data) {
+  if (isDateLineUpdated(data.dateline))
+    io.emit(`thread:update`,{...data,page_text:bbparser(data.page_text)});
+  else
+    io.emit(`thread:new`,{...data,page_text:bbparser(data.page_text)});
+}
 
-function isDateLineUpdated(dateline){ 
+export async function emitPost(data) {
+  const threadID = data.thread_id;
+  const getAsync = promisify(client.hget).bind(client);
+  const getForumId = () => getAsync(THREAD_ID_MAP_FORUM_ID, threadID).then((result) => result);
+  const forumID = await getForumId();
+  try {
+    checkAndSendKeywordNotification(data.page_text, data.id);
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (forumID == null) return;
+
+  if (isDateLineUpdated(data.dateline))
+    io.emit(`post:update`,{...data,page_text:bbparser(data.page_text), forum_id:forumID});
+  else
+    io.emit(`post:new`,{...data,page_text:bbparser(data.page_text), forum_id:forumID});
+}
+
+export function isDateLineUpdated(dateline){ 
   const TEN_MINUTES = 10*60;
   const now = Date.now() / 1000;
   console.log(`Now =  ${now} .. ContentDate = ${dateline}`);
