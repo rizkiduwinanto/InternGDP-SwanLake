@@ -20,7 +20,13 @@ class ListOfPostAndThread extends React.Component {
           if (this.props.forum.forum_id == forum_id) {
             datum['new'] = true;
             datum['type'] = 'post';
-            this.setState({data: [...this.state.data, datum]});
+            let index = this.state.data.findIndex((datumState) => datumState.id === datum.id);
+            if (index === -1) {
+              this.setState({data: [datum, ...this.state.data]});
+            } else {
+              this.state.data.splice(index, 1);
+              this.setState({data: [datum, ...this.state.data]});
+            }
           }
         });
         this.props.socket.on(`post:update`,(datum, forum_id)=>{
@@ -40,7 +46,13 @@ class ListOfPostAndThread extends React.Component {
           if (this.props.forum.forum_id == datum.forum_id) {
             datum['new'] = true;
             datum['type'] = 'thread';
-            this.setState({data: [...this.state.data, datum]});
+            let index = this.state.data.findIndex((datumState) => datumState.id === datum.id);
+            if (index === -1) {
+              this.setState({data: [datum, ...this.state.data]});
+            } else {
+              this.state.data.splice(index, 1);
+              this.setState({data: [datum, ...this.state.data]});
+            }
           }
         });
         this.props.socket.on(`thread:update`,(datum)=>{
@@ -61,12 +73,13 @@ class ListOfPostAndThread extends React.Component {
   }
 
   render() {
+    console.log(this.state.data);
     const rows = [];
     this.state.data.forEach((row, i) => {
       if (row['type'] === 'thread') {
-        rows.push(<Thread thread = {row} key = {i} updated={!row.value}/>);
+        rows.push(<Thread thread = {row} key = {i} updated={!row['new']}/>);
       } else {
-        rows.push(<Post post = {row} key = {i} updated={!row.value}/>);
+        rows.push(<Post post = {row} key = {i} updated={!row['new']}/>);
       }
     });
 
