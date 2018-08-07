@@ -12,75 +12,65 @@ class ListOfPostAndThread extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.forum.forum_id !== 0) {
-      if ((prevProps.forum.forum_id !== this.props.forum.forum_id)) {
-        this.setState({ datas: [] });
-        this.props.socket.on(`post:new`, (datum) => {
-          if (this.props.forum.forum_id == datum.forum_id) {
-            datum['new'] = true;
-            datum['type'] = 'post';
-            let index = this.state.data.findIndex((datumState) => datumState.id === datum.id);
-            if (index === -1) {
-              this.setState({ data: [datum, ...this.state.data] });
-            } else {
-              this.state.data.splice(index, 1);
-              this.setState({ data: [datum, ...this.state.data] });
-            }
-          }
-        });
-        this.props.socket.on(`post:update`, (datum) => {
-          if (this.props.forum.forum_id == datum.forum_id) {
-            datum['new'] = false;
-            datum['type'] = 'post';
-            let index = this.state.data.findIndex((datumState) => datumState.id === datum.id);
-            if (index === -1) {
-              this.setState({ data: [datum, ...this.state.data] });
-            } else {
-              this.state.data.splice(index, 1);
-              this.setState({ data: [datum, ...this.state.data] });
-            }
-          }
-        });
-        this.props.socket.on(`thread:new`, (datum) => {
-          if (this.props.forum.forum_id == datum.forum_id) {
-            datum['new'] = true;
-            datum['type'] = 'thread';
-            let index = this.state.data.findIndex((datumState) => datumState.id === datum.id);
-            if (index === -1) {
-              this.setState({ data: [datum, ...this.state.data] });
-            } else {
-              this.state.data.splice(index, 1);
-              this.setState({ data: [datum, ...this.state.data] });
-            }
-          }
-        });
-        this.props.socket.on(`thread:update`, (datum) => {
-          if (this.props.forum.forum_id == datum.forum_id) {
-            datum['new'] = false;
-            datum['type'] = 'thread';
-            let index = this.state.data.findIndex((datumState) => datumState.id === datum.id);
-            if (index === -1) {
-              this.setState({ data: [datum, ...this.state.data] });
-            } else {
-              this.state.data.splice(index, 1);
-              this.setState({ data: [datum, ...this.state.data] });
-            }
-          }
-        });
+  componentDidMount() {
+    this.props.socket.on(`post:new`, (datum) => {
+      datum['new'] = true;
+      datum['type'] = 'post';
+      let index = this.state.data.findIndex((datumState) => datumState.id === datum.id);
+      if (index === -1) {
+        this.setState({ data: [datum, ...this.state.data] });
+      } else {
+        this.state.data.splice(index, 1);
+        this.setState({ data: [datum, ...this.state.data] });
       }
-    }
+    });
+    this.props.socket.on(`post:update`, (datum) => {
+      datum['new'] = false;
+      datum['type'] = 'post';
+      let index = this.state.data.findIndex((datumState) => datumState.id === datum.id);
+      if (index === -1) {
+        this.setState({ data: [datum, ...this.state.data] });
+      } else {
+        this.state.data.splice(index, 1);
+        this.setState({ data: [datum, ...this.state.data] });
+      }
+    });
+    this.props.socket.on(`thread:new`, (datum) => {
+      datum['new'] = true;
+      datum['type'] = 'thread';
+      let index = this.state.data.findIndex((datumState) => datumState.id === datum.id);
+      if (index === -1) {
+        this.setState({ data: [datum, ...this.state.data] });
+      } else {
+        this.state.data.splice(index, 1);
+        this.setState({ data: [datum, ...this.state.data] });
+      }
+    });
+    this.props.socket.on(`thread:update`, (datum) => {
+      datum['new'] = false;
+      datum['type'] = 'thread';
+      let index = this.state.data.findIndex((datumState) => datumState.id === datum.id);
+      if (index === -1) {
+        this.setState({ data: [datum, ...this.state.data] });
+      } else {
+        this.state.data.splice(index, 1);
+        this.setState({ data: [datum, ...this.state.data] });
+      }
+    });
   }
 
   render() {
     const rows = [];
-    this.state.data.forEach((row, i) => {
-      if (row['type'] === 'thread') {
-        rows.push(<Thread thread={row} key={i} updated={!row['new']} />);
-      } else {
-        rows.push(<Post post={row} key={i} updated={!row['new']} />);
-      }
-    });
+    if (this.state.data.length !== 0 && this.props.forum.forum_id !== null) {
+      let data = this.state.data.filter((row) => row.forum_id == this.props.forum.forum_id);
+      data.forEach((row, i) => {
+        if (row['type'] === 'thread') {
+          rows.push(<Thread thread={row} key={i} updated={!row['new']} />);
+        } else {
+          rows.push(<Post post={row} key={i} updated={!row['new']} />);
+        }
+      });
+    }
 
     let empty = <div className="text-center" style={{paddingTop : '35.5vh', paddingBottom : '30vh'}}><h5>{this.props.forum.forum_name != null ? 'Empty list, so far' : 'Select a Forum, First'}</h5></div>;
 
