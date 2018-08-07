@@ -101,7 +101,7 @@ class FrequentPerForum extends React.Component {
 
   handleUsername = (user_id, e) => {
     e.preventDefault();
-    window.location = `https://www.kaskus.co.id/profile/${user_id}`;
+    window.open(`https://www.kaskus.co.id/profile/${user_id}`);
   }
 
   componentWillReceiveProps() {

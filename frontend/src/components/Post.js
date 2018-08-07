@@ -22,7 +22,7 @@ class Post extends React.Component {
 
   handlePage(id){
     this.setState({ open: false });
-    window.location = `https://www.kaskus.co.id/show_post/${id}`
+    window.open(`https://www.kaskus.co.id/show_post/${id}`);
   }
 
   render() {
