@@ -14,7 +14,6 @@ router.get('/keyword_mail_addr', (req, res) => {
     if (!emailAddress) {
       res.json({ [EMAIL_FIELD]: 'empty'});
     } else{
-      console.log(emailAddress);
       res.json({ [EMAIL_FIELD]: emailAddress});
     }
   });
