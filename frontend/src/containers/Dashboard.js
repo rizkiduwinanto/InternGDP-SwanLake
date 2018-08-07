@@ -1,6 +1,5 @@
 import React from 'react';
-import ListOfPostWithSocket from '../containers/ListOfPost';
-import ListOfThreadWithSocket from '../containers/ListOfThread';
+import ListOfPostAndThreadWithSocket from '../containers/ListOfPostAndThread';
 import ListOfForum from '../containers/ListOfForum';
 import { Grid } from '@material-ui/core';
 import { connect } from 'react-redux';
@@ -15,8 +14,7 @@ const styles = {
 class Dashboard extends React.Component {
   render() {
     const titleForum = this.props.forum.forum_name != null ? 'Forum : '+this.props.forum.forum_name : 'Select a forum' ;
-    const titleThread = this.props.forum.forum_name != null ? 'Thread of '+this.props.forum.forum_name : 'Thread';
-    const titlePost = this.props.forum.forum_name != null ? 'Post of '+this.props.forum.forum_name : 'Post';
+    const titleThreadAndPost = this.props.forum.forum_name != null ? 'Thread and Post of '+this.props.forum.forum_name : 'Thread and Post';
     return (
       <Grid container>
         <Grid item xs>
@@ -24,12 +22,8 @@ class Dashboard extends React.Component {
           <ListOfForum/>
         </Grid>
         <Grid item xs>
-          <h1 style={styles}>{titleThread}</h1>
-          <ListOfThreadWithSocket/>
-        </Grid>
-        <Grid item xs>
-          <h1 style={styles}>{titlePost}</h1>
-          <ListOfPostWithSocket/>
+          <h1 style={styles}>{titleThreadAndPost}</h1>
+          <ListOfPostAndThreadWithSocket/>
         </Grid>
       </Grid>
     );
