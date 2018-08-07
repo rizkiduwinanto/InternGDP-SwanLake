@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from './Navbar';
-import Dashboard from './Dashboard';
+import Dashboard from '../containers/Dashboard';
 import Timeseries from '../containers/Timeseries';
 import WordcloudPage from '../containers/Wordcloud';
 import Keyword from './Keyword';

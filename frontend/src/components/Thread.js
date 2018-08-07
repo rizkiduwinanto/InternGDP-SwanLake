@@ -31,6 +31,7 @@ class Thread extends React.Component {
     return (
       <div>
         <a className="list-group-item list-group-item-action flex-column align-items-start" onClick={this.handleOpen}>
+          <small><strong>Thread</strong></small>
           <div className="d-flex w-100 justify-content-between">
             <h6 className="mb-1"><strong>{thread.title}</strong> {this.props.updated ? <span className="badge badge-success">Updated</span> : <span className="badge badge-primary">New</span>} </h6>
           </div>

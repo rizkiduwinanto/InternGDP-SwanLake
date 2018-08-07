@@ -32,29 +32,30 @@ class Post extends React.Component {
     
     return (
       <div>
-      <a className="list-group-item list-group-item-action flex-column align-items-start" onClick={this.handleOpen}>
-        <div className="d-flex w-100 justify-content-between">
-          <h6 className="mb-1"><strong>{title}</strong> {this.props.updated ? <span className="badge badge-success">Updated</span> : <span className="badge badge-primary">New</span>} </h6>
-        </div>
-        <small><strong>{post.post_username}</strong></small>
-      </a>
-      <Dialog open={this.state.open} onClose={this.handleClose} scroll='paper'>
-      <DialogTitle>{title}</DialogTitle>
-      <DialogContent>{post.post_username}</DialogContent>
-      <DialogContent>
-        <DialogContentText>
-          {post.page_text}
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={(e) => this.handlePage(post.id)} color="primary">
-          Open Page
-        </Button>
-        <Button onClick={this.handleClose} color="primary">
-          Close
-        </Button>
-      </DialogActions>
-      </Dialog>
+        <a className="list-group-item list-group-item-action flex-column align-items-start" onClick={this.handleOpen}>
+          <small><strong>Post</strong></small>
+          <div className="d-flex w-100 justify-content-between">
+            <h6 className="mb-1"><strong>{title}</strong> {this.props.updated ? <span className="badge badge-success">Updated</span> : <span className="badge badge-primary">New</span>} </h6>
+          </div>
+          <small><strong>{post.post_username}</strong></small>
+        </a>
+        <Dialog open={this.state.open} onClose={this.handleClose} scroll='paper'>
+        <DialogTitle>{title}</DialogTitle>
+        <DialogContent>{post.post_username}</DialogContent>
+        <DialogContent>
+          <DialogContentText>
+            {post.page_text}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={(e) => this.handlePage(post.id)} color="primary">
+            Open Page
+          </Button>
+          <Button onClick={this.handleClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+        </Dialog>
       </div>
     );
   }
