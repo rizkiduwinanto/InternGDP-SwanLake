@@ -39,19 +39,42 @@ export default () => {
   return io;
 };
 
+
 export async function emitThread(data) {
-  if (isDateLineUpdated(data.dateline))
-    io.emit(`thread:update`,{...data, id:data._id, page_text:bbparser(data.page_text)});
-  else
-    io.emit(`thread:new`,{...data, id:data._id, page_text:bbparser(data.page_text)});
+  client.hset(THREAD_ID_MAP_FORUM_ID, data._id, data.forum_id, () => {
+    if (isDateLineUpdated(data.dateline)) {
+      io.emit(`thread:update`,{...data, id:data._id, page_text:bbparser(data.page_text)});
+      console.log(`Emitted Thread ${data._id}`);
+    }
+    else {
+      io.emit(`thread:new`,{...data, id:data._id, page_text:bbparser(data.page_text)});
+      console.log(`Emitted Thread ${data._id}`);
+    }
+  });
 }
 
 export async function emitPost(data) {
+  const TIMEOUT_MILISEC = 3000;
   const threadID = data.thread_id;
+  if (!data.thread_id) return;
   const getAsync = promisify(client.hget).bind(client);
   const getForumId = () => getAsync(THREAD_ID_MAP_FORUM_ID, threadID).then((result) => result);
-  // console.log(`getting forum_Id`);
   const forumID = await getForumId();
+  const emittingPost = async () => {
+    let f_id = await getForumId();
+    if (f_id == null) {
+      console.log(`Not found forum_id after ${TIMEOUT_MILISEC} ms`);
+      return;
+    }
+    if (isDateLineUpdated(data.dateline)) {
+      io.emit(`post:update`,{...data, id:data._id, page_text:bbparser(data.page_text), forum_id:f_id});
+      console.log(`Emitted Post ${data._id}`);
+    }
+    else {
+      io.emit(`post:new`,{...data, id:data._id, page_text:bbparser(data.page_text), forum_id:f_id});
+      console.log(`Emitted Post ${data._id}`);
+    }
+  }
   // console.log(forumID);
   // console.log(`Done getting forum_Id`);
 
@@ -62,11 +85,12 @@ export async function emitPost(data) {
   //   console.log(error);
   // }
 
-  if (forumID == null) return;
-  if (isDateLineUpdated(data.dateline))
-    io.emit(`post:update`,{...data, id:data._id, page_text:bbparser(data.page_text), forum_id:forumID});
-  else
-    io.emit(`post:new`,{...data, id:data._id, page_text:bbparser(data.page_text), forum_id:forumID});
+  if (forumID == null) {
+    setTimeout(emittingPost, TIMEOUT_MILISEC);
+  } else {
+    emittingPost();
+  }
+
 }
 
 export function isDateLineUpdated(dateline){ 
