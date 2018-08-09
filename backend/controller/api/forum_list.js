@@ -11,6 +11,7 @@ router.get('/forum_list', (req, res) => {
   const TTL_10_MINUTES = 10*60;
 
   redisClient.get(CACHE_KEY, (err, data) => {
+    if (err) { console.log(err); return;}
     if (data) {
       console.log(`${LOG_ROOT} Cached with key = ${CACHE_KEY}`);
       return res.json(JSON.parse(data));

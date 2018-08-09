@@ -18,8 +18,6 @@ app.use(cors());
 // Initialize socket io
 initSocketIO(server);
 
-// Check And Fetch ThreadIdMapForumId if not exist
-checkThreadIdMapForumIdFetched();
 
 // Routing
 app.use('/', require('./controller'));

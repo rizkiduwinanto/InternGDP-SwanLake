@@ -13,10 +13,10 @@ const MAIL_KEYWORDS = 'mail_keywords';
 function getSentence(paragraph, word) {
   const nbWordInSentence = 7;
   let listOfWordsFromParagraph = paragraph.split(' ');
-  if (listOfWordsFromParagraph.length <= nbWordInSentence) return paragraph;
-
+  
   let idxWordInSentence = listOfWordsFromParagraph.indexOf(word.toLowerCase());
   listOfWordsFromParagraph[idxWordInSentence] = "<b>"+word+"</b>";
+  if (listOfWordsFromParagraph.length <= nbWordInSentence) return listOfWordsFromParagraph.join(' ');
 
   // In Middle  ... word1 word2 word3 word word4 word5 word6 ...
   let leftTreshold = idxWordInSentence - Math.floor(nbWordInSentence/2);
