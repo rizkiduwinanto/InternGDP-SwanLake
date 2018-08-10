@@ -43,6 +43,7 @@ class Thread extends React.Component {
       <Post post={post} key={i}/>
     );
     let showPost = this.state.postOpen ? <div style={{ maxHeight: '80vh', overflow: 'auto' }}><div className="list-group">{rows}</div></div> : null;
+    let buttonPost = this.props.posts.length !== 0 ? <button className="btn btn-link" style={{display: 'block', width:'100%', borderBottom:'0.5px solid grey'}} type="submit" onClick={()=> this.handlePost()}>Show Post</button> : null;
     return (
       <div>
         <a className="list-group-item list-group-item-action flex-column align-items-start" onClick={this.handleOpen}>
@@ -53,7 +54,7 @@ class Thread extends React.Component {
           <small><strong>{thread.post_username}</strong></small>
         </a>
         {showPost}
-        <button className="btn btn-link" style={{display: 'block', width:'100%', borderBottom:'0.5px solid grey'}} type="submit" onClick={()=> this.handlePost()}>Show Post</button>
+        {buttonPost}
         <Dialog open={this.state.open} onClose={this.handleClose} scroll='paper'>
         <DialogTitle>{thread.title}</DialogTitle>
         <DialogContent>{thread.post_username}</DialogContent>

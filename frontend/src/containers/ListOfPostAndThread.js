@@ -1,5 +1,5 @@
 import React from 'react';
-import Post from '../components/Post';
+import { withRouter } from 'react-router-dom';
 import Thread from '../components/Thread';
 import { connect } from 'react-redux';
 import SocketContext from '../miscellaneous/SocketContext';
@@ -56,6 +56,13 @@ class ListOfPostAndThread extends React.Component {
     });
   }
 
+  componentWillUnmount() {
+    this.props.socket.removeAllListeners('post:new');
+    this.props.socket.removeAllListeners('post:update');
+    this.props.socket.removeAllListeners('thread:new');
+    this.props.socket.removeAllListeners('thread:update');
+  }
+
   render() {
     const rows = [];
     if (this.state.threads.length !== 0 && this.props.forum.forum_id !== null) {
@@ -90,4 +97,4 @@ const ListOfPostAndThreadWithSocket = props => (
   </SocketContext.Consumer>
 )
 
-export default connect(mapStateToProps)(ListOfPostAndThreadWithSocket);
+export default withRouter(connect(mapStateToProps)(ListOfPostAndThreadWithSocket));
