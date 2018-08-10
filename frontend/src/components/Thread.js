@@ -1,15 +1,18 @@
 import React from 'react';
 import { Button, Dialog, DialogTitle, DialogActions, DialogContent } from '@material-ui/core';
+import Post from './Post';
 
 class Thread extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       open: false,
+      postOpen: false
     }
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handlePage = this.handlePage.bind(this);
+    this.handlePost = this.handlePost.bind(this);
   }
 
   handleOpen() {
@@ -25,9 +28,22 @@ class Thread extends React.Component {
     window.open(`https://www.kaskus.co.id/thread/${id}`);
   }
 
+  handlePost() {
+    if (!this.state.postOpen) {
+      this.setState({ postOpen: true });
+    } else {
+      this.setState({ postOpen: false });
+    }
+  }
+
   render() {
     const thread = this.props.thread;
-
+    console.log(this.props.posts);
+    let rows = this.props.posts.map((post, i) => 
+      <Post post={post} key={i}/>
+    );
+    let showPost = this.state.postOpen ? <div style={{ maxHeight: '80vh', overflow: 'auto' }}><div className="list-group">{rows}</div></div> : null;
+    let buttonPost = this.props.posts.length !== 0 ? <button className="btn btn-link" style={{display: 'block', width:'100%', borderBottom:'0.5px solid grey'}} type="submit" onClick={()=> this.handlePost()}>Show Post</button> : null;
     return (
       <div>
         <a className="list-group-item list-group-item-action flex-column align-items-start" onClick={this.handleOpen}>
@@ -37,6 +53,8 @@ class Thread extends React.Component {
           </div>
           <small><strong>{thread.post_username}</strong></small>
         </a>
+        {showPost}
+        {buttonPost}
         <Dialog open={this.state.open} onClose={this.handleClose} scroll='paper'>
         <DialogTitle>{thread.title}</DialogTitle>
         <DialogContent>{thread.post_username}</DialogContent>

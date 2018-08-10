@@ -1,5 +1,5 @@
 import React from 'react';
-import Post from '../components/Post';
+import { withRouter } from 'react-router-dom';
 import Thread from '../components/Thread';
 import { connect } from 'react-redux';
 import SocketContext from '../miscellaneous/SocketContext';
@@ -8,67 +8,68 @@ class ListOfPostAndThread extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: []
+      threads: [],
+      posts: []
     }
   }
 
   componentDidMount() {
-    this.props.socket.on(`post:new`, (datum) => {
-      datum['new'] = true;
-      datum['type'] = 'post';
-      let index = this.state.data.findIndex((datumState) => datumState.id === datum.id);
+    this.props.socket.on(`post:new`, (post) => {
+      post['new'] = true;
+      let index = this.state.posts.findIndex((postState) => postState.id === post.id);
       if (index === -1) {
-        this.setState({ data: [datum, ...this.state.data] });
+        this.setState({ posts: [post, ...this.state.posts] });
       } else {
-        this.state.data.splice(index, 1);
-        this.setState({ data: [datum, ...this.state.data] });
+        this.state.posts.splice(index, 1);
+        this.setState({ posts: [post, ...this.state.posts] });
       }
     });
-    this.props.socket.on(`post:update`, (datum) => {
-      datum['new'] = false;
-      datum['type'] = 'post';
-      let index = this.state.data.findIndex((datumState) => datumState.id === datum.id);
+    this.props.socket.on(`post:update`, (post) => {
+      post['new'] = false;
+      let index = this.state.posts.findIndex((postState) => postState.id === post.id);
       if (index === -1) {
-        this.setState({ data: [datum, ...this.state.data] });
+        this.setState({ posts: [post, ...this.state.posts] });
       } else {
-        this.state.data.splice(index, 1);
-        this.setState({ data: [datum, ...this.state.data] });
+        this.state.posts.splice(index, 1);
+        this.setState({ posts: [post, ...this.state.posts] });
       }
     });
-    this.props.socket.on(`thread:new`, (datum) => {
-      datum['new'] = true;
-      datum['type'] = 'thread';
-      let index = this.state.data.findIndex((datumState) => datumState.id === datum.id);
+    this.props.socket.on(`thread:new`, (thread) => {
+      thread['new'] = true;
+      let index = this.state.threads.findIndex((threadState) => threadState.id === thread.id);
       if (index === -1) {
-        this.setState({ data: [datum, ...this.state.data] });
+        this.setState({ threads: [thread, ...this.state.threads] });
       } else {
-        this.state.data.splice(index, 1);
-        this.setState({ data: [datum, ...this.state.data] });
+        this.state.threads.splice(index, 1);
+        this.setState({ threads: [thread, ...this.state.threads] });
       }
     });
-    this.props.socket.on(`thread:update`, (datum) => {
-      datum['new'] = false;
-      datum['type'] = 'thread';
-      let index = this.state.data.findIndex((datumState) => datumState.id === datum.id);
+    this.props.socket.on(`thread:update`, (thread) => {
+      thread['new'] = false;
+      let index = this.state.threads.findIndex((threadState) => threadState.id === thread.id);
       if (index === -1) {
-        this.setState({ data: [datum, ...this.state.data] });
+        this.setState({ threads: [thread, ...this.state.threads] });
       } else {
-        this.state.data.splice(index, 1);
-        this.setState({ data: [datum, ...this.state.data] });
+        this.state.threads.splice(index, 1);
+        this.setState({ threads: [thread, ...this.state.threads] });
       }
     });
   }
 
+  componentWillUnmount() {
+    this.props.socket.removeAllListeners('post:new');
+    this.props.socket.removeAllListeners('post:update');
+    this.props.socket.removeAllListeners('thread:new');
+    this.props.socket.removeAllListeners('thread:update');
+  }
+
   render() {
     const rows = [];
-    if (this.state.data.length !== 0 && this.props.forum.forum_id !== null) {
-      let data = this.state.data.filter((row) => row.forum_id == this.props.forum.forum_id);
+    if (this.state.threads.length !== 0 && this.props.forum.forum_id !== null) {
+      let data = this.state.threads.filter((row) => row.forum_id == this.props.forum.forum_id);
       data.forEach((row, i) => {
-        if (row['type'] === 'thread') {
-          rows.push(<Thread thread={row} key={i} updated={!row['new']} />);
-        } else {
-          rows.push(<Post post={row} key={i} updated={!row['new']} />);
-        }
+        let posts = this.state.posts.filter((post) => post.thread_id === row.id);
+        rows.push(<Thread thread={row} key={i} updated={!row['new']} posts = {posts}/>);
       });
     }
 
@@ -96,4 +97,4 @@ const ListOfPostAndThreadWithSocket = props => (
   </SocketContext.Consumer>
 )
 
-export default connect(mapStateToProps)(ListOfPostAndThreadWithSocket);
+export default withRouter(connect(mapStateToProps)(ListOfPostAndThreadWithSocket));

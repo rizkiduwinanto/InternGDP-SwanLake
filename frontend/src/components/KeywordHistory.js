@@ -16,6 +16,10 @@ class KeywordHistory extends React.Component {
     });
   }
 
+  componentWillUnmount() {
+    this.props.socket.removeAllListeners('mail');
+  }
+
   render() {
     const getRows = this.state.messages.map((message, i)=> 
       <li key={i} className="list-group-item" >{message}</li>
